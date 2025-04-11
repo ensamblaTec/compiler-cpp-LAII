@@ -8,10 +8,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/ensamblatec/develop/cpp/compilator_rgg/main.cpp" "CMakeFiles/app.dir/main.cpp.o" "gcc" "CMakeFiles/app.dir/main.cpp.o.d"
-  "/home/ensamblatec/develop/cpp/compilator_rgg/src/lexer.cpp" "CMakeFiles/app.dir/src/lexer.cpp.o" "gcc" "CMakeFiles/app.dir/src/lexer.cpp.o.d"
-  "/home/ensamblatec/develop/cpp/compilator_rgg/src/logger.cpp" "CMakeFiles/app.dir/src/logger.cpp.o" "gcc" "CMakeFiles/app.dir/src/logger.cpp.o.d"
-  "/home/ensamblatec/develop/cpp/compilator_rgg/src/token.cpp" "CMakeFiles/app.dir/src/token.cpp.o" "gcc" "CMakeFiles/app.dir/src/token.cpp.o.d"
+  "/home/work/develop/cpp/compiler-cpp-LAII/main.cpp" "CMakeFiles/app.dir/main.cpp.o" "gcc" "CMakeFiles/app.dir/main.cpp.o.d"
+  "/home/work/develop/cpp/compiler-cpp-LAII/src/lexer.cpp" "CMakeFiles/app.dir/src/lexer.cpp.o" "gcc" "CMakeFiles/app.dir/src/lexer.cpp.o.d"
+  "/home/work/develop/cpp/compiler-cpp-LAII/src/logger.cpp" "CMakeFiles/app.dir/src/logger.cpp.o" "gcc" "CMakeFiles/app.dir/src/logger.cpp.o.d"
+  "/home/work/develop/cpp/compiler-cpp-LAII/src/token.cpp" "CMakeFiles/app.dir/src/token.cpp.o" "gcc" "CMakeFiles/app.dir/src/token.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

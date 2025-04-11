@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ensamblatec/develop/cpp/compilator_rgg
+CMAKE_SOURCE_DIR = /home/work/develop/cpp/compiler-cpp-LAII
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ensamblatec/develop/cpp/compilator_rgg
+CMAKE_BINARY_DIR = /home/work/develop/cpp/compiler-cpp-LAII
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles /home/ensamblatec/develop/cpp/compilator_rgg//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles /home/work/develop/cpp/compiler-cpp-LAII//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

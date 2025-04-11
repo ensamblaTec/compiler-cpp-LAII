@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/ensamblatec/develop/cpp/compilator_rgg/include
+CXX_INCLUDES = -I/home/work/develop/cpp/compiler-cpp-LAII/include
 
 CXX_FLAGS = -std=gnu++17
 

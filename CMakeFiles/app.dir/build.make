@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ensamblatec/develop/cpp/compilator_rgg
+CMAKE_SOURCE_DIR = /home/work/develop/cpp/compiler-cpp-LAII
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ensamblatec/develop/cpp/compilator_rgg
+CMAKE_BINARY_DIR = /home/work/develop/cpp/compiler-cpp-LAII
 
 # Include any dependencies generated for this target.
 include CMakeFiles/app.dir/depend.make
@@ -72,58 +72,58 @@ include CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/main.cpp.o: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/main.cpp.o: main.cpp
 CMakeFiles/app.dir/main.cpp.o: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/app.dir/main.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/main.cpp.o -MF CMakeFiles/app.dir/main.cpp.o.d -o CMakeFiles/app.dir/main.cpp.o -c /home/ensamblatec/develop/cpp/compilator_rgg/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/app.dir/main.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/main.cpp.o -MF CMakeFiles/app.dir/main.cpp.o.d -o CMakeFiles/app.dir/main.cpp.o -c /home/work/develop/cpp/compiler-cpp-LAII/main.cpp
 
 CMakeFiles/app.dir/main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/app.dir/main.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ensamblatec/develop/cpp/compilator_rgg/main.cpp > CMakeFiles/app.dir/main.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/work/develop/cpp/compiler-cpp-LAII/main.cpp > CMakeFiles/app.dir/main.cpp.i
 
 CMakeFiles/app.dir/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/app.dir/main.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ensamblatec/develop/cpp/compilator_rgg/main.cpp -o CMakeFiles/app.dir/main.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/work/develop/cpp/compiler-cpp-LAII/main.cpp -o CMakeFiles/app.dir/main.cpp.s
 
 CMakeFiles/app.dir/src/logger.cpp.o: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/src/logger.cpp.o: src/logger.cpp
 CMakeFiles/app.dir/src/logger.cpp.o: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/app.dir/src/logger.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/logger.cpp.o -MF CMakeFiles/app.dir/src/logger.cpp.o.d -o CMakeFiles/app.dir/src/logger.cpp.o -c /home/ensamblatec/develop/cpp/compilator_rgg/src/logger.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/app.dir/src/logger.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/logger.cpp.o -MF CMakeFiles/app.dir/src/logger.cpp.o.d -o CMakeFiles/app.dir/src/logger.cpp.o -c /home/work/develop/cpp/compiler-cpp-LAII/src/logger.cpp
 
 CMakeFiles/app.dir/src/logger.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/app.dir/src/logger.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ensamblatec/develop/cpp/compilator_rgg/src/logger.cpp > CMakeFiles/app.dir/src/logger.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/work/develop/cpp/compiler-cpp-LAII/src/logger.cpp > CMakeFiles/app.dir/src/logger.cpp.i
 
 CMakeFiles/app.dir/src/logger.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/app.dir/src/logger.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ensamblatec/develop/cpp/compilator_rgg/src/logger.cpp -o CMakeFiles/app.dir/src/logger.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/work/develop/cpp/compiler-cpp-LAII/src/logger.cpp -o CMakeFiles/app.dir/src/logger.cpp.s
 
 CMakeFiles/app.dir/src/lexer.cpp.o: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/src/lexer.cpp.o: src/lexer.cpp
 CMakeFiles/app.dir/src/lexer.cpp.o: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/app.dir/src/lexer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/lexer.cpp.o -MF CMakeFiles/app.dir/src/lexer.cpp.o.d -o CMakeFiles/app.dir/src/lexer.cpp.o -c /home/ensamblatec/develop/cpp/compilator_rgg/src/lexer.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/app.dir/src/lexer.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/lexer.cpp.o -MF CMakeFiles/app.dir/src/lexer.cpp.o.d -o CMakeFiles/app.dir/src/lexer.cpp.o -c /home/work/develop/cpp/compiler-cpp-LAII/src/lexer.cpp
 
 CMakeFiles/app.dir/src/lexer.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/app.dir/src/lexer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ensamblatec/develop/cpp/compilator_rgg/src/lexer.cpp > CMakeFiles/app.dir/src/lexer.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/work/develop/cpp/compiler-cpp-LAII/src/lexer.cpp > CMakeFiles/app.dir/src/lexer.cpp.i
 
 CMakeFiles/app.dir/src/lexer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/app.dir/src/lexer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ensamblatec/develop/cpp/compilator_rgg/src/lexer.cpp -o CMakeFiles/app.dir/src/lexer.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/work/develop/cpp/compiler-cpp-LAII/src/lexer.cpp -o CMakeFiles/app.dir/src/lexer.cpp.s
 
 CMakeFiles/app.dir/src/token.cpp.o: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/src/token.cpp.o: src/token.cpp
 CMakeFiles/app.dir/src/token.cpp.o: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/app.dir/src/token.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/token.cpp.o -MF CMakeFiles/app.dir/src/token.cpp.o.d -o CMakeFiles/app.dir/src/token.cpp.o -c /home/ensamblatec/develop/cpp/compilator_rgg/src/token.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/app.dir/src/token.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/app.dir/src/token.cpp.o -MF CMakeFiles/app.dir/src/token.cpp.o.d -o CMakeFiles/app.dir/src/token.cpp.o -c /home/work/develop/cpp/compiler-cpp-LAII/src/token.cpp
 
 CMakeFiles/app.dir/src/token.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/app.dir/src/token.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/ensamblatec/develop/cpp/compilator_rgg/src/token.cpp > CMakeFiles/app.dir/src/token.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/work/develop/cpp/compiler-cpp-LAII/src/token.cpp > CMakeFiles/app.dir/src/token.cpp.i
 
 CMakeFiles/app.dir/src/token.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/app.dir/src/token.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/ensamblatec/develop/cpp/compilator_rgg/src/token.cpp -o CMakeFiles/app.dir/src/token.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/work/develop/cpp/compiler-cpp-LAII/src/token.cpp -o CMakeFiles/app.dir/src/token.cpp.s
 
 # Object files for target app
 app_OBJECTS = \
@@ -141,7 +141,7 @@ app: CMakeFiles/app.dir/src/lexer.cpp.o
 app: CMakeFiles/app.dir/src/token.cpp.o
 app: CMakeFiles/app.dir/build.make
 app: CMakeFiles/app.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable app"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable app"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/app.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -153,6 +153,6 @@ CMakeFiles/app.dir/clean:
 .PHONY : CMakeFiles/app.dir/clean
 
 CMakeFiles/app.dir/depend:
-	cd /home/ensamblatec/develop/cpp/compilator_rgg && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ensamblatec/develop/cpp/compilator_rgg /home/ensamblatec/develop/cpp/compilator_rgg /home/ensamblatec/develop/cpp/compilator_rgg /home/ensamblatec/develop/cpp/compilator_rgg /home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles/app.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/work/develop/cpp/compiler-cpp-LAII && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/work/develop/cpp/compiler-cpp-LAII /home/work/develop/cpp/compiler-cpp-LAII /home/work/develop/cpp/compiler-cpp-LAII /home/work/develop/cpp/compiler-cpp-LAII /home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles/app.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/app.dir/depend
 
