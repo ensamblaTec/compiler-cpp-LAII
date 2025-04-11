@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/app.dir/main.cpp.o CMakeFiles/app.dir/src/logger.cpp.o CMakeFiles/app.dir/src/lexer.cpp.o CMakeFiles/app.dir/src/token.cpp.o -o app 

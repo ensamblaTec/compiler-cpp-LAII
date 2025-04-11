@@ -1,0 +1,3 @@
+/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles/app.dir
+/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles/edit_cache.dir
+/home/ensamblatec/develop/cpp/compilator_rgg/CMakeFiles/rebuild_cache.dir

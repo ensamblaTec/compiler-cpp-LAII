@@ -1,0 +1,21 @@
+[2025-04-11 10:34:33] [ERROR] no se ha podido abrir el fichero de entrada
+[2025-04-11 10:35:18] [ERROR] no se ha podido abrir el fichero de entrada
+[2025-04-11 10:39:07] [ERROR] No se ha podido abrir el fichero de entrada
+[2025-04-11 10:40:11] [ERROR] No se ha podido abrir el fichero de entrada
+[2025-04-11 10:41:34] [INFO] Iniciando el lexer...
+[2025-04-11 10:41:34] [INFO] Se ha generado el fichero de logs
+[2025-04-11 10:41:34] [INFO] Preparando el fichero de entrada para su procesamiento
+[2025-04-11 10:41:34] [INFO] Linea: 1 leido: "int x = 1; "
+[2025-04-11 10:41:34] [INFO] Linea cargada exitosamente...
+[2025-04-11 10:41:34] [INFO] Fin del fichero...
+[2025-04-11 10:42:44] [INFO] Iniciando el lexer...
+[2025-04-11 10:42:44] [INFO] Se ha generado el fichero de logs
+[2025-04-11 10:42:44] [INFO] Preparando el fichero de entrada para su procesamiento
+[2025-04-11 10:42:44] [INFO] Linea: 1 leido: "int x = 1; "
+[2025-04-11 10:42:44] [INFO] Linea: 1 leido: "int x = 1; "
+[2025-04-11 10:42:44] [INFO] Linea cargada exitosamente...
+[2025-04-11 10:42:44] [INFO] Linea: 2 leido: "string z = "hola buapo"; "
+[2025-04-11 10:42:44] [INFO] Linea: 3 leido: "entero a = 3; "
+[2025-04-11 10:42:44] [INFO] Linea: 4 leido: "texto b = "hola mundo"; "
+[2025-04-11 10:42:44] [INFO] Linea: 5 leido: " "
+[2025-04-11 10:42:44] [INFO] Fin del fichero...
