@@ -1,5 +1,1 @@
-int x = 1;
-string z = "hola buapo";
-entero a = 3;
-texto b = "hola mundo";
-
+entero x;

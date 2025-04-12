@@ -19,7 +19,10 @@ std::string Token::tokenTypeToString(TokenType type) const
     case TokenType::CHAR_LITERAL: return "CHAR_LITERAL";
     case TokenType::BOOLEAN_LITERAL: return "BOOLEAN_LITERAL";
     case TokenType::IDENTIFIER: return "IDENTIFIER";
-    case TokenType::KEYWORD: return "KEYWORD";
+    case TokenType::KEYWORD_INT: return "KEYWORD_INT";
+    case TokenType::KEYWORD_STR: return "KEYWORD_STR";
+    case TokenType::KEYWORD_FLOAT: return "KEYWORD_FLOAT";
+    case TokenType::KEYWORD_BOOL: return "KEYWORD_BOOL";
     case TokenType::PLUS: return "PLUS";
     case TokenType::MINUS: return "MINUS";
     case TokenType::MUL: return "MUL";

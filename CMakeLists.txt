@@ -12,4 +12,5 @@ add_executable(app
     src/logger.cpp
     src/lexer.cpp
     src/token.cpp
+    src/parser.cpp
 )

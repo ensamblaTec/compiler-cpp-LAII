@@ -36,8 +36,6 @@ Lexer::Lexer(std::istream& input_stream) : input(input_stream)
   LOG(LogLevel::INFO, "Preparando el fichero de entrada para su procesamiento");
 
   readNextLine();
-
-  LOG(LogLevel::INFO, "Linea cargada exitosamente...");
 }
 
 void Lexer::readNextLine()
@@ -46,10 +44,11 @@ void Lexer::readNextLine()
   {
     currentLine += ' ';
     pos = 0;
-    row++;
+    row = 0;
     column = 1;
-    std::string msgCurrentLine = "Linea: " + std::to_string(row) + " leido: \"" + currentLine + "\"";
-    LOG(LogLevel::INFO, msgCurrentLine);  
+    std::string msgCurrentLine = "Linea: " + std::to_string(row + 1) + " , se ha leido: \"" + currentLine + "\"";
+    LOG(LogLevel::INFO, "Linea actual: " + currentLine);  
+    LOG(LogLevel::INFO, "Linea cargada exitosamente...");
   } else
   {
     currentLine = "";
@@ -99,9 +98,6 @@ Token Lexer::nextToken()
         column++;
       }
 
-      pos++;
-      column++;
-
       return { TokenType::STRING_LITERAL, buffer, row, startColumn };
     }
 
@@ -112,9 +108,19 @@ Token Lexer::nextToken()
       {
         buffer += currentLine[pos++];
         column++;
+        std::cout << "identifier/keyword: " << column << std::endl;
+        std::cout << "identifier/keyword: " << std::to_string(startColumn) << std::endl;
       }
 
-      TokenType type = keywords.count(buffer) ? TokenType::KEYWORD : TokenType::IDENTIFIER;
+      TokenType type;
+      if (!keywords.count(buffer))
+      {
+        type = TokenType::IDENTIFIER;
+      }
+      if (buffer == "entero")
+      {
+        type = TokenType::KEYWORD_INT;
+      }
       return { type, buffer, row, startColumn };
     }
 
