@@ -7,9 +7,9 @@
 #include <unordered_map>
 
 static const std::unordered_set<std::string> keywords = {
-    "entero", "decimal", "booleano", "texto", "caracter", "metodo",
+    "entero", "decimal", "bool", "texto", "caracter", "metodo",
     "si", "no", "mientras", "para", "retornar",
-    "romper", "continuar", "verdadero", "falso"
+    "salir", "continuar", "verdadero", "falso"
 };
 
 
@@ -98,7 +98,13 @@ Token Lexer::nextToken()
         column++;
       }
 
-      return { TokenType::STRING_LITERAL, buffer, row, startColumn };
+      if (pos < currentLine.size() && currentLine[pos] == '\"') {
+        pos++;
+        column++;
+        return { TokenType::STRING_LITERAL, buffer, row, startColumn };
+      }
+
+      return { TokenType::INVALID, buffer, row, startColumn };
     }
 
     if (std::isalpha(currentCharacter) || currentCharacter == '_')
@@ -108,8 +114,6 @@ Token Lexer::nextToken()
       {
         buffer += currentLine[pos++];
         column++;
-        std::cout << "identifier/keyword: " << column << std::endl;
-        std::cout << "identifier/keyword: " << std::to_string(startColumn) << std::endl;
       }
 
       TokenType type;
@@ -120,6 +124,10 @@ Token Lexer::nextToken()
       if (buffer == "entero")
       {
         type = TokenType::KEYWORD_INT;
+      }
+      if (buffer == "texto")
+      {
+        type = TokenType::KEYWORD_STR;
       }
       return { type, buffer, row, startColumn };
     }

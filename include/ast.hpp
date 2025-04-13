@@ -21,6 +21,12 @@ struct VariableExpr : public Expression
   VariableExpr(const std::string& number) : name(number) {}
 };
 
+struct StringExpr : public Expression
+{
+  std::string text;
+  StringExpr(const std::string& txt) : text(txt) {}
+};
+
 struct BinaryExpr : public Expression
 {
   std::string op;
@@ -30,6 +36,24 @@ struct BinaryExpr : public Expression
     std::shared_ptr<Expression> l,
     std::shared_ptr<Expression> r
   ) : op(o), left(l), right(r) {}
+};
+
+struct UnaryExpr : public Expression {
+  std::string op;
+  std::shared_ptr<Expression> right;
+  UnaryExpr(const std::string& o, std::shared_ptr<Expression> r)
+      : op(o), right(std::move(r)) {}
+};
+
+struct BooleanExpr : public Expression {
+    bool value;
+
+    BooleanExpr(const std::string& val) {
+        if (val == "verdadero" || val == "1")
+            value = true;
+        else
+            value = false;
+    }
 };
 
 struct Statement {
@@ -44,10 +68,12 @@ struct Declaration : public Statement
     : type(t), name(n) {}
 };
 
-struct Assigment : public Statement
+struct Assignment : public Statement
 {
   std::string name;
   std::shared_ptr<Expression> expr;
-  Assigment(const std::string& n, std::shared_ptr<Expression> e)
+  Assignment(const std::string& n, std::shared_ptr<Expression> e)
     : name(n), expr(e) {}
 };
+
+

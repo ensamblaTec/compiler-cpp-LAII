@@ -4,10 +4,10 @@
 #include <cctype>
 
 #include "token.hpp"
-#include "lexer.hpp"
 #include "logger.hpp"
 #include "parser.hpp"
 #include "astprinter.hpp"
+#include "utils.hpp"
 
 int main()
 {
@@ -19,39 +19,39 @@ int main()
     return 1;
   }
 
+  LOG(LogLevel::INFO, "INICIALIZANDO LEXER...");
   Lexer lexer(file);
-  Token token;
-  std::vector<Token> tokens;
-
-  while ((token = lexer.nextToken()).type != TokenType::END_OF_FILE) {
-    if (token.type == TokenType::INVALID)
-    {
-      LOG(LogLevel::ERROR, "Error lexico en linea: " + std::to_string(token.row) 
-          + ", columna: " + std::to_string(token.column) 
-          + ", caracter invalido '" + token.value
-      );
-      continue;
-    }
-    tokens.emplace_back(token);
-    token.print();
-  }
+  LOG(LogLevel::INFO, "PROCESANDO LEXER...");
+  std::vector<Token> tokens = getAllTokens(lexer);
+  LOG(LogLevel::INFO, "FINALIZANDO LEXER...");
 
   LOG(LogLevel::INFO, "se han generado: " + std::to_string(tokens.size()) + " tokens");
-  for (const auto v: tokens) std::cout << "valores : " << v.value << std::endl;
+  for (const auto token: tokens) token.print();
   
   LOG(LogLevel::INFO, "Analisis lexico correctamente finalizado");
 
   LOG(LogLevel::INFO, "Comenzando el Parser");
   LOG(LogLevel::INFO, "Generado clase parser...");
   Parser parser(tokens);
-  LOG(LogLevel::INFO, "Clase parser genereada...");
-  LOG(LogLevel::INFO, "Inciando el parse...");
+  LOG(LogLevel::INFO, "Clase parser generada...");
+  LOG(LogLevel::INFO, "MOSTRANDO LOS TOKEN GENERADOS");
+  for (const auto tok: tokens)
+    LOG(LogLevel::DEBUG, "TokenGenerado: " + tok.getPrint());
+  LOG(LogLevel::INFO, "INICIANDO EL PARSER...");
   auto statements = parser.parse();
-  LOG(LogLevel::INFO, "Finalizando el parse...");
+  LOG(LogLevel::INFO, "FINALIZANDO EL PARSER...");
 
-  for (const auto& stmt: statements) {
-    printStatement(stmt);
+  std::cout << "=== AST modo clásico ===\n";
+  for (const auto& stmt : statements) {
+      printStatementClassic(stmt);
   }
+
+  std::cout << "\n=== AST modo árbol ===\n";
+  for (size_t i = 0; i < statements.size(); ++i) {
+      bool isLast = (i == statements.size() - 1);
+      printStatementTree(statements[i], "", isLast);
+  }
+
 
   LOG(LogLevel::INFO, "Finalizando el Parser");
 

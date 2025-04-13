@@ -23,8 +23,15 @@ class Parser
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
-    std::shared_ptr<Statement> parseAssigment();
+    std::shared_ptr<Statement> parseAssignment();
     std::shared_ptr<Expression> parseExpression();
+    std::shared_ptr<Expression> parseOr();
+    std::shared_ptr<Expression> parseAnd();
+    std::shared_ptr<Expression> parseEquality();
+    std::shared_ptr<Expression> parseComparison();
+    std::shared_ptr<Expression> parseAdditive();
     std::shared_ptr<Expression> parseTerm();
-    std::shared_ptr<Expression> parseFactor();
+    std::shared_ptr<Expression> parseUnary();
+    std::shared_ptr<Expression> parsePrimary();
+    const Token& previous() const;
 };
