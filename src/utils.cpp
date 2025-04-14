@@ -23,3 +23,4 @@ std::vector<Token> getAllTokens(Lexer& lexer)
 
   return tokens;
 }
+

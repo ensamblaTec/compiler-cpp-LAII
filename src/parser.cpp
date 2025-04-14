@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "logger.hpp"
+#include "utils.hpp"
 
 Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {}
 
@@ -47,6 +48,13 @@ bool Parser::match(TokenType type)
   return false;
 }
 
+bool Parser::expect(TokenType type, const std::string& scopeMethod, const std::string& msgError)
+{
+  if (match(type)) return true;
+  LOG(LogLevel::ERROR, "[" + scopeMethod + "] " + msgError);
+  return false;
+}
+
 std::shared_ptr<Statement> Parser::parseStatement()
 {
   if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
@@ -83,7 +91,7 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
             LOG(LogLevel::ERROR, "[parseDeclaration] Expresión inválida en declaración con asignación.");
             return nullptr;
         }
-        match(TokenType::SEMICOLON);
+        if (!expect(TokenType::SEMICOLON, "parseDeclaration", "se esperaba ';' despues de la asginacion")) return nullptr;
         return std::make_shared<Assignment>(name, expr);
     }
 
@@ -94,10 +102,8 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
 std::shared_ptr<Statement> Parser::parseAssignment()
 {
     std::string name = advance().value;
-    if (!match(TokenType::ASSIGN)) {
-        LOG(LogLevel::ERROR, "[parseAssigment] Se esperaba '=' en la asignación.");
+    if (!expect(TokenType::ASSIGN, "parseAssigment", "Se esperaba '=' en la asignación"))
         return nullptr;
-    }
 
     auto expr = parseExpression();
     if (!expr) {
@@ -190,7 +196,10 @@ std::shared_ptr<Expression> Parser::parsePrimary() {
   }
   if (match(TokenType::LPAREN)) {
     auto expr = parseExpression();
-    match(TokenType::RPAREN);
+
+  if (!expect(TokenType::RPAREN, "parsePrimary", "se esperaba ')' pero se encontró: " + peek().getPrint()))
+    return nullptr;
+
     return expr;
   }
 

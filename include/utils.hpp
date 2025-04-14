@@ -5,3 +5,4 @@
 #include "lexer.hpp"
 
 std::vector<Token> getAllTokens(Lexer& lexer);
+

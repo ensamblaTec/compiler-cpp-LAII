@@ -13,6 +13,7 @@ class Parser
     std::vector<std::shared_ptr<Statement>> parse();
 
   private:
+
     const std::vector<Token>& tokens;
     int current;
 
@@ -20,6 +21,7 @@ class Parser
     const Token& advance();
     bool match(TokenType type);
     bool check(TokenType type) const;
+    bool expect(TokenType type, const std::string& scopeMethod, const std::string& msgError);
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
@@ -33,5 +35,6 @@ class Parser
     std::shared_ptr<Expression> parseTerm();
     std::shared_ptr<Expression> parseUnary();
     std::shared_ptr<Expression> parsePrimary();
+
     const Token& previous() const;
 };
