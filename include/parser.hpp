@@ -22,6 +22,9 @@ class Parser
     bool match(TokenType type);
     bool check(TokenType type) const;
     bool expect(TokenType type, const std::string& scopeMethod, const std::string& msgError);
+    bool isBinaryOperator(TokenType type) const;
+
+    void synchronize();
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
