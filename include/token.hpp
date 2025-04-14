@@ -21,7 +21,6 @@ enum class TokenType
   KEYWORD_FOR,
   KEYWORD_PRINT,
   KEYWORD_INPUT,
-  KEYWORD_,
   PLUS, MINUS, MUL, DIV, MOD,
   ASSIGN,
   EQ, NEQ, GT, LT, GTE, LTE,
@@ -49,6 +48,12 @@ inline std::string tokenTypeToString(TokenType type)
     case TokenType::KEYWORD_STR: return "KEYWORD_STR";
     case TokenType::KEYWORD_FLOAT: return "KEYWORD_FLOAT";
     case TokenType::KEYWORD_BOOL: return "KEYWORD_BOOL";
+    case TokenType::KEYWORD_IF: return "KEYWORD_IF";
+    case TokenType::KEYWORD_ELSE: return "KEYWORD_ELSE";
+    case TokenType::KEYWORD_WHILE: return "KEYWORD_WHILE";
+    case TokenType::KEYWORD_FOR: return "KEYWORD_FOR";
+    case TokenType::KEYWORD_PRINT: return "KEYWORD_PRINT";
+    case TokenType::KEYWORD_INPUT: return "KEYWORD_INPUT";
     case TokenType::PLUS: return "PLUS";
     case TokenType::MINUS: return "MINUS";
     case TokenType::MUL: return "MUL";

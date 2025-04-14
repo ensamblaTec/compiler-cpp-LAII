@@ -1,3 +1,13 @@
-entero x;
-x = 3 + 4 * 2;
-entero y = 7;
+si (x > 0) {
+  mostrar(x);
+} sino {
+  mostrar(0);
+}
+
+mientras (i < 10) {
+  i = i + 1;
+}
+
+entrada nombre;
+mostrar(nombre);
+

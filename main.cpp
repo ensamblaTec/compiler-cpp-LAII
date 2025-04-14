@@ -52,7 +52,6 @@ int main()
       printStatementTree(statements[i], "", isLast);
   }
 
-
   LOG(LogLevel::INFO, "Finalizando el Parser");
 
   return 0;

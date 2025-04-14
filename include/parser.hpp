@@ -28,7 +28,14 @@ class Parser
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
+    std::shared_ptr<Statement> parseIf();
+    std::shared_ptr<Statement> parseWhile();
+    std::shared_ptr<Statement> parseFor();
+    std::shared_ptr<Statement> parsePrint();
+    std::shared_ptr<Statement> parseInput();
     std::shared_ptr<Statement> parseAssignment();
+    std::shared_ptr<Statement> parseBlock();
+
     std::shared_ptr<Expression> parseExpression();
     std::shared_ptr<Expression> parseOr();
     std::shared_ptr<Expression> parseAnd();

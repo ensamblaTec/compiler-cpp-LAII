@@ -1,6 +1,7 @@
 #include "parser.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
+#include "error_reporter.hpp"
 
 Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {}
 
@@ -10,6 +11,11 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
   while (!check(TokenType::END_OF_FILE))
   {
     LOG(LogLevel::DEBUG, "[parser] el token actual a revisar es: " + tokens[current].getPrint());
+    if (check(TokenType::RBRACE)) {
+      LOG(LogLevel::ERROR, "[parse] Se encontró una llave de cierre '}' fuera de un bloque");
+      advance();
+      continue;
+    }
     auto smtm = parseStatement();
     if (smtm)
     {
@@ -88,19 +94,35 @@ void Parser::synchronize() {
 
 std::shared_ptr<Statement> Parser::parseStatement()
 {
-  if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
-  {
-    return parseDeclaration();
-  } else if (check(TokenType::IDENTIFIER))
-  {
-    return parseAssignment();
-  }
+    if (check(TokenType::RBRACE)) {
+        return nullptr;
+    }
 
+    if (match(TokenType::KEYWORD_INT) || match(TokenType::KEYWORD_STR) || match(TokenType::KEYWORD_BOOL)) 
+        return parseDeclaration();
 
-  LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
+    if (check(TokenType::IDENTIFIER))
+        return parseAssignment();
+
+    if (match(TokenType::KEYWORD_IF))
+        return parseIf();
+
+    if (match(TokenType::KEYWORD_WHILE))
+        return parseWhile();
+
+    if (match(TokenType::KEYWORD_FOR))
+        return parseFor();
+
+    if (match(TokenType::KEYWORD_PRINT))
+        return parsePrint();
+
+    if (match(TokenType::KEYWORD_INPUT))
+        return parseInput();
+
+    LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
                          " (línea: " + std::to_string(peek().row + 1) +
                          ", columna: " + std::to_string(peek().column) + ")");
-  return nullptr;
+    return nullptr;
 }
 
 std::shared_ptr<Statement> Parser::parseDeclaration()
@@ -132,6 +154,14 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
 
     std::string name = previous().value;
 
+    if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_FLOAT) ||
+      check(TokenType::KEYWORD_BOOL) || check(TokenType::KEYWORD_STR))
+    {
+      LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró otro tipo después del identificador '" + name +
+          "'. ¿Quizás olvidaste un punto y coma ';' entre declaraciones?");
+      return nullptr;
+    }
+
     if (check(TokenType::IDENTIFIER)) {
       LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró un identificador inesperado después del nombre '" + name + "'. Quizás olvidaste un punto y coma o estás redeclarando sin separar sentencias.");
       return nullptr;
@@ -160,6 +190,116 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
         return nullptr;
 
     return std::make_shared<Declaration>(type, name);
+}
+
+std::shared_ptr<Statement> Parser::parseIf() {
+    if (!match(TokenType::LPAREN)) {
+        LOG(LogLevel::ERROR, "[parseIf] Se esperaba '(' después de 'si'");
+        return nullptr;
+    }
+
+    auto condition = parseExpression();
+
+    if (!expect(TokenType::RPAREN, "parseIf", "Se esperaba ')' después de la condición"))
+        return nullptr;
+
+    auto thenBranch = parseBlock();
+
+    std::shared_ptr<Statement> elseBranch = nullptr;
+    if (match(TokenType::KEYWORD_ELSE)) {
+        elseBranch = parseBlock(); 
+    }
+
+    return std::make_shared<IfStatement>(condition, thenBranch, elseBranch);
+}
+
+std::shared_ptr<Statement> Parser::parseWhile() {
+    if (!match(TokenType::LPAREN)) {
+        LOG(LogLevel::ERROR, "[parseWhile] Se esperaba '(' después de 'mientras'");
+        return nullptr;
+    }
+
+    auto condition = parseExpression();
+
+    if (!expect(TokenType::RPAREN, "parseWhile", "Se esperaba ')' después de la condición"))
+        return nullptr;
+
+    auto body = parseBlock();
+
+    return std::make_shared<WhileStatement>(condition, body);
+}
+
+std::shared_ptr<Statement> Parser::parseFor() {
+    if (!match(TokenType::LPAREN)) {
+        LOG(LogLevel::ERROR, "[parseFor] Se esperaba '(' después de 'para'");
+        return nullptr;
+    }
+
+    auto initializer = parseExpression();
+    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la inicialización"))
+        return nullptr;
+
+    auto condition = parseExpression();
+
+    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la condición"))
+        return nullptr;
+
+    auto increment = parseExpression();
+
+    if (!expect(TokenType::RPAREN, "parseFor", "Se esperaba ')' después de los parámetros"))
+        return nullptr;
+
+    auto body = parseBlock();
+
+    return std::make_shared<ForStatement>(initializer, condition, increment, body);
+}
+
+std::shared_ptr<Statement> Parser::parsePrint() {
+    auto expr = parseExpression();
+
+    if (!expr) {
+        LOG(LogLevel::ERROR, "[parsePrint] Expresión inválida después de 'mostrar'");
+        return nullptr;
+    }
+
+    match(TokenType::SEMICOLON);
+    return std::make_shared<PrintStatement>(expr);
+}
+
+std::shared_ptr<Statement> Parser::parseInput() {
+    Token varToken = advance();
+
+    if (!match(TokenType::SEMICOLON)) {
+        LOG(LogLevel::ERROR, "[parseEntrada] Se esperaba ';' después de 'entrada'");
+        return nullptr;
+    }
+
+    return std::make_shared<InputStatement>(varToken.value);
+}
+
+std::shared_ptr<Statement> Parser::parseBlock() {
+    if (!match(TokenType::LBRACE)) {
+        LOG(LogLevel::ERROR, "[parseBlock] Se esperaba '{' para iniciar un bloque");
+        return nullptr;
+    }
+
+    std::vector<std::shared_ptr<Statement>> statements;
+
+    while (!check(TokenType::RBRACE) && !check(TokenType::END_OF_FILE)) {
+        auto stmt = parseStatement();
+        if (stmt) {
+            statements.push_back(stmt);
+        } else {
+            synchronize();
+        }
+    }
+
+    if (!match(TokenType::RBRACE)) {
+        LOG(LogLevel::ERROR, "[parseBlock] Se esperaba '}' para cerrar el bloque");
+        return nullptr;
+    }
+
+    return std::make_shared<BlockStatement>(statements);
 }
 
 std::shared_ptr<Statement> Parser::parseAssignment()

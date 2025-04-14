@@ -8,8 +8,8 @@
 
 static const std::unordered_set<std::string> keywords = {
     "entero", "decimal", "bool", "texto", "caracter", "metodo",
-    "si", "no", "mientras", "para", "retornar",
-    "salir", "continuar", "verdadero", "falso"
+    "si", "sino", "mientras", "para", "retornar",
+    "salir", "continuar", "verdadero", "falso", "mostrar", "entrada"
 };
 
 
@@ -120,15 +120,24 @@ Token Lexer::nextToken()
       if (!keywords.count(buffer))
       {
         type = TokenType::IDENTIFIER;
-      }
-      if (buffer == "entero")
-      {
+      } else if (buffer == "entero") {
         type = TokenType::KEYWORD_INT;
-      }
-      if (buffer == "texto")
-      {
+      } else if (buffer == "texto") {
         type = TokenType::KEYWORD_STR;
+      } else if (buffer == "mientras") {
+        type = TokenType::KEYWORD_WHILE;
+      } else if (buffer == "para") {
+        type = TokenType::KEYWORD_FOR;
+      } else if (buffer == "si") {
+        type = TokenType::KEYWORD_IF;
+      } else if (buffer == "sino") {
+        type = TokenType::KEYWORD_ELSE;
+      } else if (buffer == "mostrar") {
+        type = TokenType::KEYWORD_PRINT;
+      } else if (buffer == "entrada") {
+        type = TokenType::KEYWORD_INPUT;
       }
+
       return { type, buffer, row, startColumn };
     }
 
