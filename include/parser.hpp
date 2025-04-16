@@ -27,6 +27,7 @@ class Parser
     bool isBinaryOperator(TokenType type) const;
 
     void synchronize();
+    void logTokenContext(const std::string& header) const;
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();

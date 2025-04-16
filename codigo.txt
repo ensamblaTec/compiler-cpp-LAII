@@ -1,9 +1,13 @@
+entero x;
 texto nombre;
+
 si (x > 0) {
   mostrar(x);
 } sino {
   mostrar(0);
 }
+
+entero i;
 
 mientras (i < 10) {
   i = i + 1;
@@ -11,4 +15,3 @@ mientras (i < 10) {
 
 entrada nombre;
 mostrar(nombre);
-

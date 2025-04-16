@@ -4,6 +4,16 @@
 #include "error_reporter.hpp"
 #include "symbol_table.hpp"
 
+void Parser::logTokenContext(const std::string& header) const {
+  const Token& prev = current > 0 ? tokens[current - 1] : tokens[current];
+  const Token& curr = peek();
+  const Token& next = (current + 1 < tokens.size()) ? tokens[current + 1] : curr;
+
+  LOG(LogLevel::ERROR, header + "\n  Token anterior: " + prev.getPrint() +
+                      "\n  Token actual:   " + curr.getPrint() +
+                      "\n  Token siguiente:" + next.getPrint());
+}
+
 Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0), symbols() {}
 
 std::vector<std::shared_ptr<Statement>> Parser::parse()
@@ -18,6 +28,28 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
       advance();
       continue;
     }
+
+    if (check(TokenType::SEMICOLON) && tokens[current + 1].type == TokenType::SEMICOLON) {
+      LOG(LogLevel::ERROR, "[parse] Se encontraron múltiples ';' vacíos seguidos");
+      ErrorReporter::getInstance().report("Uso redundante de ';' sin instrucción entre ellos", peek().row, peek().column);
+      advance();
+      continue;
+    }
+
+    if (check(TokenType::KEYWORD_ELSE)) {
+      LOG(LogLevel::ERROR, "[parse] Se encontró 'sino' sin un bloque 'si' anterior válido");
+      ErrorReporter::getInstance().report("Se encontró 'sino' sin un bloque 'si' anterior válido", peek().row, peek().column);
+      advance();
+      continue;
+    }
+
+    if (check(TokenType::NUMBER) || check(TokenType::STRING_LITERAL) || check(TokenType::BOOLEAN_LITERAL) || check(TokenType::LPAREN)) {
+      LOG(LogLevel::ERROR, "[parse] Se encontró una expresión suelta sin asignación ni impresión");
+      ErrorReporter::getInstance().report("Expresión suelta no permitida. Debe asignarse o mostrarse explícitamente.", peek().row, peek().column);
+      synchronize();
+      continue;
+    }
+
     auto smtm = parseStatement();
     if (smtm)
     {
@@ -107,7 +139,7 @@ std::shared_ptr<Statement> Parser::parseStatement()
         return nullptr;
     }
 
-    if (match(TokenType::KEYWORD_INT) || match(TokenType::KEYWORD_STR) || match(TokenType::KEYWORD_BOOL)) 
+    if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
         return parseDeclaration();
 
     if (check(TokenType::IDENTIFIER))
@@ -146,24 +178,14 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
     else if (match(TokenType::KEYWORD_STR))   type = "texto";
     else {
       LOG(LogLevel::ERROR, "[parseDeclaration] Tipo desconocido en declaración. Se encontró: " + peek().getPrint());
-      ErrorReporter::getInstance().report("Tipo desconocido en declaración. Se encontró: " + peek().value, peek().row, peek().column);
+      ErrorReporter::getInstance().report("Tipo desconocido en declaración", peek().row, peek().column);
       return nullptr;
     }
 
     if (!match(TokenType::IDENTIFIER)) {
-      TokenType found = peek().type;
-
-      if (found == TokenType::ASSIGN)
-      {
-        LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró un '=' sin identificador. Se esperaba un nombre de variable antes del operador de asignación.");
-        ErrorReporter::getInstance().report("Se encontró un '=' sin identificador. Se esperaba un nombre de variable antes del operador de asignación.", peek().row, peek().column);
-      } else if (check(TokenType::SEMICOLON)) {
-        LOG(LogLevel::ERROR, "[parseDeclaration] Declaración incompleta: se esperaba un identificador antes del ';'");
-        ErrorReporter::getInstance().report(" Declaración incompleta: se esperaba un identificador antes del ';'", peek().row, peek().column);
-      } else {
-        LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba un identificador después del tipo. Se encontró: " + peek().getPrint());
-        ErrorReporter::getInstance().report("Se esperaba un identificador después del tipo. Se encontró: " + peek().value, peek().row, peek().column);
-      }
+      Token token = peek();
+      LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba un identificador después del tipo. Se encontró: " + token.getPrint());
+      ErrorReporter::getInstance().report("Se esperaba un identificador después del tipo", token.row, token.column);
       return nullptr;
     }
 
@@ -176,44 +198,29 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
       return nullptr;
     }
 
-    if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_FLOAT) ||
-      check(TokenType::KEYWORD_BOOL) || check(TokenType::KEYWORD_STR))
-    {
-      LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró otro tipo después del identificador '" + name +
-          "'. ¿Quizás olvidaste un punto y coma ';' entre declaraciones?");
-
-      ErrorReporter::getInstance().report("Se encontró otro tipo después del identificador '" + name +
-          "'. ¿Quizás olvidaste un punto y coma ';' entre declaraciones?", peek().row, peek().column);
-      return nullptr;
-    }
-
-    if (check(TokenType::IDENTIFIER)) {
-      LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró un identificador inesperado después del nombre '" + name + "'. Quizás olvidaste un punto y coma o estás redeclarando sin separar sentencias.");
-      return nullptr;
-    }
-
     if (match(TokenType::ASSIGN)) {
-      if (check(TokenType::SEMICOLON) || check(TokenType::RPAREN) || check(TokenType::END_OF_FILE)) {
-        LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba una expresión después de '=' pero se encontró: " + peek().getPrint());
-        return nullptr;
-      }
-
       auto expr = parseExpression();
 
       if (!expr) {
         LOG(LogLevel::ERROR, "[parseDeclaration] Expresión inválida en declaración con asignación");
+        ErrorReporter::getInstance().report("Expresión inválida en declaración con asignación", peek().row, peek().column);
         return nullptr;
       }
 
-      if (!expect(TokenType::SEMICOLON, "parseDeclaration", "Se esperaba ';' después de la asignación en la declaración"))
+      if (!match(TokenType::SEMICOLON)) {
+        LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba ';' después de la asignación en la declaración");
+        ErrorReporter::getInstance().report("Se esperaba ';' después de la asignación en la declaración", peek().row, peek().column);
         return nullptr;
+      }
 
       return std::make_shared<Assignment>(name, expr);
     }
 
-    if (!expect(TokenType::SEMICOLON, "parseDeclaration", "Se esperaba ';' después de la declaración"))
-        return nullptr;
-
+    if (!match(TokenType::SEMICOLON)) {
+      LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba ';' después de la declaración");
+      ErrorReporter::getInstance().report("Se esperaba ';' después de la declaración", peek().row, peek().column);
+      return nullptr;
+    }
     return std::make_shared<Declaration>(type, name);
 }
 
@@ -283,11 +290,18 @@ std::shared_ptr<Statement> Parser::parsePrint() {
     auto expr = parseExpression();
 
     if (!expr) {
-        LOG(LogLevel::ERROR, "[parsePrint] Expresión inválida después de 'mostrar'");
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parsePrint] Expresión inválida después de 'mostrar'");
+      ErrorReporter::getInstance().report("Se esperaba una expresión válida después de 'mostrar'", peek().row, peek().column);
+      return nullptr;
     }
 
-    match(TokenType::SEMICOLON);
+    if (!match(TokenType::SEMICOLON))
+    {
+      LOG(LogLevel::ERROR, "[parsePrint] Se esperaba ';' después de 'mostrar'");
+      ErrorReporter::getInstance().report("Se esperaba ';' al final de la instrucción 'mostrar'", peek().row, peek().column);
+      return nullptr;
+    }
+
     return std::make_shared<PrintStatement>(expr);
 }
 
@@ -354,39 +368,47 @@ std::shared_ptr<Statement> Parser::parseBlock() {
 
 std::shared_ptr<Statement> Parser::parseAssignment()
 {
-    if (!match(TokenType::IDENTIFIER)) {
-        LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba un identificador al inicio de la asignación. Se encontró: " + peek().getPrint());
-        return nullptr;
-    }
+  if (!match(TokenType::IDENTIFIER)) {
+    LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba un identificador al inicio de la asignación. Se encontró: " + peek().getPrint());
+    ErrorReporter::getInstance().report("Se esperaba un identificador para la asignación", peek().row, peek().column);
+    return nullptr;
+  }
 
-    std::string name = previous().value;
+  std::string name = previous().value;
 
-    if (!symbols.isDeclared(name)) {
-      std::string msg = "La variable '" + name + "' no ha sido declarada previamente.";
-      LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
-      ErrorReporter::getInstance().report(msg, peek().row, peek().column);
-      return nullptr;
-    }
+  if (!symbols.isDeclared(name)) {
+    std::string msg = "La variable '" + name + "' no ha sido declarada previamente.";
+    LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
+    ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+    return nullptr;
+  }
 
-    if (!expect(TokenType::ASSIGN, "parseAssignment", "Se esperaba '=' en la asignación"))
-        return nullptr;
+  if (!match(TokenType::ASSIGN)) {
+    LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba '=' en la asignación después de '" + name + "'");
+    ErrorReporter::getInstance().report("Se esperaba '=' después del identificador", peek().row, peek().column);
+    return nullptr;
+  }
 
-    if (check(TokenType::SEMICOLON) || check(TokenType::RPAREN) || check(TokenType::END_OF_FILE)) {
-        LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba una expresión después de '=' pero se encontró: " + peek().getPrint());
-        return nullptr;
-    }
+  if (check(TokenType::SEMICOLON) || check(TokenType::RPAREN) || check(TokenType::END_OF_FILE)) {
+    LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba una expresión después de '=' pero se encontró: " + peek().getPrint());
+    ErrorReporter::getInstance().report("Se esperaba una expresión después de '='", peek().row, peek().column);
+    return nullptr;
+  }
 
-    auto expr = parseExpression();
+  auto expr = parseExpression();
+  if (!expr) {
+    LOG(LogLevel::ERROR, "[parseAssignment] Expresión nula en la asignación. Se esperaba un valor después de '='");
+    ErrorReporter::getInstance().report("Expresión inválida en la asignación", peek().row, peek().column);
+    return nullptr;
+  }
 
-    if (!expr) {
-        LOG(LogLevel::ERROR, "[parseAssignment] Expresión nula en la asignación. Se esperaba un valor después de '='");
-        return nullptr;
-    }
+  if (!match(TokenType::SEMICOLON)) {
+    LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba ';' después de la asignación");
+    ErrorReporter::getInstance().report("Falta ';' después de la asignación", peek().row, peek().column);
+    return nullptr;
+  }
 
-    if (!expect(TokenType::SEMICOLON, "parseAssignment", "Se esperaba ';' después de la asignación"))
-        return nullptr;
-
-    return std::make_shared<Assignment>(name, expr);
+  return std::make_shared<Assignment>(name, expr);
 }
 
 std::shared_ptr<Expression> Parser::parseExpression() {
@@ -398,6 +420,7 @@ std::shared_ptr<Expression> Parser::parseExpression() {
         check(TokenType::AND) || check(TokenType::OR) ||
         check(TokenType::MOD)) 
     {
+        logTokenContext("[parseExpression] Operador binario sin operando");
         LOG(LogLevel::ERROR, "[parseExpression] Se encontró un operador binario sin operando izquierdo: " + peek().getPrint());
         return nullptr;
     }
