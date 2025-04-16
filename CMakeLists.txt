@@ -11,5 +11,9 @@ add_executable(app
     main.cpp
     src/logger.cpp
     src/lexer.cpp
-    src/token.cpp
+    src/parser.cpp
+    src/utils.cpp
+    src/astprinter.cpp
+    src/error_reporter.cpp
+    src/symbol_table.cpp
 )
