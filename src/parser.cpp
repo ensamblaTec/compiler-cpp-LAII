@@ -2,8 +2,9 @@
 #include "logger.hpp"
 #include "utils.hpp"
 #include "error_reporter.hpp"
+#include "symbol_table.hpp"
 
-Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0) {}
+Parser::Parser(const std::vector<Token>& tokens) : tokens(tokens), current(0), symbols() {}
 
 std::vector<std::shared_ptr<Statement>> Parser::parse()
 {
@@ -13,6 +14,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
     LOG(LogLevel::DEBUG, "[parser] el token actual a revisar es: " + tokens[current].getPrint());
     if (check(TokenType::RBRACE)) {
       LOG(LogLevel::ERROR, "[parse] Se encontró una llave de cierre '}' fuera de un bloque");
+      ErrorReporter::getInstance().report("Se encontró una llave de cierre '}' fuera de un bloque", peek().row, peek().column);
       advance();
       continue;
     }
@@ -23,9 +25,13 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
     } else
     {
       LOG(LogLevel::ERROR, "[parse] statement no valido");
+      ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
       synchronize();
     }
   }
+
+  ErrorReporter::getInstance().printSummary();
+  ErrorReporter::getInstance().clear();
   return statements;
 }
 
@@ -63,6 +69,9 @@ bool Parser::expect(TokenType type, const std::string& scopeMethod, const std::s
   LOG(LogLevel::ERROR, "[" + scopeMethod + "] " + msgError +
       " se ha encontrado el token " + token.getPrint() +
       " (linea: " + std::to_string(token.row + 1) + ", columna: " + std::to_string(token.column) + ")");
+
+  ErrorReporter::getInstance().report("[" + scopeMethod + "] " + msgError, token.row, token.column);
+
   return false;
 }
 
@@ -122,6 +131,8 @@ std::shared_ptr<Statement> Parser::parseStatement()
     LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
                          " (línea: " + std::to_string(peek().row + 1) +
                          ", columna: " + std::to_string(peek().column) + ")");
+
+    ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
     return nullptr;
 }
 
@@ -134,8 +145,9 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
     else if (match(TokenType::KEYWORD_BOOL))  type = "bool";
     else if (match(TokenType::KEYWORD_STR))   type = "texto";
     else {
-        LOG(LogLevel::ERROR, "[parseDeclaration] Tipo desconocido en declaración. Se encontró: " + peek().getPrint());
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parseDeclaration] Tipo desconocido en declaración. Se encontró: " + peek().getPrint());
+      ErrorReporter::getInstance().report("Tipo desconocido en declaración. Se encontró: " + peek().value, peek().row, peek().column);
+      return nullptr;
     }
 
     if (!match(TokenType::IDENTIFIER)) {
@@ -144,21 +156,34 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
       if (found == TokenType::ASSIGN)
       {
         LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró un '=' sin identificador. Se esperaba un nombre de variable antes del operador de asignación.");
+        ErrorReporter::getInstance().report("Se encontró un '=' sin identificador. Se esperaba un nombre de variable antes del operador de asignación.", peek().row, peek().column);
       } else if (check(TokenType::SEMICOLON)) {
         LOG(LogLevel::ERROR, "[parseDeclaration] Declaración incompleta: se esperaba un identificador antes del ';'");
+        ErrorReporter::getInstance().report(" Declaración incompleta: se esperaba un identificador antes del ';'", peek().row, peek().column);
       } else {
         LOG(LogLevel::ERROR, "[parseDeclaration] Se esperaba un identificador después del tipo. Se encontró: " + peek().getPrint());
+        ErrorReporter::getInstance().report("Se esperaba un identificador después del tipo. Se encontró: " + peek().value, peek().row, peek().column);
       }
       return nullptr;
     }
 
     std::string name = previous().value;
 
+    if (!symbols.declare(name)) {
+      std::string msg = "La variable '" + name + "' ya fue declarada en este bloque.";
+      LOG(LogLevel::ERROR, "[parseDeclaration] " + msg);
+      ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+      return nullptr;
+    }
+
     if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_FLOAT) ||
       check(TokenType::KEYWORD_BOOL) || check(TokenType::KEYWORD_STR))
     {
       LOG(LogLevel::ERROR, "[parseDeclaration] Se encontró otro tipo después del identificador '" + name +
           "'. ¿Quizás olvidaste un punto y coma ';' entre declaraciones?");
+
+      ErrorReporter::getInstance().report("Se encontró otro tipo después del identificador '" + name +
+          "'. ¿Quizás olvidaste un punto y coma ';' entre declaraciones?", peek().row, peek().column);
       return nullptr;
     }
 
@@ -267,14 +292,28 @@ std::shared_ptr<Statement> Parser::parsePrint() {
 }
 
 std::shared_ptr<Statement> Parser::parseInput() {
-    Token varToken = advance();
+  if (!match(TokenType::IDENTIFIER)) {
+    LOG(LogLevel::ERROR, "[parseInput] Se esperaba un identificador después de 'entrada'.");
+    ErrorReporter::getInstance().report("Se esperaba un nombre de variable después de 'entrada'", peek().row, peek().column);
+    return nullptr;
+  }
 
-    if (!match(TokenType::SEMICOLON)) {
-        LOG(LogLevel::ERROR, "[parseEntrada] Se esperaba ';' después de 'entrada'");
-        return nullptr;
-    }
+  std::string name = previous().value;
 
-    return std::make_shared<InputStatement>(varToken.value);
+  if (!symbols.isDeclared(name)) {
+    std::string msg = "La variable '" + name + "' no ha sido declarada previamente para entrada.";
+    LOG(LogLevel::ERROR, "[parseInput] " + msg);
+    ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+    return nullptr;
+  }
+
+  if (!match(TokenType::SEMICOLON)) {
+    LOG(LogLevel::ERROR, "[parseInput] Se esperaba ';' después de 'entrada'");
+    ErrorReporter::getInstance().report("Se esperaba ';' después de la entrada", peek().row, peek().column);
+    return nullptr;
+  }
+
+  return std::make_shared<InputStatement>(name);
 }
 
 std::shared_ptr<Statement> Parser::parseBlock() {
@@ -283,6 +322,7 @@ std::shared_ptr<Statement> Parser::parseBlock() {
         return nullptr;
     }
 
+    symbols.enterScope();
     std::vector<std::shared_ptr<Statement>> statements;
 
     while (!check(TokenType::RBRACE) && !check(TokenType::END_OF_FILE)) {
@@ -295,10 +335,20 @@ std::shared_ptr<Statement> Parser::parseBlock() {
     }
 
     if (!match(TokenType::RBRACE)) {
-        LOG(LogLevel::ERROR, "[parseBlock] Se esperaba '}' para cerrar el bloque");
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parseBlock] Se esperaba '}' para cerrar el bloque");
+      ErrorReporter::getInstance().report("Se esperaba '}' para cerrar el bloque", peek().row, peek().column);
+      symbols.exitScope();
+      return nullptr;
     }
 
+    if (statements.empty()) {
+      LOG(LogLevel::ERROR, "[parseBlock] El bloque está vacío y no contiene ninguna instrucción ejecutable");
+      ErrorReporter::getInstance().report("El bloque está vacío y no contiene ninguna instrucción", peek().row, peek().column);
+      symbols.exitScope();
+      return nullptr;
+    }
+
+    symbols.exitScope();
     return std::make_shared<BlockStatement>(statements);
 }
 
@@ -310,6 +360,13 @@ std::shared_ptr<Statement> Parser::parseAssignment()
     }
 
     std::string name = previous().value;
+
+    if (!symbols.isDeclared(name)) {
+      std::string msg = "La variable '" + name + "' no ha sido declarada previamente.";
+      LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
+      ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+      return nullptr;
+    }
 
     if (!expect(TokenType::ASSIGN, "parseAssignment", "Se esperaba '=' en la asignación"))
         return nullptr;
@@ -483,6 +540,15 @@ std::shared_ptr<Expression> Parser::parsePrimary() {
     return std::make_shared<BooleanExpr>(previous().value);
   }
   if (match(TokenType::IDENTIFIER)) {
+    std::string name = previous().value;
+
+    if (!symbols.isDeclared(name)) {
+      std::string msg = "La variable '" + name + "' no ha sido declarada.";
+      LOG(LogLevel::ERROR, "[parsePrimary] " + msg);
+      ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+      return nullptr;
+    }
+
     return std::make_shared<VariableExpr>(previous().value);
   }
   if (match(TokenType::LPAREN)) {

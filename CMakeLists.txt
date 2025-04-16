@@ -14,4 +14,6 @@ add_executable(app
     src/parser.cpp
     src/utils.cpp
     src/astprinter.cpp
+    src/error_reporter.cpp
+    src/symbol_table.cpp
 )

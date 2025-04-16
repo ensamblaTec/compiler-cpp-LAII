@@ -2,6 +2,7 @@
 
 #include "token.hpp"
 #include "ast.hpp"
+#include "symbol_table.hpp"
 
 #include <vector>
 #include <memory>
@@ -11,6 +12,7 @@ class Parser
   public:
     Parser(const std::vector<Token>& tokens);
     std::vector<std::shared_ptr<Statement>> parse();
+    SymbolTable symbols;
 
   private:
 

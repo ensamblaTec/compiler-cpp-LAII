@@ -1,3 +1,4 @@
+texto nombre;
 si (x > 0) {
   mostrar(x);
 } sino {
