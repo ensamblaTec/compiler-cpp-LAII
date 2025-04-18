@@ -126,7 +126,9 @@ Token Lexer::nextToken()
         type = TokenType::KEYWORD_STR;
       } else if (buffer == "bool") {
         type = TokenType::KEYWORD_BOOL;
-      }else if (buffer == "mientras") {
+      } else if (buffer == "verdadero" || buffer == "falso") {
+        type = TokenType::BOOLEAN_LITERAL;
+      } else if (buffer == "mientras") {
         type = TokenType::KEYWORD_WHILE;
       } else if (buffer == "para") {
         type = TokenType::KEYWORD_FOR;

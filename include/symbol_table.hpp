@@ -6,13 +6,16 @@
 
 class SymbolTable {
 public:
-  void enterScope();   // Nuevo bloque (nueva tabla local)
-  void exitScope();    // Salir del bloque
+  SymbolTable();
+  void enterScope();
+  void exitScope();
 
-  bool declare(const std::string& name);  // Devuelve true si fue exitoso, false si ya existía
+  bool declare(const std::string& name, const std::string& type);
   bool isDeclared(const std::string& name) const;
 
+  std::string getType(const std::string& name) const;
+
 private:
-  std::vector<std::unordered_map<std::string, bool>> scopes;
+  std::vector<std::unordered_map<std::string, std::string>> scopes;
 };
 

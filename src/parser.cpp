@@ -191,7 +191,7 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
 
     std::string name = previous().value;
 
-    if (!symbols.declare(name)) {
+    if (!symbols.declare(name, type)) {
       std::string msg = "La variable '" + name + "' ya fue declarada en este bloque.";
       LOG(LogLevel::ERROR, "[parseDeclaration] " + msg);
       ErrorReporter::getInstance().report(msg, peek().row, peek().column);
@@ -399,6 +399,17 @@ std::shared_ptr<Statement> Parser::parseAssignment()
   if (!expr) {
     LOG(LogLevel::ERROR, "[parseAssignment] Expresión nula en la asignación. Se esperaba un valor después de '='");
     ErrorReporter::getInstance().report("Expresión inválida en la asignación", peek().row, peek().column);
+    return nullptr;
+  }
+
+  std::string varType = symbols.getType(name);
+  std::string exprType = inferType(expr);
+
+  if (varType != exprType) {
+    std::string msg = "Error de tipo: no se puede asignar una expresión de tipo '" + exprType +
+                      "' a una variable de tipo '" + varType + "'.";
+    LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
+    ErrorReporter::getInstance().report(msg, peek().row, peek().column);
     return nullptr;
   }
 
@@ -613,5 +624,23 @@ std::shared_ptr<Expression> Parser::parseUnary() {
 
 const Token& Parser::previous() const {
     return tokens[current - 1];
+}
+
+std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
+  if (auto n = std::dynamic_pointer_cast<NumberExpr>(expr)) {
+    return "entero";
+  } else if (auto s = std::dynamic_pointer_cast<StringExpr>(expr)) {
+    return "texto";
+  } else if (auto b = std::dynamic_pointer_cast<BooleanExpr>(expr)) {
+    return "bool";
+  } else if (auto v = std::dynamic_pointer_cast<VariableExpr>(expr)) {
+    return symbols.getType(v->name);
+  } else if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
+    return inferType(bin->left);
+  } else if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
+    return inferType(un->right);
+  }
+
+  return "INVALID";
 }
 

@@ -1,4 +1,7 @@
 entero x;
+
+x = verdadero;
+
 texto nombre;
 bool pepe;
 

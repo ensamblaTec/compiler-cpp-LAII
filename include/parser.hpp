@@ -21,6 +21,7 @@ class Parser
 
     const Token& peek() const;
     const Token& advance();
+
     bool match(TokenType type);
     bool check(TokenType type) const;
     bool expect(TokenType type, const std::string& scopeMethod, const std::string& msgError);
@@ -28,6 +29,8 @@ class Parser
 
     void synchronize();
     void logTokenContext(const std::string& header) const;
+
+    std::string inferType(const std::shared_ptr<Expression>& expr);
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
