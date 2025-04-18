@@ -1,58 +1,36 @@
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <cctype>
-
-#include "token.hpp"
-#include "logger.hpp"
+#include "lexer.hpp"
 #include "parser.hpp"
+#include "error_reporter.hpp"
+#include "symbol_table.hpp"
 #include "astprinter.hpp"
-#include "utils.hpp"
 
-int main()
-{
-  std::ifstream file("codigo.txt");
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-  if (!file)
-  {
-    LOG(LogLevel::ERROR, "No se ha podido abrir el fichero de entrada");
-    return 1;
-  }
+int main() {
+    std::ifstream inputFile("codigo.txt"); // tu archivo de entrada
+    if (!inputFile) {
+        std::cerr << "No se pudo abrir el archivo." << std::endl;
+        return 1;
+    }
 
-  LOG(LogLevel::INFO, "INICIALIZANDO LEXER...");
-  Lexer lexer(file);
-  LOG(LogLevel::INFO, "PROCESANDO LEXER...");
-  std::vector<Token> tokens = getAllTokens(lexer);
-  LOG(LogLevel::INFO, "FINALIZANDO LEXER...");
+    Lexer lexer(inputFile);
+    ErrorReporter reporter;
+    SymbolTable symbols;
 
-  LOG(LogLevel::INFO, "se han generado: " + std::to_string(tokens.size()) + " tokens");
-  for (const auto token: tokens) token.print();
-  
-  LOG(LogLevel::INFO, "Analisis lexico correctamente finalizado");
+    Parser parser(lexer, reporter, symbols);
 
-  LOG(LogLevel::INFO, "Comenzando el Parser");
-  LOG(LogLevel::INFO, "Generado clase parser...");
-  Parser parser(tokens);
-  LOG(LogLevel::INFO, "Clase parser generada...");
-  LOG(LogLevel::INFO, "MOSTRANDO LOS TOKEN GENERADOS");
-  for (const auto tok: tokens)
-    LOG(LogLevel::DEBUG, "TokenGenerado: " + tok.getPrint());
-  LOG(LogLevel::INFO, "INICIANDO EL PARSER...");
-  auto statements = parser.parse();
-  LOG(LogLevel::INFO, "FINALIZANDO EL PARSER...");
+    auto statements = parser.parse();
 
-  std::cout << "=== AST modo clásico ===\n";
-  for (const auto& stmt : statements) {
-      printStatementClassic(stmt);
-  }
+    if (reporter.hasErrors()) {
+        std::cout << "Errores encontrados durante el parseo." << std::endl;
+    } else {
+        std::cout << "Parseo exitoso!" << std::endl;
+        // AstPrinter printer;
+        // printer.print(statements);
+    }
 
-  std::cout << "\n=== AST modo árbol ===\n";
-  for (size_t i = 0; i < statements.size(); ++i) {
-      bool isLast = (i == statements.size() - 1);
-      printStatementTree(statements[i], "", isLast);
-  }
-
-  LOG(LogLevel::INFO, "Finalizando el Parser");
-
-  return 0;
+    return 0;
 }
+

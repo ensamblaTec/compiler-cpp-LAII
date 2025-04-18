@@ -1,8 +1,9 @@
 #pragma once
 
-#include "token.hpp"
+#include "lexer.hpp"
 #include "ast.hpp"
 #include "symbol_table.hpp"
+#include "error_reporter.hpp"
 
 #include <vector>
 #include <memory>
@@ -10,27 +11,34 @@
 class Parser
 {
   public:
-    Parser(const std::vector<Token>& tokens);
+    Parser(Lexer& lexer, ErrorReporter& reporter, SymbolTable& symbols);
+ 
     std::vector<std::shared_ptr<Statement>> parse();
-    SymbolTable symbols;
 
   private:
+    Lexer& lexer;
+    SymbolTable symbols;
+    ErrorReporter& reporter;
 
-    const std::vector<Token>& tokens;
-    int current;
+    Token currentToken;
+    Token previousToken;
 
     const Token& peek() const;
-    const Token& advance();
+    void advance();
+
     bool match(TokenType type);
     bool check(TokenType type) const;
     bool expect(TokenType type, const std::string& scopeMethod, const std::string& msgError);
     bool isBinaryOperator(TokenType type) const;
 
     void synchronize();
-    void logTokenContext(const std::string& header) const;
+    void logTokenContext() const;
+
+    VarType tokenTypeToVarType(const Token& token);
 
     std::shared_ptr<Statement> parseStatement();
     std::shared_ptr<Statement> parseDeclaration();
+    std::shared_ptr<Statement> parseVarDeclaration();
     std::shared_ptr<Statement> parseIf();
     std::shared_ptr<Statement> parseWhile();
     std::shared_ptr<Statement> parseFor();

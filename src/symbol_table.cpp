@@ -1,27 +1,36 @@
 #include "symbol_table.hpp"
 
+SymbolTable::SymbolTable() {
+  enterScope();
+}
+
 void SymbolTable::enterScope() {
-  scopes.emplace_back();
+  table.emplace_back();
 }
 
 void SymbolTable::exitScope() {
-  if (!scopes.empty()) {
-    scopes.pop_back();
+  if (!table.empty()) {
+    table.pop_back();
   }
 }
 
-bool SymbolTable::declare(const std::string& name) {
-  if (scopes.empty()) enterScope();
-  auto& current = scopes.back();
+bool SymbolTable::declare(const std::string& name, VarType type) {
+  if (table.empty()) enterScope();
+  auto& current = table.back();
   if (current.count(name)) return false;
-  current[name] = true;
+  current[name] = SymbolInfo{ type };
   return true;
 }
 
-bool SymbolTable::isDeclared(const std::string& name) const {
-  for (auto it = scopes.rbegin(); it != scopes.rend(); ++it) {
-    if (it->count(name)) return true;
+std::optional<VarType> SymbolTable::lookup(const std::string& name) const {
+  for (auto it = table.rbegin(); it != table.rend(); ++it) {
+    auto found = it->find(name);
+    if (found != it->end()) return found->second.type;
   }
-  return false;
+  return std::nullopt;
 }
 
+void SymbolTable::clear() {
+  table.clear();
+  enterScope();
+}

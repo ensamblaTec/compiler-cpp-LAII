@@ -1,5 +1,7 @@
 #pragma once
 
+#include "symbol_table.hpp"
+
 #include <string>
 #include <memory>
 #include <vector>
@@ -7,6 +9,13 @@
 struct Expression
 {
   virtual ~Expression() = default;
+};
+
+struct LiteralExpression : public Expression {
+    std::string value;
+
+    LiteralExpression(const std::string& value)
+        : value(value) {}
 };
 
 struct NumberExpr : public Expression
@@ -58,6 +67,15 @@ struct BooleanExpr : public Expression {
 
 struct Statement {
   virtual ~Statement() = default;
+};
+
+struct VarDeclStatement : public Statement {
+  VarType type;
+  std::string name;
+  std::shared_ptr<Expression> initializer;
+
+  VarDeclStatement(VarType type, const std::string& name, std::shared_ptr<Expression> initializer)
+    : type(type), name(name), initializer(initializer) {}
 };
 
 struct IfStatement : public Statement {

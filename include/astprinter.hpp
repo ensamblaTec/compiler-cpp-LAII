@@ -1,13 +1,21 @@
 #pragma once
 
-#include <memory>
 #include "ast.hpp"
+#include <memory>
+#include <vector>
 
-void printIndent(int indent);
+class AstPrinter {
+public:
+    void print(const std::vector<std::shared_ptr<Statement>>& statements);
 
-void printStatementClassic(const std::shared_ptr<Statement>& stmt, int indent = 0);
-void printExpressionClassic(const std::shared_ptr<Expression>& expr, int indent = 0);
+private:
+    int indentLevel = 0;
 
-void printStatementTree(const std::shared_ptr<Statement>& stmt, const std::string& indent = "", bool last = true);
-void printExpressionTree(const std::shared_ptr<Expression>& expr, const std::string& indent = "", bool last = true);
+    void printIndent() const;
+    void printStatement(const std::shared_ptr<Statement>& stmt);
+    void printExpression(const std::shared_ptr<Expression>& expr);
+
+    void printVarDecl(const std::shared_ptr<VarDeclStatement>& stmt);
+    void printPrint(const std::shared_ptr<PrintStatement>& stmt);
+};
 

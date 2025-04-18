@@ -17,9 +17,7 @@ public:
     void printSummary() const;
     void clear();
     bool hasErrors() const;
-
-private:
-    std::vector<ErrorInfo> errors;
     ErrorReporter() = default;
+    std::vector<ErrorInfo> errors;
 };
 
