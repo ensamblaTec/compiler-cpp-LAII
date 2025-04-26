@@ -23,7 +23,7 @@ void ErrorReporter::printSummary() const {
 
     std::cout << "\n[RESUMEN] Se encontraron " << errors.size() << " errores gramaticales:\n";
     for (const auto& err : errors) {
-        std::cout << "  - Línea " << (err.line + 1) << ", columna " << err.column << ": " << err.message << "\n";
+        std::cout << "  - Línea " << (err.line) << ", columna " << err.column << ": " << err.message << "\n";
     }
 }
 

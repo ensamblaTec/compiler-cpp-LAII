@@ -56,7 +56,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
       statements.push_back(smtm);
     } else
     {
-      LOG(LogLevel::ERROR, "[parse] statement no valido");
+      LOG(LogLevel::ERROR, "[parse] statement no valido: " + tokens[current].getPrint());
       ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
       synchronize();
     }
@@ -231,6 +231,17 @@ std::shared_ptr<Statement> Parser::parseIf() {
     }
 
     auto condition = parseExpression();
+    if (!condition) {
+        LOG(LogLevel::ERROR, "[parseIf] Condición inválida en 'si'");
+        ErrorReporter::getInstance().report("Condición inválida en 'si'", peek().row, peek().column);
+        return nullptr;
+    }
+
+    if (inferType(condition) != "bool") {
+        LOG(LogLevel::ERROR, "[parseIf] La condición del 'si' no es booleana");
+        ErrorReporter::getInstance().report("La condición del 'si' debe ser de tipo booleano", peek().row, peek().column);
+        return nullptr;
+    }
 
     if (!expect(TokenType::RPAREN, "parseIf", "Se esperaba ')' después de la condición"))
         return nullptr;
@@ -252,6 +263,17 @@ std::shared_ptr<Statement> Parser::parseWhile() {
     }
 
     auto condition = parseExpression();
+    if (!condition) {
+        LOG(LogLevel::ERROR, "[parseWhile] Condición inválida en 'mientras'");
+        ErrorReporter::getInstance().report("Condición inválida en 'mientras'", peek().row, peek().column);
+        return nullptr;
+    }
+
+    if (inferType(condition) != "bool") {
+        LOG(LogLevel::ERROR, "[parseWhile] La condición del 'mientras' no es booleana");
+        ErrorReporter::getInstance().report("La condición del 'mientras' debe ser de tipo booleano", peek().row, peek().column);
+        return nullptr;
+    }
 
     if (!expect(TokenType::RPAREN, "parseWhile", "Se esperaba ')' después de la condición"))
         return nullptr;
@@ -267,11 +289,23 @@ std::shared_ptr<Statement> Parser::parseFor() {
         return nullptr;
     }
 
-    auto initializer = parseExpression();
+    auto initializer = parseExpression(); 
+
     if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la inicialización"))
         return nullptr;
 
     auto condition = parseExpression();
+    if (!condition) {
+        LOG(LogLevel::ERROR, "[parseFor] Condición inválida en 'para'");
+        ErrorReporter::getInstance().report("Condición inválida en 'para'", peek().row, peek().column);
+        return nullptr;
+    }
+
+    if (inferType(condition) != "bool") {
+        LOG(LogLevel::ERROR, "[parseFor] La condición del 'para' no es booleana");
+        ErrorReporter::getInstance().report("La condición del 'para' debe ser de tipo booleano", peek().row, peek().column);
+        return nullptr;
+    }
 
     if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la condición"))
         return nullptr;
@@ -405,7 +439,15 @@ std::shared_ptr<Statement> Parser::parseAssignment()
   std::string varType = symbols.getType(name);
   std::string exprType = inferType(expr);
 
-  if (varType != exprType) {
+  if (varType == "bool" && exprType == "entero") {
+    if (auto number = std::dynamic_pointer_cast<NumberExpr>(expr)) {
+      if (number->value != "0" && number-> value != "1") {
+        LOG(LogLevel::ERROR, "[parseAssignment] Solo se puede asignar 0 o 1 a una variable bool");
+        ErrorReporter::getInstance().report("Solo se puede asignar 0 o 1 a una variable bool", peek().row, peek().column);
+        return nullptr;
+      }
+    }
+  } else if (varType != exprType) {
     std::string msg = "Error de tipo: no se puede asignar una expresión de tipo '" + exprType +
                       "' a una variable de tipo '" + varType + "'.";
     LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
@@ -540,7 +582,7 @@ std::shared_ptr<Expression> Parser::parseTerm() {
   auto expr = parseUnary();
 
   if (!expr) {
-    LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'.");
+    LOG(LogLevel::ERROR, "[parseTerm] Operando izquierdo inválido antes del operador '+' o '-'.");
     return nullptr;
   }
 
@@ -548,7 +590,7 @@ std::shared_ptr<Expression> Parser::parseTerm() {
     std::string op = previous().value;
     if (isBinaryOperator(peek().type))
     {
-      LOG(LogLevel::ERROR, "[parseAdditive] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
+      LOG(LogLevel::ERROR, "[parseTerm] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
       return nullptr;
     }
 
@@ -627,6 +669,8 @@ const Token& Parser::previous() const {
 }
 
 std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
+  if (!expr) return "desconocido";
+
   if (auto n = std::dynamic_pointer_cast<NumberExpr>(expr)) {
     return "entero";
   } else if (auto s = std::dynamic_pointer_cast<StringExpr>(expr)) {
@@ -634,13 +678,46 @@ std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
   } else if (auto b = std::dynamic_pointer_cast<BooleanExpr>(expr)) {
     return "bool";
   } else if (auto v = std::dynamic_pointer_cast<VariableExpr>(expr)) {
-    return symbols.getType(v->name);
+    std::string type = symbols.getType(v->name);
+    if (type.empty()) {
+      LOG(LogLevel::ERROR, "[inferType] La variable '" + v->name + "' no tiene tipo conocido.");
+      return "desconocido";
+    }
+    return type;
   } else if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
-    return inferType(bin->left);
+    std::string leftType = inferType(bin->left);
+    std::string rightType = inferType(bin->right);
+
+    if (bin->op == "&&" || bin->op == "||") {
+      if (leftType == "bool" && rightType == "bool")
+        return "bool";
+      else
+        return "error";
+    }
+
+    if (bin->op == "<" || bin->op == "<=" || bin->op == ">" || bin->op == ">=" || bin->op == "==" || bin->op == "!=") {
+      if (leftType == rightType)
+        return "bool";
+      else
+        return "error";
+    }
+
+    if (bin->op == "+" || bin->op == "-" || bin->op == "*" || bin->op == "/" || bin->op == "%") {
+      if (leftType == "entero" && rightType == "entero")
+        return "entero";
+      if (leftType == "decimal" && rightType == "decimal")
+        return "decimal";
+      if (bin->op == "+" && leftType == "texto" && rightType == "texto")
+        return "texto";
+      return "error";
+    }
+
+    return "error";
   } else if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
     return inferType(un->right);
   }
 
-  return "INVALID";
+  LOG(LogLevel::ERROR, "[inferType] No se pudo inferir tipo para una expresión desconocida.");
+  return "desconocido";
 }
 

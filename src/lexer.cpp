@@ -44,9 +44,9 @@ void Lexer::readNextLine()
   {
     currentLine += ' ';
     pos = 0;
-    row = 0;
+    row++;
     column = 1;
-    std::string msgCurrentLine = "Linea: " + std::to_string(row + 1) + " , se ha leido: \"" + currentLine + "\"";
+    std::string msgCurrentLine = "Linea: " + std::to_string(row) + " , se ha leido: \"" + currentLine + "\"";
     LOG(LogLevel::INFO, "Linea actual: " + currentLine);  
     LOG(LogLevel::INFO, "Linea cargada exitosamente...");
   } else

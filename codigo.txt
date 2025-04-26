@@ -1,21 +1,9 @@
-entero x;
+entero a;
 
-x = verdadero;
+bool b;
 
-texto nombre;
-bool pepe;
-
-si (x > 0) {
-  mostrar(x);
-} sino {
-  mostrar(0);
-}
-
-entero i;
-
-mientras (i < 10) {
-  i = i + 1;
-}
-
-entrada nombre;
-mostrar(nombre);
+b = 5 < 5;
+b = verdadero == falso;
+b = falso;
+b = verdadero;
+b = 1;
