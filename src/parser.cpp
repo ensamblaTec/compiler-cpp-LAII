@@ -46,6 +46,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
     if (check(TokenType::NUMBER) || check(TokenType::STRING_LITERAL) || check(TokenType::BOOLEAN_LITERAL) || check(TokenType::LPAREN)) {
       LOG(LogLevel::ERROR, "[parse] Se encontró una expresión suelta sin asignación ni impresión");
       ErrorReporter::getInstance().report("Expresión suelta no permitida. Debe asignarse o mostrarse explícitamente.", peek().row, peek().column);
+      advance();
       synchronize();
       continue;
     }
@@ -285,35 +286,68 @@ std::shared_ptr<Statement> Parser::parseWhile() {
 
 std::shared_ptr<Statement> Parser::parseFor() {
     if (!match(TokenType::LPAREN)) {
-        LOG(LogLevel::ERROR, "[parseFor] Se esperaba '(' después de 'para'");
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parseFor] Se esperaba '(' después de 'para'");
+      return nullptr;
     }
 
     auto initializer = parseExpression(); 
+    if (!initializer) {
+      LOG(LogLevel::ERROR, "[parseFor] Inicializador inválido");
+      ErrorReporter::getInstance().report("Inicializador inválido", peek().row, peek().column);
+      synchronize(); 
+      return nullptr;
+    }
 
-    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la inicialización"))
-        return nullptr;
+    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la inicialización")) {
+      synchronize();
+      return nullptr;
+    }
 
     auto condition = parseExpression();
     if (!condition) {
-        LOG(LogLevel::ERROR, "[parseFor] Condición inválida en 'para'");
-        ErrorReporter::getInstance().report("Condición inválida en 'para'", peek().row, peek().column);
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parseFor] Condición inválida en 'para'");
+      ErrorReporter::getInstance().report("Condición inválida en 'para'", peek().row, peek().column);
+      synchronize();
+      return nullptr;
     }
 
     if (inferType(condition) != "bool") {
-        LOG(LogLevel::ERROR, "[parseFor] La condición del 'para' no es booleana");
-        ErrorReporter::getInstance().report("La condición del 'para' debe ser de tipo booleano", peek().row, peek().column);
-        return nullptr;
+      LOG(LogLevel::ERROR, "[parseFor] La condición del 'para' no es booleana");
+      ErrorReporter::getInstance().report("La condición del 'para' debe ser de tipo booleano", peek().row, peek().column);
+      return nullptr;
     }
 
-    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la condición"))
-        return nullptr;
+    if (!expect(TokenType::SEMICOLON, "parseFor", "Se esperaba ';' después de la condición")) {
+      synchronize();
+      return nullptr;
+    }
+
+    // if (!match(TokenType::SEMICOLON)) {
+    //   LOG(LogLevel::ERROR, "[parseFor] Se esperaba ';' después de la inicialización");
+    //   ErrorReporter::getInstance().report("Se esperaba ';' después de la inicialización", peek().row, peek().column);
+    //   synchronize();
+    //   return nullptr;
+    // }
 
     auto increment = parseExpression();
+    if (!increment) {
+      LOG(LogLevel::ERROR, "[parseFor] Incremento inválido en 'para'");
+      ErrorReporter::getInstance().report("Incremento inválido en 'para'", peek().row, peek().column);
+      synchronize();
+      return nullptr;
+    }
 
-    if (!expect(TokenType::RPAREN, "parseFor", "Se esperaba ')' después de los parámetros"))
-        return nullptr;
+    std::string incrementType = inferType(increment);
+    if (incrementType != "entero" && incrementType != "decimal") {
+      LOG(LogLevel::ERROR, "[parseFor] El incremento debe ser una expresión numérica (entero o decimal)");
+      ErrorReporter::getInstance().report("El incremento del 'para' debe ser entero o decimal", peek().row, peek().column);
+      return nullptr;
+    }
+
+    if (!expect(TokenType::RPAREN, "parseFor", "Se esperaba ')' después de los parámetros")) {
+      synchronize();
+      return nullptr;
+    }
 
     auto body = parseBlock();
 
