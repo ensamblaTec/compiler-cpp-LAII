@@ -12,6 +12,7 @@ para (i = 0; i < 10; falso) {  // ❌ debería marcar error: incremento no numé
   mostrar(i);
 }
 
-para (i = 0; i < 10; i = i + 2.5) {  // ✅ permitido si agregamos decimal más adelante
+para (i = 0; i < 10; i = i + 2.5) {  // permitido si agregamos decimal más adelante
   mostrar(i);
 }
+

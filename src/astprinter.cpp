@@ -7,6 +7,40 @@ void printIndent(int indent) {
         std::cout << "  ";
 }
 
+void printInitializerClassic(const std::shared_ptr<Statement>& init, int indent) {
+    if (!init) {
+        printIndent(indent);
+        std::cout << "NULL initializer\n";
+        return;
+    }
+
+    if (auto exprStmt = std::dynamic_pointer_cast<ExpressionStatement>(init)) {
+        printExpressionClassic(exprStmt->expression, indent);
+    } else if (auto assignStmt = std::dynamic_pointer_cast<Assignment>(init)) {
+        printStatementClassic(assignStmt, indent);
+    } else {
+        printIndent(indent);
+        std::cout << "❓ Inicializador desconocido\n";
+    }
+}
+
+void printInitializerTree(const std::shared_ptr<Statement>& init, const std::string& indent, bool last) {
+    std::cout << indent << (last ? "└── " : "├── ");
+    if (!init) {
+        std::cout << "NULL initializer\n";
+        return;
+    }
+
+    if (auto exprStmt = std::dynamic_pointer_cast<ExpressionStatement>(init)) {
+        printExpressionTree(exprStmt->expression, indent + (last ? "    " : "│   "), true);
+    } else if (auto assignStmt = std::dynamic_pointer_cast<Assignment>(init)) {
+        std::cout << "Assignment(name=" << assignStmt->name << ")\n";
+        printExpressionTree(assignStmt->expr, indent + (last ? "    " : "│   "), true);
+    } else {
+        std::cout << "❓ Inicializador desconocido\n";
+    }
+}
+
 // ===========================
 // CLASSIC STYLE PRINTER
 // ===========================
@@ -45,6 +79,11 @@ void printExpressionClassic(const std::shared_ptr<Expression>& expr, int indent)
         std::cout << "BinaryExpr(op=" << binary->op << ")\n";
         printExpressionClassic(binary->left, indent + 1);
         printExpressionClassic(binary->right, indent + 1);
+    }
+    else if (auto assign = std::dynamic_pointer_cast<AssignmentExpr>(expr)) {
+        printIndent(indent);
+        std::cout << "AssignmentExpr(name=" << assign->name << ")\n";
+        printExpressionClassic(assign->value, indent + 1);
     }
     else {
         printIndent(indent);
@@ -101,7 +140,7 @@ void printStatementClassic(const std::shared_ptr<Statement>& stmt, int indent)
         std::cout << "Para\n";
         printIndent(indent + 1);
         std::cout << "Inicialización:\n";
-        printExpressionClassic(forStmt->init, indent + 2);
+        printInitializerClassic(forStmt->init, indent + 2);
         printIndent(indent + 1);
         std::cout << "Condición:\n";
         printExpressionClassic(forStmt->condition, indent + 2);
@@ -167,7 +206,7 @@ void printStatementTree(const std::shared_ptr<Statement>& stmt, const std::strin
     }
     else if (auto forStmt = std::dynamic_pointer_cast<ForStatement>(stmt)) {
         std::cout << "Para\n";
-        printExpressionTree(forStmt->init, indent + "│   ", false);
+        printInitializerTree(forStmt->init, indent + "│   ", false);
         printExpressionTree(forStmt->condition, indent + "│   ", false);
         printExpressionTree(forStmt->increment, indent + "│   ", false);
         printStatementTree(forStmt->body, indent + "│   ", true);
@@ -206,6 +245,10 @@ void printExpressionTree(const std::shared_ptr<Expression>& expr, const std::str
     }
     else if (auto b = std::dynamic_pointer_cast<BooleanExpr>(expr)) {
         std::cout << "Boolean(" << (b->value ? "true" : "false") << ")\n";
+    }
+    else if (auto assign = std::dynamic_pointer_cast<AssignmentExpr>(expr)) {
+        std::cout << "AssignmentExpr(name=" << assign->name << ")\n";
+        printExpressionTree(assign->value, indent + (last ? "    " : "│   "), true);
     }
     else {
         std::cout << "Unknown Expression\n";

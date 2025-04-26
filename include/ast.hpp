@@ -56,6 +56,14 @@ struct BooleanExpr : public Expression {
     }
 };
 
+struct AssignmentExpr : public Expression {
+  std::string name;
+  std::shared_ptr<Expression> value;
+
+  AssignmentExpr(const std::string& name, std::shared_ptr<Expression> value)
+    : name(name), value(value) {}
+};
+
 struct Statement {
   virtual ~Statement() = default;
 };
@@ -78,14 +86,17 @@ struct WhileStatement : public Statement {
 };
 
 struct ForStatement : public Statement {
-    std::shared_ptr<Expression> init;
+    std::shared_ptr<Statement> init;
     std::shared_ptr<Expression> condition;
     std::shared_ptr<Expression> increment;
     std::shared_ptr<Statement> body;
 
-    ForStatement(std::shared_ptr<Expression> init, std::shared_ptr<Expression> cond,
-                  std::shared_ptr<Expression> incr, std::shared_ptr<Statement> body)
-        : init(init), condition(cond), increment(incr), body(body) {}
+    ForStatement(std::shared_ptr<Statement> init, 
+      std::shared_ptr<Expression> cond,
+      std::shared_ptr<Expression> incr, 
+      std::shared_ptr<Statement> body
+    )
+    : init(init), condition(cond), increment(incr), body(body) {}
 };
 
 struct PrintStatement : public Statement {
@@ -119,4 +130,9 @@ struct Assignment : public Statement
     : name(n), expr(e) {}
 };
 
+struct ExpressionStatement : public Statement {
+    std::shared_ptr<Expression> expression;
 
+    ExpressionStatement(std::shared_ptr<Expression> expr)
+      : expression(expr) {}
+};

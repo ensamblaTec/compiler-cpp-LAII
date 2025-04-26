@@ -284,13 +284,38 @@ std::shared_ptr<Statement> Parser::parseWhile() {
     return std::make_shared<WhileStatement>(condition, body);
 }
 
+std::shared_ptr<Statement> Parser::parseForInitializer() {
+  if (check(TokenType::IDENTIFIER)) {
+    std::string name = advance().value;
+
+    if (!expect(TokenType::ASSIGN, "parseForInitializer", "Se esperaba '=' en la asignación"))
+      return nullptr;
+
+    auto expr = parseExpression();
+    if (!expr) {
+        LOG(LogLevel::ERROR, "[parseForInitializer] Expresión nula en la asignación.");
+        return nullptr;
+    }
+
+    return std::make_shared<Assignment>(name, expr);
+  } else {
+    auto expr = parseExpression();
+    if (expr) {
+        return std::make_shared<ExpressionStatement>(expr);
+    }
+  }
+
+  return nullptr;
+}
+
 std::shared_ptr<Statement> Parser::parseFor() {
     if (!match(TokenType::LPAREN)) {
       LOG(LogLevel::ERROR, "[parseFor] Se esperaba '(' después de 'para'");
       return nullptr;
     }
 
-    auto initializer = parseExpression(); 
+    std::shared_ptr<Statement> initializer = parseForInitializer();
+
     if (!initializer) {
       LOG(LogLevel::ERROR, "[parseFor] Inicializador inválido");
       ErrorReporter::getInstance().report("Inicializador inválido", peek().row, peek().column);
@@ -344,7 +369,7 @@ std::shared_ptr<Statement> Parser::parseFor() {
       return nullptr;
     }
 
-    if (!expect(TokenType::RPAREN, "parseFor", "Se esperaba ')' después de los parámetros")) {
+    if (!expect(TokenType::RPAREN, "parseFor", "Se esperaba ')' después de los parámetros. se encuentra " + peek().getPrint())) {
       synchronize();
       return nullptr;
     }
@@ -512,7 +537,28 @@ std::shared_ptr<Expression> Parser::parseExpression() {
         return nullptr;
     }
 
-    return parseOr();
+    return parseAssignmentExpression();
+}
+
+std::shared_ptr<Expression> Parser::parseAssignmentExpression() {
+    auto expr = parseOr();
+
+    if (match(TokenType::ASSIGN)) {
+      if (auto varExpr = std::dynamic_pointer_cast<VariableExpr>(expr)) {
+        auto value = parseAssignmentExpression();
+        if (!value) {
+          LOG(LogLevel::ERROR, "[parseAssignmentExpression] Expresión inválida después del '='");
+          return nullptr;
+        }
+        return std::make_shared<AssignmentExpr>(varExpr->name, value);
+      } else {
+        LOG(LogLevel::ERROR, "[parseAssignmentExpression] Se esperaba una variable a la izquierda del '='");
+        ErrorReporter::getInstance().report("Se esperaba una variable a la izquierda del '='", peek().row, peek().column);
+        return nullptr;
+      }
+    }
+
+    return expr;
 }
 
 std::shared_ptr<Expression> Parser::parseOr() {
@@ -749,6 +795,8 @@ std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
     return "error";
   } else if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
     return inferType(un->right);
+  } else if (auto assign = std::dynamic_pointer_cast<AssignmentExpr>(expr)) {
+    return inferType(assign->value);
   }
 
   LOG(LogLevel::ERROR, "[inferType] No se pudo inferir tipo para una expresión desconocida.");
