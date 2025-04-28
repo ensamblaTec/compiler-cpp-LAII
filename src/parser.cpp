@@ -117,19 +117,29 @@ bool Parser::isBinaryOperator(TokenType type) const {
            type == TokenType::AND  || type == TokenType::OR;
 }
 
+bool Parser::isAtEnd() const {
+  return peek().type == TokenType::END_OF_FILE;
+}
+
 void Parser::synchronize() {
-    while (!check(TokenType::END_OF_FILE)) {
-        if (previous().type == TokenType::SEMICOLON) return;
-
-        TokenType t = peek().type;
-
-        if (t == TokenType::KEYWORD_INT || t == TokenType::KEYWORD_BOOL ||
-            t == TokenType::KEYWORD_STR || t == TokenType::KEYWORD_FLOAT ||
-            t == TokenType::IDENTIFIER)
-        {
-            return;
+    advance();
+    while (!isAtEnd()) {
+        switch (peek().type) {
+            case TokenType::SEMICOLON:
+            case TokenType::RBRACE:
+            case TokenType::RPAREN:
+            case TokenType::KEYWORD_INT:
+            case TokenType::KEYWORD_STR:
+            case TokenType::KEYWORD_BOOL:
+            case TokenType::KEYWORD_IF:
+            case TokenType::KEYWORD_WHILE:
+            case TokenType::KEYWORD_FOR:
+            case TokenType::KEYWORD_PRINT:
+            case TokenType::KEYWORD_INPUT:
+                return; 
+            default:
+                break;
         }
-
         advance();
     }
 }
@@ -705,7 +715,7 @@ std::shared_ptr<Expression> Parser::parsePrimary() {
       return nullptr;
     }
 
-    return std::make_shared<VariableExpr>(previous().value);
+    return std::make_shared<VariableExpr>(name);
   }
   if (match(TokenType::LPAREN)) {
     if (check(TokenType::RPAREN)) {

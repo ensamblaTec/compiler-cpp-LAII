@@ -26,6 +26,7 @@ class Parser
     bool check(TokenType type) const;
     bool expect(TokenType type, const std::string& scopeMethod, const std::string& msgError);
     bool isBinaryOperator(TokenType type) const;
+    bool isAtEnd() const;
 
     void synchronize();
     void logTokenContext(const std::string& header) const;

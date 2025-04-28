@@ -1,18 +1,33 @@
 entero i;
+bool b;
 
+// Casos válidos
 para (i = 0; i < 10; i = i + 1) {
   mostrar(i);
 }
 
-para (i = 0; i < 10; "hola") {  // ❌ debería marcar error: incremento no numérico
+para (i = 0; i <= 10; i = i + 2) {
   mostrar(i);
 }
 
-para (i = 0; i < 10; falso) {  // ❌ debería marcar error: incremento no numérico
+// Casos inválidos
+para (i = 0; i < 10; "hola") {  // ❌ incremento inválido: texto
   mostrar(i);
 }
 
-para (i = 0; i < 10; i = i + 2.5) {  // permitido si agregamos decimal más adelante
+para (b = verdadero; b; b = falso) {  // ✅ bool correcto como condición
+  mostrar(b);
+}
+
+para (i = 0; i < 10; verdadero) {  // ❌ incremento inválido: booleano
+  mostrar(i);
+}
+
+para (i = 0; i < 10; ) {  // ❌ falta incremento
+  mostrar(i);
+}
+
+para (i = 0; i < 10) {  // ❌ falta ';' e incremento
   mostrar(i);
 }
 
