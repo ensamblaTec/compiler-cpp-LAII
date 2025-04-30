@@ -836,4 +836,3 @@ std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
   LOG(LogLevel::ERROR, "[inferType] Tipo de expresión desconocida");
   return "error";
 }
-
