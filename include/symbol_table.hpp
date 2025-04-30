@@ -12,6 +12,7 @@ public:
 
   bool declare(const std::string& name, const std::string& type);
   bool isDeclared(const std::string& name) const;
+  bool validateVarDeclared(const std::string& name, int row, int col);
 
   std::string getType(const std::string& name) const;
 

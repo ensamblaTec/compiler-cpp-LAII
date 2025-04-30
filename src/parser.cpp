@@ -57,7 +57,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
       statements.push_back(smtm);
     } else
     {
-      LOG(LogLevel::ERROR, "[parse] statement no valido: " + tokens[current].getPrint());
+      LOG(LogLevel::ERROR, "[parse] Statement no válido: " + tokens[current].getPrint());
       ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
       synchronize();
     }
@@ -146,37 +146,39 @@ void Parser::synchronize() {
 
 std::shared_ptr<Statement> Parser::parseStatement()
 {
-    if (check(TokenType::RBRACE)) {
-        return nullptr;
-    }
+  LOG(LogLevel::DEBUG, "[parseStatement] Token a revisar actual: " + peek().getPrint());
 
-    if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
-        return parseDeclaration();
+  if (check(TokenType::RBRACE)) {
+      return nullptr;
+  }
 
-    if (check(TokenType::IDENTIFIER))
-        return parseAssignment();
+  if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
+      return parseDeclaration();
 
-    if (match(TokenType::KEYWORD_IF))
-        return parseIf();
+  if (check(TokenType::IDENTIFIER))
+      return parseAssignment();
 
-    if (match(TokenType::KEYWORD_WHILE))
-        return parseWhile();
+  if (match(TokenType::KEYWORD_IF))
+      return parseIf();
 
-    if (match(TokenType::KEYWORD_FOR))
-        return parseFor();
+  if (match(TokenType::KEYWORD_WHILE))
+      return parseWhile();
 
-    if (match(TokenType::KEYWORD_PRINT))
-        return parsePrint();
+  if (match(TokenType::KEYWORD_FOR))
+      return parseFor();
 
-    if (match(TokenType::KEYWORD_INPUT))
-        return parseInput();
+  if (match(TokenType::KEYWORD_PRINT))
+      return parsePrint();
 
-    LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
-                         " (línea: " + std::to_string(peek().row + 1) +
-                         ", columna: " + std::to_string(peek().column) + ")");
+  if (match(TokenType::KEYWORD_INPUT))
+      return parseInput();
 
-    ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
-    return nullptr;
+  LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
+                        " (línea: " + std::to_string(peek().row + 1) +
+                        ", columna: " + std::to_string(peek().column) + ")");
+
+  ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
+  return nullptr;
 }
 
 std::shared_ptr<Statement> Parser::parseDeclaration()
@@ -236,6 +238,7 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
 }
 
 std::shared_ptr<Statement> Parser::parseIf() {
+    LOG(LogLevel::DEBUG, "[parseIf] estoy entrando en el primer IF" + peek().getPrint());
     if (!match(TokenType::LPAREN)) {
         LOG(LogLevel::ERROR, "[parseIf] Se esperaba '(' después de 'si'");
         return nullptr;
@@ -759,57 +762,78 @@ const Token& Parser::previous() const {
 }
 
 std::string Parser::inferType(const std::shared_ptr<Expression>& expr) {
-  if (!expr) return "desconocido";
+  if (!expr) return "error";
 
-  if (auto n = std::dynamic_pointer_cast<NumberExpr>(expr)) {
-    return "entero";
-  } else if (auto s = std::dynamic_pointer_cast<StringExpr>(expr)) {
-    return "texto";
-  } else if (auto b = std::dynamic_pointer_cast<BooleanExpr>(expr)) {
-    return "bool";
-  } else if (auto v = std::dynamic_pointer_cast<VariableExpr>(expr)) {
-    std::string type = symbols.getType(v->name);
-    if (type.empty()) {
-      LOG(LogLevel::ERROR, "[inferType] La variable '" + v->name + "' no tiene tipo conocido.");
-      return "desconocido";
+  if (auto num = std::dynamic_pointer_cast<NumberExpr>(expr)) return "entero";
+  if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) return "texto";
+  if (auto boolLit = std::dynamic_pointer_cast<BooleanExpr>(expr)) return "bool";
+  if (auto var = std::dynamic_pointer_cast<VariableExpr>(expr)) {
+    if (!symbols.isDeclared(var->name)) {
+      LOG(LogLevel::ERROR, "[inferType] La variable '" + var->name + "' no ha sido declarada.");
+      ErrorReporter::getInstance().report("La variable '" + var->name + "' no ha sido declarada.", peek().row, peek().column);
+      return "error";
     }
-    return type;
-  } else if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
+    return symbols.getType(var->name);
+  }
+
+  if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
     std::string leftType = inferType(bin->left);
     std::string rightType = inferType(bin->right);
+    std::string op = bin->op;
 
-    if (bin->op == "&&" || bin->op == "||") {
-      if (leftType == "bool" && rightType == "bool")
-        return "bool";
-      else
-        return "error";
-    }
+    LOG(LogLevel::DEBUG, "[inferType] BinaryExpr: op=" + op + ", left=" + leftType + ", right=" + rightType);
 
-    if (bin->op == "<" || bin->op == "<=" || bin->op == ">" || bin->op == ">=" || bin->op == "==" || bin->op == "!=") {
-      if (leftType == rightType)
-        return "bool";
-      else
-        return "error";
-    }
-
-    if (bin->op == "+" || bin->op == "-" || bin->op == "*" || bin->op == "/" || bin->op == "%") {
-      if (leftType == "entero" && rightType == "entero")
-        return "entero";
-      if (leftType == "decimal" && rightType == "decimal")
-        return "decimal";
-      if (bin->op == "+" && leftType == "texto" && rightType == "texto")
-        return "texto";
+    if (op == "+" || op == "-" || op == "*" || op == "/" || op == "%") {
+      if (leftType == "entero" && rightType == "entero") return "entero";
+      if ((leftType == "entero" || leftType == "decimal") &&
+          (rightType == "entero" || rightType == "decimal")) return "decimal";
+      LOG(LogLevel::ERROR, "[inferType] Operación aritmética inválida con tipos: " + leftType + " y " + rightType);
       return "error";
     }
 
+    if (op == "==" || op == "!=") {
+      if (leftType == rightType) return "bool";
+      LOG(LogLevel::ERROR, "[inferType] Comparación inválida entre tipos distintos: " + leftType + " y " + rightType);
+      return "error";
+    }
+
+    if (op == "<" || op == ">" || op == "<=" || op == ">=") {
+      if ((leftType == "entero" || leftType == "decimal") &&
+          (rightType == "entero" || rightType == "decimal")) return "bool";
+      LOG(LogLevel::ERROR, "[inferType] Comparación inválida entre tipos no numéricos: " + leftType + " y " + rightType);
+      return "error";
+    }
+
+    if (op == "&&" || op == "||") {
+      if (leftType == "bool" && rightType == "bool") return "bool";
+      LOG(LogLevel::ERROR, "[inferType] Operador lógico entre tipos no booleanos: " + leftType + " y " + rightType);
+      return "error";
+    }
+
+    LOG(LogLevel::ERROR, "[inferType] Operador desconocido o no soportado: " + op);
     return "error";
-  } else if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
-    return inferType(un->right);
-  } else if (auto assign = std::dynamic_pointer_cast<AssignmentExpr>(expr)) {
-    return inferType(assign->value);
   }
 
-  LOG(LogLevel::ERROR, "[inferType] No se pudo inferir tipo para una expresión desconocida.");
-  return "desconocido";
+  if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
+    std::string innerType = inferType(un->right);
+    std::string op = un->op;
+
+    if (op == "!") {
+      if (innerType == "bool") return "bool";
+      LOG(LogLevel::ERROR, "[inferType] Negación lógica '!' sobre tipo no booleano: " + innerType);
+      return "error";
+    }
+    if (op == "-") {
+      if (innerType == "entero" || innerType == "decimal") return innerType;
+      LOG(LogLevel::ERROR, "[inferType] Negación aritmética '-' sobre tipo inválido: " + innerType);
+      return "error";
+    }
+
+    LOG(LogLevel::ERROR, "[inferType] Operador unario no reconocido: " + op);
+    return "error";
+  }
+
+  LOG(LogLevel::ERROR, "[inferType] Tipo de expresión desconocida");
+  return "error";
 }
 
