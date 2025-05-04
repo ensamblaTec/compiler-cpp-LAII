@@ -1,0 +1,34 @@
+// ==== Casos válidos ====
+entero a;
+a = 5 + 3;
+
+texto mensaje;
+mensaje = "Hola mundo";
+
+bool bandera;
+bandera = verdadero;
+
+si (a > 3) {
+  mostrar(a);
+}
+
+mientras (bandera) {
+  a = a - 1;
+}
+
+para (a = 0; a < 10; a = a + 1) {
+  mostrar(a);
+}
+
+mostrar("Todo bien");
+entrada(a);
+
+// ==== Casos con errores sintácticos ====
+entero;                // Falta nombre de variable
+a = ;                  // Falta expresión en asignación
+si a > 3 {             // Falta paréntesis
+mientras {             // Falta condición
+para (i = 0; i < 10) { // Falta incremento y punto y coma
+mostrar();             // Falta argumento
+entrada;               // Falta paréntesis y variable
+}                      // Llave fuera de bloque

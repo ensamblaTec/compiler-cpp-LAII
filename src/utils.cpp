@@ -14,7 +14,7 @@ std::vector<Token> getAllTokens(Lexer& lexer)
           + ", columna: " + std::to_string(token.column) 
           + ", caracter invalido '" + token.value
       );
-      continue;
+      // continue;
     }
     tokens.push_back(token);
   }

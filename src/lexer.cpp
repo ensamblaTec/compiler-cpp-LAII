@@ -32,8 +32,7 @@ static const std::unordered_map<char, TokenType> punctuationMap = {
 Lexer::Lexer(std::istream& input_stream) : input(input_stream)
 {
   LOG(LogLevel::INFO, "Iniciando el lexer...");
-  LOG(LogLevel::INFO, "Se ha generado el fichero de logs");
-  LOG(LogLevel::INFO, "Preparando el fichero de entrada para su procesamiento");
+  LOG(LogLevel::INFO, "Preparando el fichero de entrada para su procesamiento...");
 
   readNextLine();
 }
@@ -52,7 +51,6 @@ void Lexer::readNextLine()
   } else
   {
     currentLine = "";
-    LOG(LogLevel::INFO, "Fin del fichero...");
   }
 }
 
@@ -65,6 +63,7 @@ Token Lexer::nextToken()
       readNextLine();
       if (currentLine.empty())
       {
+        LOG(LogLevel::INFO, "Fin del fichero...");
         return { TokenType::END_OF_FILE, "", row, column };
       }
     }
@@ -116,7 +115,7 @@ Token Lexer::nextToken()
         column++;
       }
 
-      TokenType type;
+      TokenType type = TokenType::INVALID;
       if (!keywords.count(buffer))
       {
         type = TokenType::IDENTIFIER;
