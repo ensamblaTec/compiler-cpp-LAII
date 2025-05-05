@@ -5,3 +5,43 @@ Makefile
 log.txt
 codigo.txt
 app
+
+// INTELLIJ
+java-interface/target/
+java-interface/!.mvn/wrapper/maven-wrapper.jar
+java-interface/!**/src/main/**/target/
+java-interface/!**/src/test/**/target/
+
+### IntelliJ IDEA ###
+java-interface/.idea/modules.xml
+java-interface/.idea/jarRepositories.xml
+java-interface/.idea/compiler.xml
+java-interface/.idea/libraries/
+java-interface/*.iws
+java-interface/*.iml
+java-interface/*.ipr
+
+### Eclipse ###
+java-interface/.apt_generated
+java-interface/.classpath
+java-interface/.factorypath
+java-interface/.project
+java-interface/.settings
+java-interface/.springBeans
+java-interface/.sts4-cache
+
+### NetBeans ###
+java-interface//nbproject/private/
+java-interface//nbbuild/
+java-interface//dist/
+java-interface//nbdist/
+java-interface//.nb-gradle/
+java-interface/build/
+java-interface/!**/src/main/**/build/
+java-interface/!**/src/test/**/build/
+
+### VS Code ###
+java-interface/.vscode/
+
+### Mac OS ###
+java-interface/.DS_Store
