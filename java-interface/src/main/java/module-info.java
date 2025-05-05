@@ -9,4 +9,6 @@ module org.example.automatas2_rgg {
 
     opens org.example.automatas2_rgg to javafx.fxml;
     exports org.example.automatas2_rgg;
+    exports org.example.automatas2_rgg.controllers;
+    opens org.example.automatas2_rgg.controllers to javafx.fxml;
 }

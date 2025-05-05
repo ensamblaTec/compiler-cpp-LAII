@@ -1,11 +1,15 @@
-package org.example.automatas2_rgg;
+package org.example.automatas2_rgg.controllers;
 
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.automatas2_rgg.ArbolDerivacionController;
+import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
 
@@ -23,12 +27,23 @@ public class HelloController {
 
     @FXML private Label welcomeText;
     @FXML private CodeArea codigoFuente;
+    @FXML private TextArea consoleOutput;
     @FXML private TextArea codigoIntermedio;
     @FXML private TextArea codigoEnsamblador;
     @FXML private TextArea tablaSimbolos;
     @FXML private ArbolDerivacionController arbolDerivacionController;
 
+    @FXML private Button runButton;
+
+    private File archivoActual = null;
+    private String contenidoGuardado = "";
+    private long ultimaModificacionArchivo = 0;
+    private boolean modificado = false;
+
+    private CompilerService compilerService;
+
     private FileUtils fileUtils;
+
     private Stage stage;
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -42,6 +57,12 @@ public class HelloController {
         if (stage != null && fileUtils != null) {
             fileUtils = new FileUtils(stage, codigoFuente);
         }
+        Path basePath = Paths.get(System.getProperty("user.dir")).getParent();
+        compilerService = new CompilerService(basePath);
+        codigoFuente.textProperty().addListener((observable, oldValue, newValue) -> {
+            modificado = !newValue.equals(contenidoGuardado);
+            actualizarTituloVentana();
+        });
 //        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
 //        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
 //        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
@@ -49,14 +70,85 @@ public class HelloController {
         // cargarArbolDeDerivacion();
     }
 
+    private void actualizarTituloVentana() {
+        if (stage != null) {
+            String nombre = (archivoActual != null) ? archivoActual.getName() : "Archivo no guardado";
+            if (modificado) {
+                nombre += " *";
+            }
+            stage.setTitle(nombre + " - Compilador");
+        }
+    }
+
     @FXML
     private void onAbrir() {
-        fileUtils.abrirArchivo();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir archivo");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Código fuente (*.txt, *.cpp)", "*.txt", "*.cpp"),
+                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+        );
+
+        File file = fileChooser.showOpenDialog(runButton.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                String contenido = Files.readString(file.toPath(), StandardCharsets.UTF_8);
+
+                // Cargar en el editor
+                codigoFuente.replaceText(contenido);
+
+                // Actualizar estado
+                archivoActual = file;
+                contenidoGuardado = contenido;
+                modificado = false;
+                ultimaModificacionArchivo = file.lastModified();
+
+                actualizarTituloVentana();
+
+            } catch (IOException e) {
+                mostrarAlerta("Error", "No se pudo abrir el archivo:\n" + e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
     }
 
     @FXML
     private void onGuardar() {
-        fileUtils.guardarArchivo();
+        if (archivoActual == null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Guardar archivo");
+            archivoActual = fileChooser.showSaveDialog(runButton.getScene().getWindow());
+            if (archivoActual == null) return;
+        }
+
+        if (archivoActual.exists()) {
+            long actualMod = archivoActual.lastModified();
+            if (actualMod > ultimaModificacionArchivo) {
+                Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                alerta.setTitle("Archivo externo modificado");
+                alerta.setHeaderText("El archivo fue modificado fuera del editor.");
+                alerta.setContentText("¿Deseas sobrescribirlo de todas formas?");
+                ButtonType resultado = alerta.showAndWait().orElse(ButtonType.CANCEL);
+
+                if (resultado != ButtonType.OK) {
+                    return;
+                }
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoActual))) {
+            String contenido = codigoFuente.getText();
+            writer.write(contenido);
+
+            contenidoGuardado = contenido;
+            modificado = false;
+            ultimaModificacionArchivo = archivoActual.lastModified();
+
+            actualizarTituloVentana();
+
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo guardar el archivo:\n" + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     @FXML
@@ -75,18 +167,72 @@ public class HelloController {
         String codigo = codigoFuente.getText().trim();
 
         if (codigo.isEmpty()) {
-            mostrarAlerta("Error", "El área de código está vacía. Escribe algo antes de compilar.", Alert.AlertType.WARNING);
+            mostrarAlerta("Error", "El código está vacío.", Alert.AlertType.ERROR);
             return;
         }
 
-        try {
-            String resultado = compilarCodigo(codigo);
-            mostrarAlerta("Success", "Compilacion Correcta", Alert.AlertType.INFORMATION);
-            mostrarResultado("Compilación exitosa:\n" + resultado);
-            codigoFuente.replaceText(resultado);
-        } catch (Exception e) {
-            mostrarResultado("Error durante la compilación:\n" + e.getMessage());
+        if (archivoActual == null) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Guardar archivo antes de compilar");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Código fuente (*.txt, *.cpp)", "*.txt", "*.cpp"),
+                    new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+            );
+            archivoActual = fileChooser.showSaveDialog(runButton.getScene().getWindow());
+
+            if (archivoActual == null) {
+                mostrarAlerta("Cancelado", "No se seleccionó ningún archivo para guardar. Operación cancelada.", Alert.AlertType.INFORMATION);
+                return;
+            }
         }
+
+        if (archivoActual.exists()) {
+            long modEnDisco = archivoActual.lastModified();
+            if (modEnDisco > ultimaModificacionArchivo) {
+                Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+                alerta.setTitle("Archivo externo modificado");
+                alerta.setHeaderText("El archivo fue modificado");
+                alerta.setContentText("¿Deseas sobrescribirlo de todas formas?");
+                ButtonType respuesta = alerta.showAndWait().orElse(ButtonType.CANCEL);
+
+                if (respuesta != ButtonType.OK) {
+                    return;
+                }
+            }
+        }
+
+        if (modificado) {
+            onGuardar();
+        }
+
+        runButton.setText("Compilando...");
+        runButton.setDisable(true);
+
+        Task<String> tareaCompilacion = getStringTask(codigo);
+        new Thread(tareaCompilacion).start();
+    }
+
+    private Task<String> getStringTask(String codigo) {
+        Task<String> tareaCompilacion = new Task<>() {
+            @Override
+            protected String call() throws Exception {
+                return compilerService.compilarCodigo(codigo, archivoActual);
+            }
+        };
+
+        tareaCompilacion.setOnSucceeded(event -> {
+            consoleOutput.setText(tareaCompilacion.getValue());
+            runButton.setText("Run");
+            runButton.setDisable(false);
+        });
+
+        tareaCompilacion.setOnFailed(event -> {
+            Throwable ex = tareaCompilacion.getException();
+            consoleOutput.setText("Error:\n" + ex.getMessage());
+            runButton.setText("Run");
+            runButton.setDisable(false);
+        });
+        return tareaCompilacion;
     }
 
     private String compilarCodigo(String codigo) throws IOException {

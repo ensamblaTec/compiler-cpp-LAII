@@ -1,6 +1,6 @@
 entero x;
 texto nombre;
-bool pepe;
+bool pepe
 
 si (x > 0) {
   mostrar(x);

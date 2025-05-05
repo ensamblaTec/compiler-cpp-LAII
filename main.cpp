@@ -9,9 +9,16 @@
 #include "astprinter.hpp"
 #include "utils.hpp"
 
-int main()
+int main(int argc, char* argv[])
 {
-  std::ifstream file("codigo.txt");
+  if (argc < 2) {
+    LOG(LogLevel::ERROR, "Se requiere el nombre del fichero como argumento");
+    return 1;
+  }
+
+  std::string fileName = argv[1];
+
+  std::ifstream file(fileName);
 
   if (!file)
   {
