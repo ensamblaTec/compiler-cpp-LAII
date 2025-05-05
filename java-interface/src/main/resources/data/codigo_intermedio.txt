@@ -1,0 +1,3 @@
+t1 = "Hola mundo"
+CALL printf, t1
+RETURN 0

@@ -1,0 +1,95 @@
+.root {
+    -fx-background-color: #f4f4f4;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+}
+
+.menu-bar {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+}
+
+.menu .label {
+    -fx-text-fill: white;
+}
+
+.tool-bar {
+    -fx-background-color: #34495e;
+}
+
+.button {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+    /*-fx-font-weight: bold;*/
+    -fx-font-family: 25px;
+    -fx-font-family: "Segoe UI";
+    -fx-background-radius: 5;
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.text-area {
+    -fx-control-inner-background: #ecf0f1;
+    -fx-font-family: Consolas;
+}
+
+.tree-view {
+    -fx-background-color: #ecf0f1;
+}
+
+#consoleOutput {
+    -fx-control-inner-background: #1e1e1e; /* fondo negro */
+    -fx-text-fill: #00ff00; /* texto verde fosforescente */
+    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-highlight-fill: gray;
+    -fx-highlight-text-fill: black;
+    -fx-border-color: #555;
+}
+
+.tab-pane {
+    -fx-background-color: #f4f4f4;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #e8e8e8;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #f0f0f0;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #007aff;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #2c3e50;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: #2980b9;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu-item:focused {
+    -fx-background-color: #007aff;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}
+

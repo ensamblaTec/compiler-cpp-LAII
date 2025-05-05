@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.automatas2_rgg.ArbolDerivacionController">
+    <TreeView fx:id="treeViewDerivacion" layoutX="10" layoutY="10" />
+
+</AnchorPane>

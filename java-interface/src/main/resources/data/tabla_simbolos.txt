@@ -1,0 +1,6 @@
+Identificador | Tipo   | Valor
+------------- | ------ | --------
+main          | Función | -
+printf        | Función | -
+"Hola mundo"  | String  | Hola mundo
+0             | Constante | 0
