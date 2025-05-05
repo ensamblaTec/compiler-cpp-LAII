@@ -31,11 +31,11 @@ java-interface/.springBeans
 java-interface/.sts4-cache
 
 ### NetBeans ###
-java-interface//nbproject/private/
-java-interface//nbbuild/
-java-interface//dist/
-java-interface//nbdist/
-java-interface//.nb-gradle/
+java-interface/nbproject/private/
+java-interface/nbbuild/
+java-interface/dist/
+java-interface/nbdist/
+java-interface/.nb-gradle/
 java-interface/build/
 java-interface/!**/src/main/**/build/
 java-interface/!**/src/test/**/build/

@@ -4,18 +4,23 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 public class HelloController {
+    @FXML private MenuItem nuevo;
+    @FXML private MenuItem cargar;
+    @FXML private MenuItem guardar;
+
     @FXML private Label welcomeText;
     @FXML private CodeArea codigoFuente;
     @FXML private TextArea codigoIntermedio;
@@ -23,25 +28,97 @@ public class HelloController {
     @FXML private TextArea tablaSimbolos;
     @FXML private ArbolDerivacionController arbolDerivacionController;
 
-
+    private FileUtils fileUtils;
+    private Stage stage;
+    public void setStage(Stage stage) {
+        this.stage = stage;
+        if (codigoFuente != null) {
+            fileUtils = new FileUtils(stage, codigoFuente);
+        }
+    }
 
     @FXML
     public void initialize() {
-        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
-        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
-        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
-        cargarArchivoEnTextArea(tablaSimbolos, "tabla_simbolos.txt");
+        if (stage != null && fileUtils != null) {
+            fileUtils = new FileUtils(stage, codigoFuente);
+        }
+//        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
+//        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
+//        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
+//        cargarArchivoEnTextArea(tablaSimbolos, "tabla_simbolos.txt");
         // cargarArbolDeDerivacion();
-
     }
 
+    @FXML
+    private void onAbrir() {
+        fileUtils.abrirArchivo();
+    }
 
+    @FXML
+    private void onGuardar() {
+        fileUtils.guardarArchivo();
+    }
+
+    @FXML
+    private void onLimpiar() {
+        fileUtils.limpiarCodeArea();
+    }
 
     @FXML
     protected void onHelloButtonClick() {
 
         welcomeText.setText("Welcome to JavaFX Application!");
     }
+
+    @FXML
+    private void onCompilar() {
+        String codigo = codigoFuente.getText().trim();
+
+        if (codigo.isEmpty()) {
+            mostrarAlerta("Error", "El área de código está vacía. Escribe algo antes de compilar.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        try {
+            String resultado = compilarCodigo(codigo);
+            mostrarAlerta("Success", "Compilacion Correcta", Alert.AlertType.INFORMATION);
+            mostrarResultado("Compilación exitosa:\n" + resultado);
+            codigoFuente.replaceText(resultado);
+        } catch (Exception e) {
+            mostrarResultado("Error durante la compilación:\n" + e.getMessage());
+        }
+    }
+
+    private String compilarCodigo(String codigo) throws IOException {
+        // 1. Guardar el código en un archivo fuente
+        Path inputPath = Paths.get("/home/ensamblatec/develop/cpp/compilator_rgg/entrada.txt");
+        Files.writeString(inputPath, codigo, StandardCharsets.UTF_8);
+
+        // 2. Ejecutar compilador C++
+        ProcessBuilder pb = new ProcessBuilder("./compilador", "entrada.txt");
+        pb.directory(new File("/home/ensamblatec/develop/cpp/compilator_rgg"));
+        pb.redirectErrorStream(true);
+
+        Process proceso = pb.start();
+
+        // 3. Leer y devolver salida
+        return new BufferedReader(new InputStreamReader(proceso.getInputStream()))
+                .lines().collect(Collectors.joining("\n"));
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+
+    private void mostrarResultado(String mensaje) {
+        // Puedes usar un Label o TextArea para mostrarlo en la UI
+        System.out.println(mensaje); // por ahora, consola
+    }
+
 
     private void cargarArchivoEnCodeArea(CodeArea codeArea, String nombreArchivo) {
         try (InputStream is = getClass().getResourceAsStream("/data/" + nombreArchivo);
