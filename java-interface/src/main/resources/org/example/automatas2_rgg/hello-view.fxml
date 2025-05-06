@@ -53,7 +53,15 @@
                                         <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" />
                                     </HBox>
                                 </graphic>
-                                <TextArea fx:id="tablaSimbolos" editable="false"/>
+                                <TableView fx:id="tablaSimbolos">
+                                    <columns>
+                                        <TableColumn fx:id="colIdentificador" text="Identificador" />
+                                        <TableColumn fx:id="colTipo" text="Tipo" />
+                                        <TableColumn fx:id="colValor" text="Valor" />
+                                        <TableColumn fx:id="colColumna" text="Columna" />
+                                        <TableColumn fx:id="colLinea" text="Línea" />
+                                    </columns>
+                                </TableView>
                             </Tab>
                             <Tab closable="false" text="Árbol de derivación">
                                 <graphic>

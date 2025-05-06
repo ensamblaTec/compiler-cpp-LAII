@@ -2,6 +2,14 @@
 #include "utils.hpp"
 #include "logger.hpp"
 
+#if defined(_WIN32)
+  #include <direct.h>
+  #define MKDIR(path) _mkdir(path)
+#else
+  #include <sys/stat.h>
+  #define MKDIR(path) mkdir(path, 0777)
+#endif
+
 std::vector<Token> getAllTokens(Lexer& lexer)
 {
   Token token;
@@ -29,10 +37,10 @@ std::string symbolTableToString(std::vector<Token> tokens) {
     return "";
   }
 
-  std::string buffer = "";
+  std::string buffer = "identificador,tipo,valor,columna,linea\n";
 
   for (auto token: tokens)
-    buffer += token.getPrint() + ",\n";
+    buffer += token.getPrintToSymbolTable() + ",\n";
 
   return buffer;
 }
@@ -48,4 +56,10 @@ bool saveFile(std::string fileName, std::string content) {
     LOG(LogLevel::ERROR, "No se ha podido abrir el fichero");
   }
   return true;
+}
+
+void createFolder(const char* folderName) {
+  if (MKDIR(folderName) == 0) {
+    std::cout << "directorio generado correctamente";
+  }
 }

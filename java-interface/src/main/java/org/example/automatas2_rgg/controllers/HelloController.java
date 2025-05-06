@@ -1,13 +1,16 @@
 package org.example.automatas2_rgg.controllers;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.automatas2_rgg.models.SymbolTableModel;
 import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
@@ -24,12 +27,18 @@ public class HelloController {
     @FXML private MenuItem cargar;
     @FXML private MenuItem guardar;
 
+    @FXML private TableView<SymbolTableModel> tablaSimbolos;
+    @FXML private TableColumn<SymbolTableModel, String> colIdentificador;
+    @FXML private TableColumn<SymbolTableModel, String> colTipo;
+    @FXML private TableColumn<SymbolTableModel, String> colValor;
+    @FXML private TableColumn<SymbolTableModel, String> colColumna;
+    @FXML private TableColumn<SymbolTableModel, String> colLinea;
+
     @FXML private Label welcomeText;
     @FXML private CodeArea codigoFuente;
     @FXML private TextArea consoleOutput;
     @FXML private TextArea codigoIntermedio;
     @FXML private TextArea codigoEnsamblador;
-    @FXML private TextArea tablaSimbolos;
     @FXML private ArbolDerivacionController arbolDerivacionController;
 
     @FXML private Button runButton;
@@ -63,12 +72,27 @@ public class HelloController {
             actualizarTituloVentana();
         });
 
+        inicializarColumnasTabla();
 //        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
 //        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
 //        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
 //        cargarArchivoEnTextArea(tablaSimbolos, "tabla_simbolos.txt");
         // cargarArbolDeDerivacion();
     }
+
+    public void inicializarColumnasTabla() {
+        colIdentificador.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getIdentificador()));
+        colTipo.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTipo()));
+        colValor.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getValor()));
+        colColumna.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getColumna()));
+        colLinea.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getLinea()));
+    }
+
 
     private void actualizarTituloVentana() {
         if (stage != null) {
@@ -237,6 +261,23 @@ public class HelloController {
         return tareaCompilacion;
     }
 
+    public void cargarTablaSimbolosDesdeCSV(Path path) {
+        try (BufferedReader reader = Files.newBufferedReader(path)) {
+            tablaSimbolos.getItems().clear();
+            reader.readLine(); // Saltar encabezado
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(",");
+                if (datos.length == 5) {
+                    tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4]));
+                }
+            }
+        } catch (IOException e) {
+            mostrarAlerta("Error", "No se pudo leer el archivo CSV: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+
     private void cargarArchivoEn(TextInputControl destino, Path ruta) {
         try {
             if (Files.exists(ruta)) {
@@ -255,13 +296,10 @@ public class HelloController {
     }
 
     private void cargarSalidasGeneradas() {
-        Path base = Paths.get(System.getProperty("user.dir")).resolve("../output").normalize();
+        Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
 
-        cargarArchivoEn(tablaSimbolos, base.resolve("tabla_simbolos.txt"));
-//        cargarArchivoEn(codigoIntermedio, base.resolve("codigo_intermedio.txt"));
-//        cargarArchivoEn(codigoEnsamblador, base.resolve("ensamblador.txt"));
+        cargarTablaSimbolosDesdeCSV(base.resolve("tabla_simbolos.txt"));
 
-        // Cargar árbol de derivación desde ast.json
         Path rutaAstJson = base.resolve("ast.json");
 
         if (arbolDerivacionController != null) {

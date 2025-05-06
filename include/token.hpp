@@ -111,6 +111,10 @@ struct Token
         + std::to_string(row) + std::to_string(column) +  ")";
   }
 
+  std::string getPrintToSymbolTable() {
+    return typeToString() + "," + value + "," + value + "," + std::to_string(column) + "," + std::to_string(row);
+  }
+
   std::string typeToString() const 
   {
     return tokenTypeToString(type);

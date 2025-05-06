@@ -1,4 +1,5 @@
 #include "symbol_table.hpp"
+#include "symbol.hpp"
 
 SymbolTable::SymbolTable() {
   scopes.emplace_back();
@@ -34,3 +35,4 @@ std::string SymbolTable::getType(const std::string& name) const {
   }
   return "";
 }
+

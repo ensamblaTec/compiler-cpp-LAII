@@ -10,7 +10,7 @@ public class CompilerService {
     private final Path compiladorPath;
 
     public CompilerService(Path basePath) {
-        this.compiladorPath = basePath.resolve("app");
+        this.compiladorPath = basePath;
     }
 
     public String compilarCodigo(String codigoFuente, File archivoGuardado) throws IOException {
@@ -20,21 +20,28 @@ public class CompilerService {
 
         Files.writeString(archivoGuardado.toPath(), codigoFuente, StandardCharsets.UTF_8);
 
-        if (!Files.isExecutable(compiladorPath)) {
-            throw new IOException("No se encontró o no tiene permisos de ejecución el compilador en: " + compiladorPath);
+        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+        String ejecutable = isWindows ? "app.exe" : "app";
+
+        Path compilador = compiladorPath.resolve("build/dist").resolve(ejecutable).normalize();
+
+        if (!Files.exists(compilador) || (!isWindows && !Files.isExecutable(compilador))) {
+            throw new IOException("No se encontró o no tiene permisos de ejecución el compilador en: " + compilador);
         }
 
         ProcessBuilder pb = new ProcessBuilder(
-                compiladorPath.toAbsolutePath().toString(),
+                compilador.toAbsolutePath().toString(),
                 archivoGuardado.getAbsolutePath()
         );
 
-        pb.directory(compiladorPath.getParent().toFile());
+        pb.directory(compilador.getParent().toFile());
         pb.redirectErrorStream(true);
 
         Process proceso = pb.start();
 
-        return new BufferedReader(new InputStreamReader(proceso.getInputStream()))
-                .lines().collect(Collectors.joining("\n"));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(proceso.getInputStream()))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
+
 }

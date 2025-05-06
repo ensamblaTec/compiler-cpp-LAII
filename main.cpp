@@ -17,6 +17,9 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+  const char* folderName = "output";
+  createFolder(folderName);
+
   std::string fileName = argv[1];
 
   std::ifstream file(fileName);
