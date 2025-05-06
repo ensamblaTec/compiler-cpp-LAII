@@ -16,4 +16,5 @@ add_executable(app
     src/astprinter.cpp
     src/error_reporter.cpp
     src/symbol_table.cpp
+    src/jsonexporter.cpp
 )

@@ -6,6 +6,7 @@ module org.example.automatas2_rgg {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires org.fxmisc.richtext;
+    requires com.fasterxml.jackson.databind;
 
     opens org.example.automatas2_rgg to javafx.fxml;
     exports org.example.automatas2_rgg;

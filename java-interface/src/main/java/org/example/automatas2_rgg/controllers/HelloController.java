@@ -8,7 +8,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.example.automatas2_rgg.ArbolDerivacionController;
 import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
@@ -63,6 +62,7 @@ public class HelloController {
             modificado = !newValue.equals(contenidoGuardado);
             actualizarTituloVentana();
         });
+
 //        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
 //        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
 //        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
@@ -224,6 +224,8 @@ public class HelloController {
             consoleOutput.setText(tareaCompilacion.getValue());
             runButton.setText("Run");
             runButton.setDisable(false);
+
+            cargarSalidasGeneradas();
         });
 
         tareaCompilacion.setOnFailed(event -> {
@@ -233,6 +235,40 @@ public class HelloController {
             runButton.setDisable(false);
         });
         return tareaCompilacion;
+    }
+
+    private void cargarArchivoEn(TextInputControl destino, Path ruta) {
+        try {
+            if (Files.exists(ruta)) {
+                String contenido = Files.readString(ruta, StandardCharsets.UTF_8);
+                destino.setText(contenido);
+            } else {
+                String mensaje = "No se encontró el archivo: " + ruta.getFileName();
+                destino.setText(mensaje);
+                consoleOutput.appendText(mensaje + "\n");
+            }
+        } catch (IOException e) {
+            String mensaje = "❌ Error al leer " + ruta.getFileName() + ":\n" + e.getMessage();
+            destino.setText(mensaje);
+            consoleOutput.appendText(mensaje + "\n");
+        }
+    }
+
+    private void cargarSalidasGeneradas() {
+        Path base = Paths.get(System.getProperty("user.dir")).resolve("../output").normalize();
+
+        cargarArchivoEn(tablaSimbolos, base.resolve("tabla_simbolos.txt"));
+//        cargarArchivoEn(codigoIntermedio, base.resolve("codigo_intermedio.txt"));
+//        cargarArchivoEn(codigoEnsamblador, base.resolve("ensamblador.txt"));
+
+        // Cargar árbol de derivación desde ast.json
+        Path rutaAstJson = base.resolve("ast.json");
+
+        if (arbolDerivacionController != null) {
+            arbolDerivacionController.cargarArbolDesdeJson(rutaAstJson);
+        } else {
+            consoleOutput.appendText("\n⚠ No se pudo cargar el árbol de derivación (no se encontró el controlador).");
+        }
     }
 
     private String compilarCodigo(String codigo) throws IOException {
@@ -314,28 +350,6 @@ public class HelloController {
         }
     }
 
-    private void cargarArbolDeDerivacion() {
-        TreeItem<String> root = new TreeItem<>("Programa");
-
-        TreeItem<String> decls = new TreeItem<>("Declaraciones");
-        decls.getChildren().addAll(
-                new TreeItem<>("int x"),
-                new TreeItem<>("float y")
-        );
-
-        TreeItem<String> instrucciones = new TreeItem<>("Instrucciones");
-        instrucciones.getChildren().addAll(
-                new TreeItem<>("x = 10"),
-                new TreeItem<>("y = x + 2.5")
-        );
-
-        root.getChildren().addAll(decls, instrucciones);
-        root.setExpanded(true);
-    }
-
-    public void ejemploAgregarNodo() {
-        arbolDerivacionController.agregarNodo("Java Tutorials", "Java Streams");
-    }
 
 }
 

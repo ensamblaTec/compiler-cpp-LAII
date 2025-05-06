@@ -53,7 +53,7 @@
                                         <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" />
                                     </HBox>
                                 </graphic>
-                                <TextArea fx:id="tablaSimbolos" editable="false" />
+                                <TextArea fx:id="tablaSimbolos" editable="false"/>
                             </Tab>
                             <Tab closable="false" text="Árbol de derivación">
                                 <graphic>

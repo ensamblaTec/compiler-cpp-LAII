@@ -1,0 +1,108 @@
+[
+    {
+        "name": "x",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "nombre",
+        "type": "Declaration",
+        "varType": "texto"
+    },
+    {
+        "name": "pepe",
+        "type": "Declaration",
+        "varType": "bool"
+    },
+    {
+        "condition": {
+            "left": {
+                "name": "x",
+                "type": "VariableExpr"
+            },
+            "op": ">",
+            "right": {
+                "type": "NumberExpr",
+                "value": "0"
+            },
+            "type": "BinaryExpr"
+        },
+        "elseBranch": {
+            "statements": [
+                {
+                    "type": "PrintStatement",
+                    "value": {
+                        "type": "NumberExpr",
+                        "value": "0"
+                    }
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "thenBranch": {
+            "statements": [
+                {
+                    "type": "PrintStatement",
+                    "value": {
+                        "name": "x",
+                        "type": "VariableExpr"
+                    }
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "type": "IfStatement"
+    },
+    {
+        "name": "i",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "body": {
+            "statements": [
+                {
+                    "name": "i",
+                    "type": "Assignment",
+                    "value": {
+                        "left": {
+                            "name": "i",
+                            "type": "VariableExpr"
+                        },
+                        "op": "+",
+                        "right": {
+                            "type": "NumberExpr",
+                            "value": "1"
+                        },
+                        "type": "BinaryExpr"
+                    }
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "condition": {
+            "left": {
+                "name": "i",
+                "type": "VariableExpr"
+            },
+            "op": "<",
+            "right": {
+                "type": "NumberExpr",
+                "value": "10"
+            },
+            "type": "BinaryExpr"
+        },
+        "type": "WhileStatement"
+    },
+    {
+        "type": "InputStatement",
+        "varName": "nombre"
+    },
+    {
+        "type": "PrintStatement",
+        "value": {
+            "name": "nombre",
+            "type": "VariableExpr"
+        }
+    }
+]

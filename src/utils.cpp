@@ -24,3 +24,28 @@ std::vector<Token> getAllTokens(Lexer& lexer)
   return tokens;
 }
 
+std::string symbolTableToString(std::vector<Token> tokens) {
+  if (tokens.size() == 0) {
+    return "";
+  }
+
+  std::string buffer = "";
+
+  for (auto token: tokens)
+    buffer += token.getPrint() + ",\n";
+
+  return buffer;
+}
+
+bool saveFile(std::string fileName, std::string content) {
+  std::ofstream file("output/" + fileName + ".txt");
+
+  if (file.is_open()) {
+    file << content;
+    file.close();
+    LOG(LogLevel::INFO, "Se ha almacenado el fichero correctamente");
+  } else {
+    LOG(LogLevel::ERROR, "No se ha podido abrir el fichero");
+  }
+  return true;
+}

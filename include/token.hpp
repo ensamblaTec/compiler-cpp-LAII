@@ -108,7 +108,7 @@ struct Token
   {
       return "Token(" + typeToString()
         + ", \"" + value + "\", "
-        + std::to_string(row ) + std::to_string(column) +  ")";
+        + std::to_string(row) + std::to_string(column) +  ")";
   }
 
   std::string typeToString() const 

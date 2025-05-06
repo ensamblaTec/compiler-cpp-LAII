@@ -21,7 +21,7 @@
     -fx-background-color: #007aff;
     -fx-text-fill: white;
     /*-fx-font-weight: bold;*/
-    -fx-font-family: 25px;
+    -fx-font-size: 25px;
     -fx-font-family: "Segoe UI";
     -fx-background-radius: 5;
 }
