@@ -1,64 +1,93 @@
 .root {
-    -fx-background-color: #f4f4f4;
-    -fx-font-family: "Segoe UI";
+    -fx-background-color: #2b2b2b;
+    -fx-font-family: "Segoe UI", sans-serif;
     -fx-font-size: 13px;
 }
 
+/* ===== MENÚ ===== */
 .menu-bar {
+    -fx-background-color: #3c3f41;
+}
+.menu , .menu-item {
+    -fx-background-color: #3c3f41;
+}
+
+.mi-vbox {
+    -fx-background-color: #3c3f41; /* Fondo estilo IntelliJ */
+    -fx-padding: 10;
+}
+
+
+.menu .label, .menu-item .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:hover {
     -fx-background-color: #007aff;
+}
+.menu-item:focused .label {
+
     -fx-text-fill: white;
 }
 
-.menu .label {
-    -fx-text-fill: white;
-}
-
-.tool-bar {
-    -fx-background-color: #34495e;
-}
-
+/* ===== BOTONES ===== */
 .button {
     -fx-background-color: #007aff;
     -fx-text-fill: white;
-    /*-fx-font-weight: bold;*/
-    -fx-font-size: 25px;
-    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
     -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
 }
 
 .button:hover {
     -fx-background-color: #2980b9;
 }
 
+/* ===== TEXTAREA GENERAL ===== */
 .text-area {
-    -fx-control-inner-background: #ecf0f1;
+    -fx-control-inner-background: #313335;
     -fx-font-family: Consolas;
+    -fx-text-fill: #dcdcdc;
 }
 
-.tree-view {
-    -fx-background-color: #ecf0f1;
+.text-area .text {
+    -fx-control-inner-background: #313335;
+    -fx-font-family: Consolas;
+    -fx-text-fill: #dcdcdc;
 }
 
+/* ===== CONSOLE OUTPUT ===== */
 #consoleOutput {
-    -fx-control-inner-background: #1e1e1e; /* fondo negro */
-    -fx-text-fill: #00ff00; /* texto verde fosforescente */
-    -fx-font-family: "Consolas", "Courier New", monospace;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #00ff00;
+    -fx-font-family: Consolas, "Courier New", monospace;
     -fx-font-size: 13px;
-    -fx-highlight-fill: gray;
-    -fx-highlight-text-fill: black;
-    -fx-border-color: #555;
+    -fx-highlight-fill: #555;
+    -fx-highlight-text-fill: #D4D4D4;;
+    -fx-border-color: #444;
 }
 
+/* ===== TABS ===== */
+
+.status-bar {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #00ff00;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-highlight-fill: #555;
+    -fx-highlight-text-fill: #D4D4D4;;
+    -fx-border-color: #444;
+}
 .tab-pane {
-    -fx-background-color: #f4f4f4;
+    -fx-background-color: #2b2b2b;
 }
 
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-background-color: #e8e8e8;
+    -fx-background-color: #3c3f41;
 }
 
 .tab-pane .tab {
-    -fx-background-color: #f0f0f0;
+    -fx-background-color: #3c3f41;
 }
 
 .tab-pane .tab:selected {
@@ -70,7 +99,7 @@
 }
 
 .tab-pane .tab .tab-label {
-    -fx-text-fill: #2c3e50;
+    -fx-text-fill: #cccccc;
 }
 
 .tab-pane .tab:hover {
@@ -81,15 +110,77 @@
     -fx-text-fill: white;
 }
 
-.menu-item .label {
-    -fx-text-fill: black;
+/* ===== TABLEVIEW ===== */
+.table-view {
+    -fx-background-color: #2f2f2f;
+    -fx-table-cell-border-color: #444;
+    -fx-border-color: #444;
 }
 
-.menu-item:focused {
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:selected {
     -fx-background-color: #007aff;
-}
-
-.menu-item:focused .label {
     -fx-text-fill: white;
 }
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ===== CODE AREA ===== */
+
+/* Estilo general del CodeArea */
+.code-area {
+    -fx-background-color: #2b2b2b;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 14px;
+    -fx-fill: #f8f8f2;
+}
+
+/* Estilo de cada párrafo */
+.code-area .paragraph {
+    -fx-line-spacing: 1.5;
+    -fx-padding: 4px 0;
+}
+
+/* Estilo para el texto */
+.code-area .text {
+    -fx-fill: #D4D4D4;
+}
+
+/* Ejemplo de pseudoclase para el caret */
+.code-area:focused .caret {
+    -fx-stroke: #ff0000;
+}
+
+/* Estilo para la selección de texto */
+.code-area .selection {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+.lineno {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #888888; /* Gris tenue, como en IntelliJ */
+    -fx-font-family: "JetBrains Mono", "Consolas", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-padding: 0 10 0 5;
+}
+
+
+
+
+.virtualized-scroll-pane {
+    -fx-background-color: #2b2b2b;
+}
+
+/* ===== TOOLBAR (opcional si agregas) ===== */
+.tool-bar {
+    -fx-background-color: #3c3f41;
+    -fx-spacing: 10px;
+    -fx-padding: 5px;
+}
+
 
