@@ -1,111 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
 <?import javafx.scene.layout.*?>
 <?import org.fxmisc.richtext.CodeArea?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<AnchorPane stylesheets="@css/estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.automatas2_rgg.controllers.HelloController">
+<?import javafx.geometry.Insets?>
 
-    <children>
-        <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<BorderPane stylesheets="@css/estilos.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.automatas2_rgg.controllers.HelloController">
 
-            <!-- NUEVA CABECERA -->
-            <VBox>
-                <MenuBar>
-                    <menus>
-                        <Menu text="Archivo">
-                            <items>
-                                <MenuItem text="Nuevo" fx:id="nuevo" onAction="#onLimpiar"/>
-                                <MenuItem text="Cargar" fx:id="cargar" onAction="#onAbrir"/>
-                                <MenuItem text="Guardar" fx:id="guardar" onAction="#onGuardar"/>
-                            </items>
-                        </Menu>
-                        <Menu text="Ayuda">
-                            <items>
-                                <MenuItem text="Información" />
-                                <MenuItem text="Documentación" />
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-
-            </VBox>
-
-            <!-- Aquí continúa tu diseño (ej: SplitPane, CodeArea, etc) -->
-            <SplitPane dividerPositions="0.5"
-                       orientation="VERTICAL"
-                       VBox.vgrow="ALWAYS">
-                <items>
-                    <!-- Editor de código -->
-                    <TabPane fx:id="tabPane">
-                        <tabs>
-                            <Tab closable="false" text="Código Fuente">
-                                <graphic>
-                                    <HBox spacing="5">
-                                        <FontAwesomeIconView glyphName="CODE" />
-                                    </HBox>
-                                </graphic>
-                                <CodeArea fx:id="codigoFuente" />
-                            </Tab>
-                            <Tab closable="false" text="Tabla de símbolos">
-                                <graphic>
-                                    <HBox spacing="5">
-                                        <FontAwesomeIconView glyphName="EXCLAMATION_CIRCLE" />
-                                    </HBox>
-                                </graphic>
-                                <TableView fx:id="tablaSimbolos">
-                                    <columns>
-                                        <TableColumn fx:id="colIdentificador" text="Identificador" />
-                                        <TableColumn fx:id="colTipo" text="Tipo" />
-                                        <TableColumn fx:id="colValor" text="Valor" />
-                                        <TableColumn fx:id="colColumna" text="Columna" />
-                                        <TableColumn fx:id="colLinea" text="Línea" />
-                                    </columns>
-                                </TableView>
-                            </Tab>
-                            <Tab closable="false" text="Árbol de derivación">
-                                <graphic>
-                                    <HBox spacing="5">
-                                        <FontAwesomeIconView glyphName="SITEMAP" />
-                                    </HBox>
-                                </graphic>
-                                <fx:include source="ArbolDerivacion.fxml" />
-                            </Tab>
-                            <Tab closable="false" text="Código Intermedio">
-                                <graphic>
-                                    <HBox spacing="5">
-                                        <FontAwesomeIconView glyphName="FILE_TEXT" />
-                                    </HBox>
-                                </graphic>
-                                <TextArea fx:id="codigoIntermedio" editable="false" />
-                            </Tab>
-                            <Tab closable="false" text="Código Ensamblador">
-                                <graphic>
-                                    <HBox spacing="5">
-                                        <FontAwesomeIconView glyphName="GEARS" />
-                                    </HBox>
-                                </graphic>
-                                <TextArea fx:id="codigoEnsamblador" editable="false" />
-                            </Tab>
-                        </tabs>
-                    </TabPane>
-
-                    <!-- Sección inferior (output, consola, etc) -->
-                    <VBox spacing="5.0" VBox.vgrow="ALWAYS">
-                        <TextArea fx:id="consoleOutput"
-                                  editable="false"
-                                  wrapText="true"
-                                  VBox.vgrow="ALWAYS"
-                                  promptText="Salida de compilación" />
-                        <Button fx:id="runButton"
-                                text="Run"
-                                onAction="#onCompilar"
-                                maxWidth="100"
-                                alignment="CENTER"/>
-                    </VBox>
-                </items>
-            </SplitPane>
-
+    <!-- Barra superior -->
+    <top>
+        <VBox>
+            <MenuBar>
+                <menus>
+                    <Menu text="Archivo">
+                        <items>
+                            <MenuItem text="Nuevo" fx:id="nuevo" onAction="#onLimpiar"/>
+                            <MenuItem text="Cargar" fx:id="cargar" onAction="#onAbrir"/>
+                            <MenuItem text="Guardar" fx:id="guardar" onAction="#onGuardar"/>
+                        </items>
+                    </Menu>
+                    <Menu text="Ayuda">
+                        <items>
+                            <MenuItem text="Información"/>
+                            <MenuItem text="Documentación"/>
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
         </VBox>
-    </children>
-</AnchorPane>
+    </top>
+
+
+
+    <!-- Contenido principal: tabs de editor y consola -->
+    <center>
+        <SplitPane orientation="VERTICAL" dividerPositions="0.75">
+            <items>
+                <!-- Tabs del editor -->
+                <TabPane fx:id="tabPane">
+                    <tabs>
+                        <Tab closable="false" text="Código Fuente">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="CODE"/>
+                            </graphic>
+                            <VirtualizedScrollPane>
+                                <content>
+                                    <CodeArea fx:id="codigoFuente"/>
+                                </content>
+                            </VirtualizedScrollPane>
+                        </Tab>
+                        <Tab closable="false" text="Tabla de símbolos">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="TABLE"/>
+                            </graphic>
+                            <TableView fx:id="tablaSimbolos">
+                                <columns>
+                                    <TableColumn fx:id="colIdentificador" text="Id"/>
+                                    <TableColumn fx:id="colTipo" text="Tipo"/>
+                                    <TableColumn fx:id="colValor" text="Valor"/>
+                                    <TableColumn fx:id="colColumna" text="Columna"/>
+                                    <TableColumn fx:id="colLinea" text="Línea"/>
+                                    <TableColumn fx:id="colCategoria" text="Categoria"/>
+                                    <TableColumn fx:id="colScope" text="Ambito"/>
+                                </columns>
+                            </TableView>
+                        </Tab>
+                        <Tab closable="false" text="Árbol de derivación">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="SITEMAP"/>
+                            </graphic>
+                            <fx:include source="ArbolDerivacion.fxml"/>
+                        </Tab>
+                        <Tab closable="false" text="Código Intermedio">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="FILE_TEXT"/>
+                            </graphic>
+                            <TextArea fx:id="codigoIntermedio" editable="false"/>
+                        </Tab>
+                        <Tab closable="false" text="Código Ensamblador">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="GEARS"/>
+                            </graphic>
+                            <TextArea fx:id="codigoEnsamblador" editable="false"/>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+
+                <!-- Consola de salida -->
+                <VBox spacing="5.0" styleClass="mi-vbox">
+                    <TextArea fx:id="consoleOutput"
+                              editable="false"
+                              wrapText="true"
+                              VBox.vgrow="ALWAYS"
+                              promptText="Salida de compilación"/>
+                    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                        <padding>
+                            <Insets top="0.0" right="10.0" bottom="10.0" left="10.0"/>
+                        </padding>
+                        <Button fx:id="runButton"
+                                text="Compilar"
+                                onAction="#onCompilar"
+                                styleClass="run-button"/>
+                    </HBox>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+
+    <!-- Barra de estado -->
+    <bottom>
+        <HBox spacing="10" styleClass="status-bar">
+            <padding>
+                <Insets topRightBottomLeft="5"/>
+            </padding>
+            <Label text="Línea: 1, Columna: 1" fx:id="statusLabel"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="Guardado ✔" style="-fx-fill: #D4D4D4;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

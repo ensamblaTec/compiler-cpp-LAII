@@ -14,6 +14,7 @@ import org.example.automatas2_rgg.models.SymbolTableModel;
 import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,6 +34,8 @@ public class HelloController {
     @FXML private TableColumn<SymbolTableModel, String> colValor;
     @FXML private TableColumn<SymbolTableModel, String> colColumna;
     @FXML private TableColumn<SymbolTableModel, String> colLinea;
+    @FXML private TableColumn<SymbolTableModel, String> colCategoria;
+    @FXML private TableColumn<SymbolTableModel, String> colScope;
 
     @FXML private Label welcomeText;
     @FXML private CodeArea codigoFuente;
@@ -65,6 +68,7 @@ public class HelloController {
         if (stage != null && fileUtils != null) {
             fileUtils = new FileUtils(stage, codigoFuente);
         }
+        codigoFuente.setParagraphGraphicFactory(LineNumberFactory.get(codigoFuente));
         Path basePath = Paths.get(System.getProperty("user.dir")).getParent();
         compilerService = new CompilerService(basePath);
         codigoFuente.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -91,6 +95,12 @@ public class HelloController {
                 new SimpleStringProperty(cellData.getValue().getColumna()));
         colLinea.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getLinea()));
+
+        colCategoria.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getCategoria()));
+        colScope.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getScope()));
+
     }
 
 
@@ -269,7 +279,7 @@ public class HelloController {
             while ((linea = reader.readLine()) != null) {
                 String[] datos = linea.split(",");
                 if (datos.length == 5) {
-                    tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4]));
+                    tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4],datos[5],datos[6]));
                 }
             }
         } catch (IOException e) {
