@@ -1,0 +1,22 @@
+entero x;
+x = 5 + 3;
+
+bool a;
+a = verdadero && falso;
+
+bool b;
+b = 5 < 10;
+
+texto msg1;
+msg1 = "a";
+
+bool comp;
+comp = msg1 == "a";
+
+// === Casos inválidos ===
+x = "hola" + 2;           // ❌ suma inválida entre texto y número
+x = 3 + verdadero;        // ❌ suma entre entero y booleano
+b = "a" < 5;              // ❌ comparación entre texto y número
+a = !"texto";             // ❌ negación lógica sobre texto
+comp = 5 == "hola";       // ❌ comparación entre tipos distintos
+
