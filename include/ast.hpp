@@ -88,12 +88,12 @@ struct WhileStatement : public Statement {
 struct ForStatement : public Statement {
     std::shared_ptr<Statement> init;
     std::shared_ptr<Expression> condition;
-    std::shared_ptr<Expression> increment;
+    std::shared_ptr<Statement> increment;
     std::shared_ptr<Statement> body;
 
     ForStatement(std::shared_ptr<Statement> init, 
       std::shared_ptr<Expression> cond,
-      std::shared_ptr<Expression> incr, 
+      std::shared_ptr<Statement> incr, 
       std::shared_ptr<Statement> body
     )
     : init(init), condition(cond), increment(incr), body(body) {}

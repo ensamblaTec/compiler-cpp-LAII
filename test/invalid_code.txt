@@ -1,0 +1,14 @@
+int x = ;
+str mensaje = "Hola
+mostrar(mensaje
+
+if x > 5 {
+  mostrar("Mayor a 5");
+} sino {
+  mostrar("Menor o igual a 5");
+}
+
+entrada = nombre;
+
+bool activo
+mostrar("Listo")

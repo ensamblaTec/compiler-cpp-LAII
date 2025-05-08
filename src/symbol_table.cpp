@@ -64,11 +64,12 @@ bool SymbolTable::isDeclared(const std::string& name) const {
 
 bool SymbolTable::updateValue(const std::string& name, const std::string& newValue, int line, int column) {
   for (auto it = scopes.rbegin(); it != scopes.rend(); ++it) {
-    auto& table = it->second;
-    if (table.count(name)) {
-      table[name].value = newValue;
-      table[name].line = line;
-      table[name].column = column;
+    auto found = it->second.find(name);
+    if (found != it->second.end()) {
+      found->second.value = newValue;
+      found->second.line = line;
+      found->second.column = column;
+
       history.push_back("[ASIGNACIÓN] var '" + name + "' nuevo valor '" + newValue +
         "' en scope '" + it->first + "' (línea " +
         std::to_string(line) + ", col " + std::to_string(column) + ")"
@@ -84,8 +85,11 @@ std::string SymbolTable::getType(const std::string& name) const {
 
     while (true) {
         auto it = scopes.find(scope);
-        if (it != scopes.end() && it->second.count(name)) {
+        if (it != scopes.end()) {
+          auto inner = it->second.find(name);
+          if (inner != it->second.end()) {
             return it->second.at(name).type;
+          }
         }
 
         size_t pos = scope.rfind("::");
@@ -93,18 +97,34 @@ std::string SymbolTable::getType(const std::string& name) const {
         scope = scope.substr(0, pos);
     }
 
-    return scopes.at("global").at(name).type;
+    auto globalIt = scopes.find("global");
+    if (globalIt != scopes.end()) {
+      auto found = globalIt->second.find(name);
+      if (found != globalIt->second.end()) {
+        return found->second.type;
+      }
+    }
+
+    return "error";
 }
 
 Symbol SymbolTable::getSymbol(const std::string& name) const {
-  for (auto it = scopes.rbegin(); it != scopes.rend(); ++it) {
-    auto found = it->second.find(name);
-    if (found != it->second.end()) {
-      return found->second;
+    for (auto it = scopes.rbegin(); it != scopes.rend(); ++it) {
+        auto found = it->second.find(name);
+        if (found != it->second.end()) {
+            return found->second;
+        }
     }
-  }
 
-  return Symbol{"", "error", SymbolCategory::Variable, "", "", -1, -1};
+    auto globalIt = scopes.find("global");
+    if (globalIt != scopes.end()) {
+        auto found = globalIt->second.find(name);
+        if (found != globalIt->second.end()) {
+            return found->second;
+        }
+    }
+
+    return Symbol{"", "error", SymbolCategory::Variable, "", "", -1, -1};
 }
 
 void SymbolTable::printTable() const {

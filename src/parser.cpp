@@ -128,9 +128,9 @@ bool Parser::isAtEnd() const {
 }
 
 void Parser::synchronize() {
+  advance();
   while (!isAtEnd()) {
-    if (peek().type == TokenType::SEMICOLON) {
-      advance();
+    if (previous().type == TokenType::SEMICOLON) {
       return;
     }
 
@@ -436,20 +436,19 @@ std::shared_ptr<Statement> Parser::parseFor() {
     //   return nullptr;
     // }
 
-    auto increment = parseExpression();
+    std::shared_ptr<Statement> increment = parseIncrement();
+    if (!std::dynamic_pointer_cast<Assignment>(increment)) {
+      LOG(LogLevel::ERROR, "[parseFor] El incremento del 'para' debe ser una asignación (por ejemplo: i = i + 1)");
+      ErrorReporter::getInstance().report("El incremento del 'para' debe ser una asignación válida", peek().row, peek().column);
+      semanticErrorOcurred = true;
+      return nullptr;
+    }
+
     if (!increment) {
       LOG(LogLevel::ERROR, "[parseFor] Incremento inválido en 'para'");
       ErrorReporter::getInstance().report("Incremento inválido en 'para'", peek().row, peek().column);
       semanticErrorOcurred = true;
       synchronize();
-      return nullptr;
-    }
-
-    std::string incrementType = inferType(increment);
-    if (incrementType != "entero" && incrementType != "decimal") {
-      LOG(LogLevel::ERROR, "[parseFor] El incremento debe ser una expresión numérica (entero o decimal)");
-      ErrorReporter::getInstance().report("El incremento del 'para' debe ser entero o decimal", peek().row, peek().column);
-      semanticErrorOcurred = true;
       return nullptr;
     }
 
@@ -463,6 +462,38 @@ std::shared_ptr<Statement> Parser::parseFor() {
     return std::make_shared<ForStatement>(initializer, condition, increment, body);
 }
 
+std::shared_ptr<Statement> Parser::parseIncrement() {
+    if (!check(TokenType::IDENTIFIER)) {
+        LOG(LogLevel::ERROR, "[parseIncrement] Se esperaba un identificador para el incremento.");
+        ErrorReporter::getInstance().report("El incremento del 'para' debe iniciar con un identificador", peek().row, peek().column);
+        semanticErrorOcurred = true;
+        return nullptr;
+    }
+
+    std::string name = peek().value;
+    auto assignment = parseAssignment(false);
+
+    if (!assignment) {
+        LOG(LogLevel::ERROR, "[parseIncrement] El incremento no es una asignación válida.");
+        ErrorReporter::getInstance().report("El incremento del 'para' debe ser una asignación válida", peek().row, peek().column);
+        semanticErrorOcurred = true;
+        return nullptr;
+    }
+
+    auto assignExpr = std::dynamic_pointer_cast<Assignment>(assignment);
+    if (assignExpr) {
+        std::string type = inferType(assignExpr->expr);
+        if (type != "entero" && type != "decimal") {
+            LOG(LogLevel::ERROR, "[parseIncrement] El incremento debe ser numérico.");
+            ErrorReporter::getInstance().report("El incremento del 'para' debe ser entero o decimal", peek().row, peek().column);
+            semanticErrorOcurred = true;
+            return nullptr;
+        }
+    }
+
+    return assignment;
+}
+
 std::shared_ptr<Statement> Parser::parsePrint() {
     auto expr = parseExpression();
 
@@ -470,6 +501,7 @@ std::shared_ptr<Statement> Parser::parsePrint() {
       LOG(LogLevel::ERROR, "[parsePrint] Expresión inválida después de 'mostrar'");
       ErrorReporter::getInstance().report("Se esperaba una expresión válida después de 'mostrar'", peek().row, peek().column);
       semanticErrorOcurred = true;
+      synchronize();
       return nullptr;
     }
 
@@ -479,6 +511,7 @@ std::shared_ptr<Statement> Parser::parsePrint() {
     {
       LOG(LogLevel::ERROR, "[parsePrint] Se esperaba ';' después de 'mostrar'");
       ErrorReporter::getInstance().report("Se esperaba ';' al final de la instrucción 'mostrar'", peek().row, peek().column);
+      synchronize();
       return nullptr;
     }
 
@@ -559,7 +592,7 @@ std::shared_ptr<Statement> Parser::parseBlock(const std::string& context) {
     return std::make_shared<BlockStatement>(statements);
 }
 
-std::shared_ptr<Statement> Parser::parseAssignment()
+std::shared_ptr<Statement> Parser::parseAssignment(bool consumeSemicolon)
 {
   if (!match(TokenType::IDENTIFIER)) {
     LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba un identificador al inicio de la asignación. Se encontró: " + peek().getPrint());
@@ -602,7 +635,7 @@ std::shared_ptr<Statement> Parser::parseAssignment()
   std::string varType = symbols.getType(name);
   std::string exprType = inferType(expr); 
 
-  if (exprType == "error") {
+  if (exprType == "error" || varType == "error") {
     semanticErrorOcurred = true;
     return nullptr;
   }
@@ -632,10 +665,12 @@ std::shared_ptr<Statement> Parser::parseAssignment()
 
   symbols.updateValue(name, value, line, column);
 
-  if (!match(TokenType::SEMICOLON)) {
-    LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba ';' después de la asignación");
-    ErrorReporter::getInstance().report("Falta ';' después de la asignación", peek().row, peek().column);
-    return nullptr;
+  if (consumeSemicolon) {
+    if (!match(TokenType::SEMICOLON)) {
+      LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba ';' después de la asignación");
+      ErrorReporter::getInstance().report("Falta ';' después de la asignación", peek().row, peek().column);
+      return nullptr;
+    }
   }
 
   return std::make_shared<Assignment>(name, expr);
@@ -653,7 +688,7 @@ std::shared_ptr<Expression> Parser::parseExpression() {
       logTokenContext("[parseExpression] Operador binario sin operando");
       LOG(LogLevel::ERROR, "[parseExpression] Se encontró un operador binario sin operando izquierdo: " + peek().getPrint());
       ErrorReporter::getInstance().report("Se encontró un operador binario sin operando izquierdo: ", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      semanticErrorOcurred = true;
       return nullptr;
     }
 
@@ -687,9 +722,11 @@ std::shared_ptr<Expression> Parser::parseAssignmentExpression() {
 std::shared_ptr<Expression> Parser::parseOr() {
     auto expr = parseAnd();
     if (!expr) {
-      LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
-      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
+        ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
     while (match(TokenType::OR)) {
@@ -703,9 +740,11 @@ std::shared_ptr<Expression> Parser::parseOr() {
 std::shared_ptr<Expression> Parser::parseAnd() {
     auto expr = parseEquality();
     if (!expr) {
-      LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
-      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
+        ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
     while (match(TokenType::AND)) {
@@ -719,9 +758,11 @@ std::shared_ptr<Expression> Parser::parseAnd() {
 std::shared_ptr<Expression> Parser::parseComparison() {
   auto expr = parseAdditive();
   if (!expr) {
-    LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
-    ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+    if (!semanticErrorOcurred) {
+      LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
+      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+      semanticErrorOcurred = true;
+    }
     return nullptr;
   }
   while (match(TokenType::LT) || match(TokenType::LTE) ||
@@ -730,9 +771,11 @@ std::shared_ptr<Expression> Parser::parseComparison() {
     auto right = parseTerm();
     
     if (!right) {
-      LOG(LogLevel::ERROR, "[parseComparison] Operando derecho inválido para el operador: '" + op + "'");
-      ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseComparison] Operando derecho inválido para el operador: '" + op + "'");
+        ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
 
@@ -744,9 +787,11 @@ std::shared_ptr<Expression> Parser::parseComparison() {
 std::shared_ptr<Expression> Parser::parseEquality() {
   auto expr = parseComparison();
   if (!expr) {
-    LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
-    ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+    if (!semanticErrorOcurred) {
+      LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
+      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+      semanticErrorOcurred = true;
+    }
     return nullptr;
   }
   while (match(TokenType::EQ) || match(TokenType::NEQ)) {
@@ -754,9 +799,11 @@ std::shared_ptr<Expression> Parser::parseEquality() {
     auto right = parseComparison();
 
     if (!right) {
-      LOG(LogLevel::ERROR, "[parseEquality] Operando derecho inválido para el operador: '" + op + "'");
-      ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseEquality] Operando derecho inválido para el operador: '" + op + "'");
+        ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
     expr = std::make_shared<BinaryExpr>(op, expr, right);
@@ -768,9 +815,11 @@ std::shared_ptr<Expression> Parser::parseAdditive() {
     auto expr = parseTerm();
 
     if (!expr) {
-      LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
-      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseAdditive] Operando izquierdo inválido antes del operador '+' o '-'");
+        ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
 
@@ -778,18 +827,22 @@ std::shared_ptr<Expression> Parser::parseAdditive() {
         std::string op = previous().value;
         if (isBinaryOperator(peek().type))
         {
-          LOG(LogLevel::ERROR, "[parseAdditive] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
-          ErrorReporter::getInstance().report("Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+          if (!semanticErrorOcurred) {
+            LOG(LogLevel::ERROR, "[parseAdditive] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
+            ErrorReporter::getInstance().report("Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'", peek().row, peek().column);
+            semanticErrorOcurred = true;
+          }
           return nullptr;
         }
 
         auto right = parseTerm();
         if (!right)
         {
-          LOG(LogLevel::ERROR, "[parseAdditive] Operando derecho inválido para el operador: '" + op + "'");
-          ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+          if (!semanticErrorOcurred) {
+            LOG(LogLevel::ERROR, "[parseAdditive] Operando derecho inválido para el operador: '" + op + "'");
+            ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
+            semanticErrorOcurred = true;
+          }
           return nullptr;
         }
 
@@ -802,9 +855,11 @@ std::shared_ptr<Expression> Parser::parseTerm() {
   auto expr = parseUnary();
 
   if (!expr) {
-    LOG(LogLevel::ERROR, "[parseTerm] Operando izquierdo inválido antes del operador '+' o '-'");
-    ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+    if (!semanticErrorOcurred) {
+      LOG(LogLevel::ERROR, "[parseTerm] Operando izquierdo inválido antes del operador '+' o '-'");
+      ErrorReporter::getInstance().report("Operando izquierdo inválido antes del operador '+' o '-'", peek().row, peek().column);
+      semanticErrorOcurred = true;
+    }
     return nullptr;
   }
 
@@ -812,17 +867,21 @@ std::shared_ptr<Expression> Parser::parseTerm() {
     std::string op = previous().value;
     if (isBinaryOperator(peek().type))
     {
-      LOG(LogLevel::ERROR, "[parseTerm] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
-      ErrorReporter::getInstance().report("Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseTerm] Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'");
+        ErrorReporter::getInstance().report("Operadores binarios consecutivos inválidos: '" + op + "' seguido de '" + peek().value + "'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
 
     auto right = parseUnary();
     if (!right) {
-      LOG(LogLevel::ERROR, "[parseTerm] Operando derecho inválido para el operador: '" + op + "'");
-      ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        LOG(LogLevel::ERROR, "[parseTerm] Operando derecho inválido para el operador: '" + op + "'");
+        ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
 
@@ -845,10 +904,12 @@ std::shared_ptr<Expression> Parser::parsePrimary() {
     std::string name = previous().value;
 
     if (!symbols.isDeclared(name)) {
-      std::string msg = "La variable '" + name + "' no ha sido declarada.";
-      LOG(LogLevel::ERROR, "[parsePrimary] " + msg);
-      ErrorReporter::getInstance().report(msg, peek().row, peek().column);
-  semanticErrorOcurred = true;
+      if (!semanticErrorOcurred) {
+        std::string msg = "La variable '" + name + "' no ha sido declarada.";
+        LOG(LogLevel::ERROR, "[parsePrimary] " + msg);
+        ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
       return nullptr;
     }
 
@@ -856,18 +917,22 @@ std::shared_ptr<Expression> Parser::parsePrimary() {
   }
   if (match(TokenType::LPAREN)) {
     if (check(TokenType::RPAREN)) {
+      if (!semanticErrorOcurred) {
         LOG(LogLevel::ERROR, "[parsePrimary] Se encontró un paréntesis vacío '()'. Se esperaba una expresión dentro");
         ErrorReporter::getInstance().report("Se encontró un paréntesis vacío '()'. Se esperaba una expresión dentro", peek().row, peek().column);
-  semanticErrorOcurred = true;
-        return nullptr;
+        semanticErrorOcurred = true;
+      }
+      return nullptr;
     }
 
     auto expr = parseExpression();
     if (!expr) {
+      if (!semanticErrorOcurred) {
         LOG(LogLevel::ERROR, "[parsePrimary] Se esperaba una expresión válida dentro del paréntesis");
         ErrorReporter::getInstance().report("Se esperaba una expresión válida dentro del paréntesis", peek().row, peek().column);
-  semanticErrorOcurred = true;
-        return nullptr;
+        semanticErrorOcurred = true;
+      }
+      return nullptr;
     }
 
     if (!expect(TokenType::RPAREN, "parsePrimary", "Se esperaba ')' para cerrar la expresión"))
@@ -888,9 +953,11 @@ std::shared_ptr<Expression> Parser::parseUnary() {
         auto right = parseUnary();
 
         if (!right) {
-          LOG(LogLevel::ERROR, "[parseTerm] Operando derecho inválido para el operador: '" + op + "'");
-          ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+          if (!semanticErrorOcurred) {
+            LOG(LogLevel::ERROR, "[parseTerm] Operando derecho inválido para el operador: '" + op + "'");
+            ErrorReporter::getInstance().report("Operando derecho inválido para el operador: '" + op + "'", peek().row, peek().column);
+            semanticErrorOcurred = true;
+          }
           return nullptr;
         }
 
@@ -990,12 +1057,12 @@ void Parser::validateVarDeclared(const std::shared_ptr<Expression>& expr) {
     if (!expr) return;
 
     if (auto var = std::dynamic_pointer_cast<VariableExpr>(expr)) {
-        if (!symbols.isDeclared(var->name)) {
-            std::string msg = "La variable '" + var->name + "' no ha sido declarada previamente.";
-            LOG(LogLevel::ERROR, "[validateVarDeclared] " + msg);
-            ErrorReporter::getInstance().report(msg, peek().row, peek().column);
-  semanticErrorOcurred = true;
-        }
+      if (!symbols.isDeclared(var->name)) {
+        std::string msg = "La variable '" + var->name + "' no ha sido declarada previamente.";
+        LOG(LogLevel::ERROR, "[validateVarDeclared] " + msg);
+        ErrorReporter::getInstance().report(msg, peek().row, peek().column);
+        semanticErrorOcurred = true;
+      }
     }
     else if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
         validateVarDeclared(bin->left);

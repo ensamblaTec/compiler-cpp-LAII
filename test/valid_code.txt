@@ -1,0 +1,46 @@
+// Declaraciones de variables
+entero x;
+bool activo = verdadero;
+texto nombre;
+
+// Inicialización válida
+x = 10;
+nombre = "Luis";
+
+// Uso de operadores aritméticos y lógicos
+x = x + 5;
+activo = (x > 5) && (1 > 2);
+
+// Entrada desde usuario
+mostrar("Introduce tu nombre:");
+entrada nombre;
+
+// Mostrar resultados
+mostrar("Nombre:");
+mostrar(nombre);
+mostrar("Estado activo:");
+mostrar(activo);
+
+// Condicional
+si (activo) {
+  mostrar("Bienvenido al sistema.");
+} sino {
+  mostrar("Acceso denegado.");
+}
+
+si (activo) {
+  mostrar("Bienvenido al sistema.");
+}
+
+// Bucle for con incremento decimal
+entero i;
+para (i = 0; i < 5; i = i + 1) {
+  mostrar(i);
+}
+
+// Bucle while
+mientras (x > 0) {
+  mostrar(x);
+  x = x - 1;
+}
+

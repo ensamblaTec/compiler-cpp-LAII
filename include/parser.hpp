@@ -42,10 +42,11 @@ class Parser
 
     std::shared_ptr<Statement> parseForInitializer();
     std::shared_ptr<Statement> parseFor();
+    std::shared_ptr<Statement> parseIncrement();
 
     std::shared_ptr<Statement> parsePrint();
     std::shared_ptr<Statement> parseInput();
-    std::shared_ptr<Statement> parseAssignment();
+    std::shared_ptr<Statement> parseAssignment(bool consumeSemicolon = true);
     std::shared_ptr<Statement> parseBlock(const std::string& context);
 
     std::shared_ptr<Expression> parseExpression();

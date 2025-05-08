@@ -138,19 +138,24 @@ void printStatementClassic(const std::shared_ptr<Statement>& stmt, int indent)
     else if (auto forStmt = std::dynamic_pointer_cast<ForStatement>(stmt)) {
         printIndent(indent);
         std::cout << "Para\n";
-        printIndent(indent + 1);
-        std::cout << "Inicialización:\n";
-        printInitializerClassic(forStmt->init, indent + 2);
-        printIndent(indent + 1);
-        std::cout << "Condición:\n";
-        printExpressionClassic(forStmt->condition, indent + 2);
-        printIndent(indent + 1);
-        std::cout << "Incremento:\n";
-        printExpressionClassic(forStmt->increment, indent + 2);
-        printIndent(indent + 1);
-        std::cout << "Bloque:\n";
+        if (forStmt->init) printStatementClassic(forStmt->init, indent + 2);
+        else {
+            printIndent(indent + 2); std::cout << "(sin inicialización)\n";
+        }
+
+        if (forStmt->condition) printExpressionClassic(forStmt->condition, indent + 2);
+        else {
+            printIndent(indent + 2); std::cout << "(sin condición)\n";
+        }
+
+        if (forStmt->increment) printStatementClassic(forStmt->increment, indent + 2);
+        else {
+            printIndent(indent + 2); std::cout << "(sin incremento)\n";
+        }
+
         printStatementClassic(forStmt->body, indent + 2);
     }
+
     else if (auto printStmt = std::dynamic_pointer_cast<PrintStatement>(stmt)) {
         printIndent(indent);
         std::cout << "Mostrar\n";
@@ -205,11 +210,24 @@ void printStatementTree(const std::shared_ptr<Statement>& stmt, const std::strin
         printStatementTree(whileStmt->body, indent + "│   ", true);
     }
     else if (auto forStmt = std::dynamic_pointer_cast<ForStatement>(stmt)) {
-        std::cout << "Para\n";
-        printInitializerTree(forStmt->init, indent + "│   ", false);
-        printExpressionTree(forStmt->condition, indent + "│   ", false);
-        printExpressionTree(forStmt->increment, indent + "│   ", false);
-        printStatementTree(forStmt->body, indent + "│   ", true);
+        std::cout << indent << (last ? "└── " : "├── ") << "Para\n";
+
+        std::string nextIndent = indent + (last ? "    " : "│   ");
+
+        std::cout << nextIndent << "├── Inicializador\n";
+        if (forStmt->init) printStatementTree(forStmt->init, nextIndent + "│   ", false);
+        else std::cout << nextIndent << "│   └── (sin inicialización)\n";
+
+        std::cout << nextIndent << "├── Condición\n";
+        if (forStmt->condition) printExpressionTree(forStmt->condition, nextIndent + "│   ", false);
+        else std::cout << nextIndent << "│   └── (sin condición)\n";
+
+        std::cout << nextIndent << "├── Incremento\n";
+        if (forStmt->increment) printStatementTree(forStmt->increment, nextIndent + "│   ", false);
+        else std::cout << nextIndent << "│   └── (sin incremento)\n";
+
+        std::cout << nextIndent << "└── Cuerpo\n";
+        printStatementTree(forStmt->body, nextIndent + "    ", true);
     }
     else if (auto printStmt = std::dynamic_pointer_cast<PrintStatement>(stmt)) {
         std::cout << "Mostrar\n";
