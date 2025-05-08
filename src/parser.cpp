@@ -129,13 +129,12 @@ bool Parser::isAtEnd() const {
 
 void Parser::synchronize() {
   while (!isAtEnd()) {
-    if (previous().type == TokenType::SEMICOLON) {
+    if (peek().type == TokenType::SEMICOLON) {
       advance();
       return;
     }
 
     switch (peek().type) {
-      case TokenType::SEMICOLON:
       case TokenType::RBRACE:
       case TokenType::RPAREN:
       case TokenType::KEYWORD_INT:
@@ -146,6 +145,7 @@ void Parser::synchronize() {
       case TokenType::KEYWORD_FOR:
       case TokenType::KEYWORD_PRINT:
       case TokenType::KEYWORD_INPUT:
+      case TokenType::IDENTIFIER:
         return; 
       default:
         advance();
@@ -564,6 +564,7 @@ std::shared_ptr<Statement> Parser::parseAssignment()
   if (!match(TokenType::IDENTIFIER)) {
     LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba un identificador al inicio de la asignación. Se encontró: " + peek().getPrint());
     ErrorReporter::getInstance().report("Se esperaba un identificador para la asignación", peek().row, peek().column);
+    semanticErrorOcurred = true;
     return nullptr;
   }
 
@@ -573,21 +574,18 @@ std::shared_ptr<Statement> Parser::parseAssignment()
 
   if (!symbols.validateVarDeclared(name, peek().row, peek().column)) {
     semanticErrorOcurred = true;
-    synchronize();
     return nullptr;
   }
 
   if (!match(TokenType::ASSIGN)) {
     LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba '=' en la asignación después de '" + name + "'");
     ErrorReporter::getInstance().report("Se esperaba '=' después del identificador", peek().row, peek().column);
-    synchronize();
     return nullptr;
   }
 
   if (check(TokenType::SEMICOLON) || check(TokenType::RPAREN) || check(TokenType::END_OF_FILE)) {
     LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba una expresión después de '=' pero se encontró: " + peek().getPrint());
     ErrorReporter::getInstance().report("Se esperaba una expresión después de '='", peek().row, peek().column);
-    synchronize();
     return nullptr;
   }
 
@@ -596,7 +594,6 @@ std::shared_ptr<Statement> Parser::parseAssignment()
     LOG(LogLevel::ERROR, "[parseAssignment] Expresión nula en la asignación. Se esperaba un valor después de '='");
     ErrorReporter::getInstance().report("Expresión inválida en la asignación", peek().row, peek().column);
     semanticErrorOcurred = true;
-    synchronize();
     return nullptr;
   }
 
@@ -616,7 +613,6 @@ std::shared_ptr<Statement> Parser::parseAssignment()
         LOG(LogLevel::ERROR, "[parseAssignment] Solo se puede asignar 0 o 1 a una variable bool");
         ErrorReporter::getInstance().report("Solo se puede asignar 0 o 1 a una variable bool", peek().row, peek().column);
         semanticErrorOcurred = true;
-        synchronize();
         return nullptr;
       }
     }
@@ -626,7 +622,6 @@ std::shared_ptr<Statement> Parser::parseAssignment()
     LOG(LogLevel::ERROR, "[parseAssignment] " + msg);
     ErrorReporter::getInstance().report(msg, peek().row, peek().column);
     semanticErrorOcurred = true;
-    synchronize();
     return nullptr;
   }
 
@@ -640,7 +635,6 @@ std::shared_ptr<Statement> Parser::parseAssignment()
   if (!match(TokenType::SEMICOLON)) {
     LOG(LogLevel::ERROR, "[parseAssignment] Se esperaba ';' después de la asignación");
     ErrorReporter::getInstance().report("Falta ';' después de la asignación", peek().row, peek().column);
-    synchronize();
     return nullptr;
   }
 
