@@ -1,2 +1,2 @@
 id,type,value,line,column,category,scope
-a,entero,,8,1,Variable,global
+b,entero,,8,1,Variable,global

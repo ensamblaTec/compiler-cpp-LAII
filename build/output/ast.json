@@ -1,99 +1,66 @@
 [
     {
-        "name": "x",
-        "type": "Declaration",
-        "varType": "entero"
-    },
-    {
-        "name": "x",
-        "type": "Assignment",
-        "value": {
+        "condition": {
             "left": {
                 "type": "NumberExpr",
-                "value": "5"
+                "value": "2"
             },
-            "op": "+",
+            "op": ">",
             "right": {
                 "type": "NumberExpr",
                 "value": "3"
             },
             "type": "BinaryExpr"
-        }
-    },
-    {
-        "name": "a",
-        "type": "Declaration",
-        "varType": "bool"
-    },
-    {
-        "name": "a",
-        "type": "Assignment",
-        "value": {
-            "left": {
-                "type": "BooleanExpr",
-                "value": true
-            },
-            "op": "&&",
-            "right": {
-                "type": "BooleanExpr",
-                "value": false
-            },
-            "type": "BinaryExpr"
-        }
+        },
+        "elseBranch": null,
+        "thenBranch": null,
+        "type": "IfStatement"
     },
     {
         "name": "b",
         "type": "Declaration",
-        "varType": "bool"
+        "varType": "entero"
     },
     {
         "name": "b",
         "type": "Assignment",
         "value": {
-            "left": {
-                "type": "NumberExpr",
-                "value": "5"
-            },
-            "op": "<",
-            "right": {
-                "type": "NumberExpr",
-                "value": "10"
-            },
-            "type": "BinaryExpr"
+            "type": "NumberExpr",
+            "value": "2"
         }
     },
     {
-        "name": "msg1",
-        "type": "Declaration",
-        "varType": "texto"
-    },
-    {
-        "name": "msg1",
+        "name": "c",
         "type": "Assignment",
         "value": {
-            "text": "a",
+            "type": "NumberExpr",
+            "value": "2"
+        }
+    },
+    {
+        "name": "d",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "a",
+        "type": "Assignment",
+        "value": {
+            "text": "hola",
             "type": "StringExpr"
         }
     },
     {
-        "name": "comp",
+        "name": "f",
         "type": "Declaration",
-        "varType": "bool"
+        "varType": "texto"
     },
     {
-        "name": "comp",
+        "name": "f",
         "type": "Assignment",
         "value": {
-            "left": {
-                "name": "msg1",
-                "type": "VariableExpr"
-            },
-            "op": "==",
-            "right": {
-                "text": "a",
-                "type": "StringExpr"
-            },
-            "type": "BinaryExpr"
+            "text": "a",
+            "type": "StringExpr"
         }
     }
 ]
