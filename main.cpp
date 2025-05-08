@@ -41,8 +41,6 @@ int main(int argc, char* argv[])
   
   LOG(LogLevel::INFO, "Analisis lexico correctamente finalizado");
 
-  saveFile("tabla_simbolos", symbolTableToString(tokens));
-
   LOG(LogLevel::INFO, "Comenzando el Parser");
   LOG(LogLevel::INFO, "Generado clase parser...");
   Parser parser(tokens);
@@ -67,5 +65,23 @@ int main(int argc, char* argv[])
 
   LOG(LogLevel::INFO, "Finalizando el Parser");
 
+  // guardado de ficheros
+  // AST
+  Lexer lexer1(file);
+  std::vector<Token> tokens1 = getAllTokens(lexer);
+
+  Parser parser1(tokens1);
+  auto statements1 = parser1.parse();
+
+  // Exportar el AST a un archivo JSON
+  std::string outputFile = "./output/ast.json";
+  exportAstToFile(statements1, outputFile);
+
+  std::cout << "[INFO] AST exportado a ../output/ast.json\n";
+
+  // TABLA SIMBOLOS
+  
+
   return 0;
 }
+

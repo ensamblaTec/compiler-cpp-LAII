@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 #include "parser.hpp"
 #include "logger.hpp"
 #include "utils.hpp"
@@ -77,6 +79,10 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
 const Token& Parser::peek() const
 {
   return tokens[current];
+}
+
+Token Parser::peekNext() const {
+  return current + 1 >= tokens.size() ? tokens.back() : tokens[current+1];
 }
 
 const Token& Parser::advance()
@@ -164,8 +170,28 @@ std::shared_ptr<Statement> Parser::parseStatement()
   if (check(TokenType::KEYWORD_INT) || check(TokenType::KEYWORD_STR) || check(TokenType::KEYWORD_BOOL)) 
       return parseDeclaration();
 
-  if (check(TokenType::IDENTIFIER))
-      return parseAssignment();
+  if (check(TokenType::IDENTIFIER)) {
+    std::string palabra = peek().value;
+    static const std::unordered_set<std::string> tiposInvalidos = {
+      "int", "str", "float", "double", "char", "var"
+    };
+
+    Token prev = previous();
+    Token next = peekNext();
+
+    if ((prev.type == TokenType::SEMICOLON || prev.type == TokenType::END_OF_FILE) &&
+        tiposInvalidos.count(palabra) &&
+        next.type == TokenType::IDENTIFIER) {
+        
+        LOG(LogLevel::ERROR, "[parseStatement] Tipo no válido: '" + palabra + "'");
+        ErrorReporter::getInstance().report("Tipo no válido: '" + palabra + "'. Usa 'entero', 'texto', bool", peek().row, peek().column);
+        advance();
+        synchronize();
+        return nullptr;
+    }
+
+    return parseAssignment();
+  }
 
   if (match(TokenType::KEYWORD_IF))
       return parseIf();

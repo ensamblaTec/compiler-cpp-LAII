@@ -1,4 +1,8 @@
 int x = ;
+entero entero
+entero entero;
+entero entero = entero
+entero entero = entero;
 str mensaje = "Hola
 mostrar(mensaje
 

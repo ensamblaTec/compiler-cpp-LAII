@@ -40,7 +40,7 @@ std::string symbolTableToString(std::vector<Token> tokens) {
     return "";
   }
 
-  std::string buffer = "identificador,tipo,valor,columna,linea\n";
+  std::string buffer = "identificador,tipo,valor,columna,linea,categoria,ambito\n";
 
   for (auto token: tokens)
     buffer += token.getPrintToSymbolTable() + ",\n";
@@ -67,3 +67,19 @@ void createFolder(const char* folderName) {
   }
 }
 
+void exportAstToFile(const std::vector<std::shared_ptr<Statement>>& statements, const std::string& outputPath) {
+    json astJson = json::array();
+
+    for (const auto& stmt : statements) {
+        astJson.push_back(statementToJson(stmt));
+    }
+
+    std::ofstream outFile(outputPath);
+    if (!outFile) {
+        std::cerr << "No se pudo abrir el archivo para exportar el AST: " << outputPath << "\n";
+        return;
+    }
+
+    outFile << astJson.dump(2); // Indentación de 2 espacios
+    outFile.close();
+}

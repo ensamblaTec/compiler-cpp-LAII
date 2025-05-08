@@ -1,10 +1,10 @@
 #pragma once
 
 #include "symbol_table.hpp"
+#include "ast.hpp"
 #include <nlohmann/json.hpp>
+#include <memory>
 
-using json = nlohmann::json;
+nlohmann::json statementToJson(const std::shared_ptr<Statement>& stmt);
+nlohmann::json expressionToJson(const std::shared_ptr<Expression>& expr);
 
-std::string categoryToString(SymbolCategory cat);
-
-void to_json(json& j, const Symbol& sym);

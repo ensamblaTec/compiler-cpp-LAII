@@ -22,6 +22,7 @@ class Parser
     int current;
 
     const Token& peek() const;
+    Token peekNext() const;
     const Token& advance();
 
     bool match(TokenType type);
