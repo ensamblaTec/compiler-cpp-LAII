@@ -67,20 +67,5 @@ int main(int argc, char* argv[])
 
   LOG(LogLevel::INFO, "Finalizando el Parser");
 
-  // json exporter
-  Parser parser1(tokens);
-  auto ast = parser1.parse();
-
-  json programJson = json::array();
-  for (auto& stmt : ast) {
-      programJson.push_back(statementToJson(stmt));
-  }
-
-  std::ofstream out("output/ast.json");
-  out << programJson.dump(4);
-  out.close();
-
-  std::cout << "✅ AST exportado a output/ast.json" << std::endl;
-
   return 0;
 }

@@ -16,6 +16,8 @@ class Parser
 
   private:
 
+    bool semanticErrorOcurred = false;
+
     const std::vector<Token>& tokens;
     int current;
 
@@ -44,7 +46,7 @@ class Parser
     std::shared_ptr<Statement> parsePrint();
     std::shared_ptr<Statement> parseInput();
     std::shared_ptr<Statement> parseAssignment();
-    std::shared_ptr<Statement> parseBlock();
+    std::shared_ptr<Statement> parseBlock(const std::string& context);
 
     std::shared_ptr<Expression> parseExpression();
     std::shared_ptr<Expression> parseAssignmentExpression();
@@ -59,4 +61,6 @@ class Parser
     std::shared_ptr<Expression> parsePrimary();
 
     const Token& previous() const;
+
+    void validateVarDeclared(const std::shared_ptr<Expression>& expr);
 };

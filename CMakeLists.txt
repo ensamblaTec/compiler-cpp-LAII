@@ -14,6 +14,7 @@ set(SOURCES
     src/error_reporter.cpp
     src/symbol_table.cpp
     src/jsonexporter.cpp
+    src/symbol.cpp
 )
 
 # Incluir headers

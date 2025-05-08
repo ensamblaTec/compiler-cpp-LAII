@@ -9,11 +9,15 @@ enum class SymbolCategory {
 };
 
 struct Symbol {
-    std::string name;
-    std::string type;
-    SymbolCategory category;
-    std::string scope;
-    std::string value;
-    int line;
-    int column;
+  Symbol() = default;
+
+  Symbol(std::string name, std::string type, SymbolCategory category, std::string scope, std::string value, int line, int column);
+
+  std::string name;
+  std::string type;
+  SymbolCategory category;
+  std::string scope;
+  std::string value;
+  int line;
+  int column;
 };

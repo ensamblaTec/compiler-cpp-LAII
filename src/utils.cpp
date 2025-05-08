@@ -1,6 +1,9 @@
 #include <iostream>
+#include <fstream>
+
 #include "utils.hpp"
 #include "logger.hpp"
+#include "jsonexporter.hpp"
 
 #if defined(_WIN32)
   #include <direct.h>
@@ -63,3 +66,4 @@ void createFolder(const char* folderName) {
     std::cout << "directorio generado correctamente";
   }
 }
+

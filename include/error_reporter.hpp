@@ -4,9 +4,9 @@
 #include <vector>
 
 struct ErrorInfo {
-    std::string message;
-    int line;
-    int column;
+  std::string message;
+  int line;
+  int column;
 };
 
 class ErrorReporter {
