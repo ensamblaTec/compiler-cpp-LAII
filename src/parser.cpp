@@ -72,6 +72,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
 
   symbols.printTable();
   symbols.printHistory();
+  symbols.exportToCSV("output/tabla_simbolos.txt");
 
   return statements;
 }

@@ -34,6 +34,8 @@ public:
 
   std::vector<std::string> history;
 
+  void exportToCSV(const std::string& filepath) const;
+
 private:
   std::map<std::string, std::map<std::string, Symbol>> scopes;
   std::string currentScope = "global";

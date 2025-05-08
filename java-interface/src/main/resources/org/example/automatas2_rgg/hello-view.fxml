@@ -72,7 +72,7 @@
                             <graphic>
                                 <FontAwesomeIconView glyphName="SITEMAP"/>
                             </graphic>
-                            <fx:include source="ArbolDerivacion.fxml"/>
+                            <fx:include fx:id="arbolDerivacionWrapper" source="ArbolDerivacion.fxml"/>
                         </Tab>
                         <Tab closable="false" text="Código Intermedio">
                             <graphic>

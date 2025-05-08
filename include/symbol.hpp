@@ -20,4 +20,14 @@ struct Symbol {
   std::string value;
   int line;
   int column;
+
+  std::string categoryToString() const {
+    switch (category) {
+      case SymbolCategory::Variable: return "Variable";
+      case SymbolCategory::Function: return "Function";
+      case SymbolCategory::Constant: return "Constant";
+      case SymbolCategory::Parameter: return "Parameter";
+      default: return "INVALID";
+    }
+  }
 };

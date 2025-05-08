@@ -173,3 +173,20 @@ bool SymbolTable::validateVarDeclared(const std::string& name, int row, int col)
     }
     return true;
 }
+
+void SymbolTable::exportToCSV(const std::string& filepath) const {
+  std::ofstream file(filepath);
+  file << "id,type,value,line,column,category,scope\n";
+  for (const auto& [scopeName, symbolMap] : scopes) {
+    for (const auto& [name, symbol] : symbolMap) {
+      file << symbol.name << ","
+            << symbol.type << ","
+            << symbol.value << ","
+            << symbol.column << ","
+            << symbol.line << ","
+            << symbol.categoryToString() << ","
+            << symbol.scope << "\n";
+    }
+  }
+}
+

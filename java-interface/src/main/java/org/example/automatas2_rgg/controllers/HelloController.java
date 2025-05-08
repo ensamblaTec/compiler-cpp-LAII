@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.automatas2_rgg.models.SymbolTableModel;
@@ -42,9 +43,12 @@ public class HelloController {
     @FXML private TextArea consoleOutput;
     @FXML private TextArea codigoIntermedio;
     @FXML private TextArea codigoEnsamblador;
-    @FXML private ArbolDerivacionController arbolDerivacionController;
 
     @FXML private Button runButton;
+
+    @FXML private AnchorPane arbolDerivacionWrapper; // este es el fx:id del fx:include
+
+    private ArbolDerivacionController arbolDerivacionController;
 
     private File archivoActual = null;
     private String contenidoGuardado = "";
@@ -77,6 +81,14 @@ public class HelloController {
         });
 
         inicializarColumnasTabla();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
+        try {
+            AnchorPane root = loader.load();
+            arbolDerivacionController = loader.getController();
+            arbolDerivacionWrapper.getChildren().setAll(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 //        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
 //        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
 //        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
@@ -278,7 +290,7 @@ public class HelloController {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] datos = linea.split(",");
-                if (datos.length == 5) {
+                if (datos.length == 7) {
                     tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4],datos[5],datos[6]));
                 }
             }

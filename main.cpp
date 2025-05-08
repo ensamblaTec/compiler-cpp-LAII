@@ -36,21 +36,22 @@ int main(int argc, char* argv[])
   std::vector<Token> tokens = getAllTokens(lexer);
   LOG(LogLevel::INFO, "FINALIZANDO LEXER...");
 
-  LOG(LogLevel::INFO, "se han generado: " + std::to_string(tokens.size()) + " tokens");
-  for (const auto token: tokens) token.print();
+  // LOG(LogLevel::INFO, "se han generado: " + std::to_string(tokens.size()) + " tokens");
+  // for (const auto token: tokens) token.print();
   
-  LOG(LogLevel::INFO, "Analisis lexico correctamente finalizado");
-
-  LOG(LogLevel::INFO, "Comenzando el Parser");
-  LOG(LogLevel::INFO, "Generado clase parser...");
+  LOG(LogLevel::INFO, "INICIANDO PARSER...");
   Parser parser(tokens);
-  LOG(LogLevel::INFO, "Clase parser generada...");
-  LOG(LogLevel::INFO, "MOSTRANDO LOS TOKEN GENERADOS");
-  for (const auto tok: tokens)
-    LOG(LogLevel::DEBUG, "TokenGenerado: " + tok.getPrint());
-  LOG(LogLevel::INFO, "INICIANDO EL PARSER...");
+  // LOG(LogLevel::INFO, "MOSTRANDO LOS TOKEN GENERADOS");
+  // for (const auto tok: tokens)
+  //   LOG(LogLevel::DEBUG, "TokenGenerado: " + tok.getPrint());
   auto statements = parser.parse();
   LOG(LogLevel::INFO, "FINALIZANDO EL PARSER...");
+
+  exportAstToJsonFile(statements, "output/ast.json");
+  std::cout << "[INFO] AST exportado a ../output/ast.json\n";
+
+  
+  std::cout << "[INFO] CSV exportado a ../output/tabla_simbolos.csv\n";
 
   std::cout << "=== AST modo clásico ===\n";
   for (const auto& stmt : statements) {
@@ -64,23 +65,6 @@ int main(int argc, char* argv[])
   }
 
   LOG(LogLevel::INFO, "Finalizando el Parser");
-
-  // guardado de ficheros
-  // AST
-  Lexer lexer1(file);
-  std::vector<Token> tokens1 = getAllTokens(lexer);
-
-  Parser parser1(tokens1);
-  auto statements1 = parser1.parse();
-
-  // Exportar el AST a un archivo JSON
-  std::string outputFile = "./output/ast.json";
-  exportAstToFile(statements1, outputFile);
-
-  std::cout << "[INFO] AST exportado a ../output/ast.json\n";
-
-  // TABLA SIMBOLOS
-  
 
   return 0;
 }
