@@ -1,0 +1,5 @@
+MOV AX, OFFSET msg
+CALL printf
+MOV AX, 0
+RET
+msg DB "Hola mundo", 0
