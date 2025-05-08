@@ -246,6 +246,9 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
     int column = previous().column;
     Symbol symbol(name, type, SymbolCategory::Variable, symbols.getCurrentScope(), "", line, column);
 
+    std::string msg = std::string("symbol:\n") + "\tname: " + symbol.name + ",\tvalue: " + symbol.value;
+    LOG(LogLevel::WARNING, msg);
+
     LOG(LogLevel::DEBUG, " Declarando '" + name + "' en scope: " + symbols.getCurrentScope());
 
     if (!symbols.declare(symbol)) {
@@ -286,7 +289,12 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
         return nullptr;
       }
 
-      symbols.updateValue(name, exprType, line, column);
+      std::string value = "";
+      if (auto num = std::dynamic_pointer_cast<NumberExpr>(expr)) value = num->value;
+      else if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) value = str->text;
+      else if (auto boolean = std::dynamic_pointer_cast<BooleanExpr>(expr)) value = boolean->value ? "verdadero" : "falso";
+      symbols.updateValue(name, value, line, column);
+      LOG(LogLevel::WARNING, "[updateValue] " + msg);
 
       return std::make_shared<Assignment>(name, expr);
     }
@@ -582,7 +590,7 @@ std::shared_ptr<Statement> Parser::parseBlock(const std::string& context) {
     if (!match(TokenType::LBRACE)) {
       LOG(LogLevel::ERROR, "[parseBlock] Se esperaba '{' para iniciar un bloque");
       ErrorReporter::getInstance().report("Se esperaba '{' para iniciar un bloque", peek().row, peek().column);
-  semanticErrorOcurred = true;
+      semanticErrorOcurred = true;
       return nullptr;
     }
 

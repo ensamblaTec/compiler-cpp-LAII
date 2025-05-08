@@ -89,11 +89,6 @@ public class HelloController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        cargarArchivoEnCodeArea(codigoFuente, "codigo_fuente.txt");
-//        cargarArchivoEnTextArea(codigoIntermedio, "codigo_intermedio.txt");
-//        cargarArchivoEnTextArea(codigoEnsamblador, "codigo_ensamblador.txt");
-//        cargarArchivoEnTextArea(tablaSimbolos, "tabla_simbolos.txt");
-        // cargarArbolDeDerivacion();
     }
 
     public void inicializarColumnasTabla() {
@@ -299,24 +294,6 @@ public class HelloController {
         }
     }
 
-
-    private void cargarArchivoEn(TextInputControl destino, Path ruta) {
-        try {
-            if (Files.exists(ruta)) {
-                String contenido = Files.readString(ruta, StandardCharsets.UTF_8);
-                destino.setText(contenido);
-            } else {
-                String mensaje = "No se encontró el archivo: " + ruta.getFileName();
-                destino.setText(mensaje);
-                consoleOutput.appendText(mensaje + "\n");
-            }
-        } catch (IOException e) {
-            String mensaje = "❌ Error al leer " + ruta.getFileName() + ":\n" + e.getMessage();
-            destino.setText(mensaje);
-            consoleOutput.appendText(mensaje + "\n");
-        }
-    }
-
     private void cargarSalidasGeneradas() {
         Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
 
@@ -331,23 +308,6 @@ public class HelloController {
         }
     }
 
-    private String compilarCodigo(String codigo) throws IOException {
-        // 1. Guardar el código en un archivo fuente
-        Path inputPath = Paths.get("/home/ensamblatec/develop/cpp/compilator_rgg/entrada.txt");
-        Files.writeString(inputPath, codigo, StandardCharsets.UTF_8);
-
-        // 2. Ejecutar compilador C++
-        ProcessBuilder pb = new ProcessBuilder("./compilador", "entrada.txt");
-        pb.directory(new File("/home/ensamblatec/develop/cpp/compilator_rgg"));
-        pb.redirectErrorStream(true);
-
-        Process proceso = pb.start();
-
-        // 3. Leer y devolver salida
-        return new BufferedReader(new InputStreamReader(proceso.getInputStream()))
-                .lines().collect(Collectors.joining("\n"));
-    }
-
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(titulo);
@@ -355,61 +315,6 @@ public class HelloController {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-
-    private void mostrarResultado(String mensaje) {
-        // Puedes usar un Label o TextArea para mostrarlo en la UI
-        System.out.println(mensaje); // por ahora, consola
-    }
-
-
-    private void cargarArchivoEnCodeArea(CodeArea codeArea, String nombreArchivo) {
-        try (InputStream is = getClass().getResourceAsStream("/data/" + nombreArchivo);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-
-            StringBuilder contenido = new StringBuilder();
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                contenido.append(linea).append("\n");
-            }
-            codeArea.replaceText(contenido.toString());
-        } catch (IOException e) {
-            codeArea.replaceText("Error cargando archivo: " + nombreArchivo);
-            e.printStackTrace();
-        }
-    }
-
-    private void cargarArchivoEnTextArea(TextArea textArea, String nombreArchivo) {
-        try (InputStream is = getClass().getResourceAsStream("/data/" + nombreArchivo);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
-
-            StringBuilder contenido = new StringBuilder();
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                contenido.append(linea).append("\n");
-            }
-            textArea.setText(contenido.toString());
-
-        } catch (IOException | NullPointerException e) {
-            textArea.setText("Error cargando archivo: " + nombreArchivo);
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void mostrarArbolDeDerivacion() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
-            Parent root = fxmlLoader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Árbol de Derivación");
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 
 }
 

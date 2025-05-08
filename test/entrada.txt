@@ -1,0 +1,11 @@
+si (2 > 3) {}
+
+entero b;
+b = 2;
+
+entero c = 2;
+entero d;
+
+texto a = "hola";
+texto f;
+f = "a";

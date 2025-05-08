@@ -1,7 +1,66 @@
 [
     {
+        "condition": {
+            "left": {
+                "type": "NumberExpr",
+                "value": "2"
+            },
+            "op": ">",
+            "right": {
+                "type": "NumberExpr",
+                "value": "3"
+            },
+            "type": "BinaryExpr"
+        },
+        "elseBranch": null,
+        "thenBranch": null,
+        "type": "IfStatement"
+    },
+    {
         "name": "b",
         "type": "Declaration",
         "varType": "entero"
+    },
+    {
+        "name": "b",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "2"
+        }
+    },
+    {
+        "name": "c",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "2"
+        }
+    },
+    {
+        "name": "d",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "a",
+        "type": "Assignment",
+        "value": {
+            "text": "hola",
+            "type": "StringExpr"
+        }
+    },
+    {
+        "name": "f",
+        "type": "Declaration",
+        "varType": "texto"
+    },
+    {
+        "name": "f",
+        "type": "Assignment",
+        "value": {
+            "text": "a",
+            "type": "StringExpr"
+        }
     }
 ]
