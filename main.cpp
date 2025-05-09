@@ -9,6 +9,7 @@
 #include "astprinter.hpp"
 #include "utils.hpp"
 #include "jsonexporter.hpp"
+#include "ir_generator.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -50,8 +51,13 @@ int main(int argc, char* argv[])
   exportAstToJsonFile(statements, "output/ast.json");
   std::cout << "[INFO] AST exportado a ../output/ast.json\n";
 
-  
-  std::cout << "[INFO] CSV exportado a ../output/tabla_simbolos.csv\n";
+  IRGenerator generator;
+  std::vector<IRInstruction> ir_code = generator.generateFromAST(statements);
+
+  std::cout << "=== Código Intermedio (TAC) ===\n";
+  for (const auto& instr : ir_code) {
+      std::cout << instr.op << " " << instr.arg1 << ", " << instr.arg2 << " -> " << instr.result << std::endl;
+  }
 
   std::cout << "=== AST modo clásico ===\n";
   for (const auto& stmt : statements) {

@@ -13,7 +13,19 @@
             "type": "BinaryExpr"
         },
         "elseBranch": null,
-        "thenBranch": null,
+        "thenBranch": {
+            "statements": [
+                {
+                    "name": "l",
+                    "type": "Assignment",
+                    "value": {
+                        "type": "NumberExpr",
+                        "value": "2"
+                    }
+                }
+            ],
+            "type": "BlockStatement"
+        },
         "type": "IfStatement"
     },
     {

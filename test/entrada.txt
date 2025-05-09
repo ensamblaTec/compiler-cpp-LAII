@@ -1,4 +1,6 @@
-si (2 > 3) {}
+si (2 > 3) {
+    entero l = 2;
+  }
 
 entero b;
 b = 2;

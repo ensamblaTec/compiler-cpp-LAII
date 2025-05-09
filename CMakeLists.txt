@@ -15,6 +15,7 @@ set(SOURCES
     src/symbol_table.cpp
     src/jsonexporter.cpp
     src/symbol.cpp
+    src/ir_generator.cpp
 )
 
 # Incluir headers

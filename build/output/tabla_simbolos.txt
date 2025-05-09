@@ -1,6 +1,7 @@
 id,type,value,line,column,category,scope
-a,texto,hola,7,9,Variable,global
-b,entero,2,1,4,Variable,global
-c,entero,2,8,6,Variable,global
-d,entero,0,8,7,Variable,global
-f,texto,a,1,11,Variable,global
+a,texto,hola,7,11,Variable,global
+b,entero,2,1,6,Variable,global
+c,entero,2,8,8,Variable,global
+d,entero,0,8,9,Variable,global
+f,texto,a,1,13,Variable,global
+l,entero,2,12,2,Variable,global::if_1
