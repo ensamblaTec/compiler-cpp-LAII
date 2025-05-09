@@ -1,0 +1,115 @@
+#include "ir_optimizer.hpp"
+#include <fstream>
+#include <string>
+#include <iostream>
+#include <regex>
+#include <map>
+
+bool IROptimizer::isNumeric(const std::string& s) {
+    if (s.empty()) return false;
+    if (s[0] == '-' && s.size() > 1) return std::all_of(s.begin() + 1, s.end(), ::isdigit);
+    return std::all_of(s.begin(), s.end(), ::isdigit);
+}
+
+bool IROptimizer::isStringLiteral(const std::string& s) {
+    return s.size() >= 2 && s.front() == '"' && s.back() == '"';
+}
+
+void IROptimizer::execute(const std::vector<IRInstruction>& instructions) {
+    std::map<std::string, std::string> variables;
+    std::map<std::string, size_t> labels;
+
+    auto isNumeric = [](const std::string& s) {
+        if (s.empty()) return false;
+        if (s[0] == '-' && s.size() > 1) return std::all_of(s.begin() + 1, s.end(), ::isdigit);
+        return std::all_of(s.begin(), s.end(), ::isdigit);
+    };
+
+    auto isStringLiteral = [](const std::string& s) {
+        return s.size() >= 2 && s.front() == '"' && s.back() == '"';
+    };
+
+    auto getValue = [&](const std::string& token) {
+        if (isStringLiteral(token)) return token;
+        if (isNumeric(token)) return token;
+        if (variables.count(token)) return variables[token];
+        return std::string("0");
+    };
+
+    for (size_t i = 0; i < instructions.size(); ++i) {
+        if (instructions[i].op == "LABEL") {
+            labels[instructions[i].arg1] = i;
+        }
+    }
+
+    for (size_t ip = 0; ip < instructions.size(); ++ip) {
+        const auto& instr = instructions[ip];
+        const std::string& op = instr.op;
+
+        if (op == "ASSIGN") {
+            variables[instr.result] = getValue(instr.arg1);
+        }
+        else if (op == "PRINT") {
+            std::string val = getValue(instr.arg1);
+            if (isStringLiteral(val)) val = val.substr(1, val.length() - 2);
+            std::cout << val << std::endl;
+        }
+        else if (op == "INPUT") {
+            std::cout << "> ";
+            std::string input;
+            std::getline(std::cin, input);
+            variables[instr.arg1] = input;
+        }
+        else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "%") {
+            int left = std::stoi(getValue(instr.arg1));
+            int right = std::stoi(getValue(instr.arg2));
+            int result = 0;
+
+            if (op == "+") result = left + right;
+            else if (op == "-") result = left - right;
+            else if (op == "*") result = left * right;
+            else if (op == "/") result = (right != 0 ? left / right : 0);
+            else if (op == "%") result = (right != 0 ? left % right : 0);
+
+            variables[instr.result] = std::to_string(result);
+        }
+        else if (op == ">" || op == "<" || op == "==" || op == ">=" || op == "<=" || op == "!=") {
+            int left = std::stoi(getValue(instr.arg1));
+            int right = std::stoi(getValue(instr.arg2));
+            bool cond = false;
+
+            if (op == ">") cond = left > right;
+            else if (op == "<") cond = left < right;
+            else if (op == "==") cond = left == right;
+            else if (op == ">=") cond = left >= right;
+            else if (op == "<=") cond = left <= right;
+            else if (op == "!=") cond = left != right;
+
+            variables[instr.result] = cond ? "1" : "0";
+        }
+        else if (op == "IF_FALSE_GOTO") {
+            int cond = std::stoi(getValue(instr.arg1));
+            if (cond == 0) {
+                ip = labels[instr.result];
+                continue;
+            }
+        }
+        else if (op == "GOTO") {
+            ip = labels[instr.result];
+            continue;
+        }
+        else if (op == "LABEL") {
+            continue;
+        }
+    }
+}
+
+std::string IROptimizer::getValue(const std::string& operand) {
+    if (variables.count(operand)) return variables[operand];
+    return operand;
+}
+
+bool IROptimizer::isTruthy(const std::string& val) {
+    return val != "0" && val != "falso";
+}
+

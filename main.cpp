@@ -10,6 +10,7 @@
 #include "utils.hpp"
 #include "jsonexporter.hpp"
 #include "ir_generator.hpp"
+#include "ir_optimizer.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -53,11 +54,18 @@ int main(int argc, char* argv[])
 
   IRGenerator generator;
   std::vector<IRInstruction> ir_code = generator.generateFromAST(statements);
+  std::string bufferIR;
 
   std::cout << "=== Código Intermedio (TAC) ===\n";
   for (const auto& instr : ir_code) {
       std::cout << instr.op << " " << instr.arg1 << ", " << instr.arg2 << " -> " << instr.result << std::endl;
+      bufferIR = bufferIR + instr.op + "," + instr.arg1 + "," + instr.arg2 + "," + instr.result + "\n";
   }
+  saveFile("ir", bufferIR);
+
+  std::cout << "=== Optimizacion Código Intermedio (TAC) ===\n";
+  IROptimizer optimizer;
+  optimizer.execute(ir_code);
 
   std::cout << "=== AST modo clásico ===\n";
   for (const auto& stmt : statements) {

@@ -58,6 +58,9 @@ void IRGenerator::generateFromStatement(const std::shared_ptr<Statement>& stmt) 
         instructions.emplace_back("GOTO", "", "", labelCond);
         instructions.emplace_back("LABEL", labelEnd, "", "");
     }
+    else if (auto input = std::dynamic_pointer_cast<InputStatement>(stmt)) {
+        instructions.push_back(IRInstruction{"INPUT", input->variable, "", ""});
+    }
 }
 
 std::string IRGenerator::generateFromExpression(const std::shared_ptr<Expression>& expr) {
@@ -78,7 +81,7 @@ std::string IRGenerator::generateFromExpression(const std::shared_ptr<Expression
         return boolean->value ? "1" : "0";
     }
     if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) {
-        return str->text;
+        return "\"" + str->text + "\"";
     }
     return "error";
 }

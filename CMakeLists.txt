@@ -16,6 +16,7 @@ set(SOURCES
     src/jsonexporter.cpp
     src/symbol.cpp
     src/ir_generator.cpp
+    src/ir_optimizer.cpp
 )
 
 # Incluir headers

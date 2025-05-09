@@ -1,0 +1,26 @@
+ASSIGN,10,,x
+ASSIGN,5,,y
+ASSIGN,"Resultado:",,mensaje
+ASSIGN,1,,activo
+*,y,2,t1
++,x,t1,t2
+ASSIGN,t2,,z
+PRINT,mensaje,,
+PRINT,z,,
+>,z,20,t3
+IF_FALSE_GOTO,t3,,t4
+PRINT,"Mayor que 20",,
+GOTO,,,t5
+LABEL,t4,,
+PRINT,"20 o menor",,
+LABEL,t5,,
+PRINT,"Hola:",,
+PRINT,"Iteración",,
+LABEL,t6,,
+>,x,0,t8
+IF_FALSE_GOTO,t8,,t7
+PRINT,x,,
+-,x,1,t9
+ASSIGN,t9,,x
+GOTO,,,t6
+LABEL,t7,,

@@ -1,7 +1,8 @@
 id,type,value,line,column,category,scope
-a,texto,hola,7,11,Variable,global
-b,entero,2,1,6,Variable,global
-c,entero,2,8,8,Variable,global
-d,entero,0,8,9,Variable,global
-f,texto,a,1,13,Variable,global
-l,entero,2,12,2,Variable,global::if_1
+activo,bool,verdadero,6,6,Variable,global
+i,entero,,21,25,Variable,global
+mensaje,texto,Resultado:,7,5,Variable,global
+nombre,texto,"",7,19,Variable,global
+x,entero,,3,32,Variable,global
+y,entero,5,8,2,Variable,global
+z,entero,,1,8,Variable,global
