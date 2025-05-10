@@ -4,6 +4,8 @@
 #include <iostream>
 #include <regex>
 #include <map>
+#include <vector>
+#include <set>
 
 bool IROptimizer::isNumeric(const std::string& s) {
     if (s.empty()) return false;
@@ -113,3 +115,64 @@ bool IROptimizer::isTruthy(const std::string& val) {
     return val != "0" && val != "falso";
 }
 
+std::vector<IRInstruction> IROptimizer::eliminateDeadCode(const std::vector<IRInstruction>& input) {
+  std::set<std::string> usedVars;
+
+  for (const auto& instr: input) {
+    if (!instr.arg1.empty()) usedVars.insert(instr.arg1);
+    if (!instr.arg2.empty()) usedVars.insert(instr.arg2);
+    if (instr.op == "PRINT" || instr.op == "INPUT" || instr.op == "GOTO" || instr.op == "IF_FALSE_GOTO") {
+      usedVars.insert(instr.result);
+    }
+  }
+
+  std::vector<IRInstruction> optimized;
+  for (const auto& instr: input) {
+    if (instr.op == "ASSIGN" && !usedVars.count(instr.result)) {
+      continue;
+    }
+    optimized.push_back(instr);
+  }
+
+  return optimized;
+}
+
+std::vector<IRInstruction> IROptimizer::optimize(const std::vector<IRInstruction>& original) {
+  std::vector<IRInstruction> result = original;
+
+  result = eliminateDeadCode(result);
+  result = copyPropagation(result);
+
+  return result;
+}
+
+std::vector<IRInstruction> IROptimizer::copyPropagation(const std::vector<IRInstruction>& input) {
+  std::unordered_map<std::string, std::string> copyTable;
+  std::vector<IRInstruction> optimized;
+
+  for (const auto& instr: input) {
+    IRInstruction current = instr;
+
+    if (current.op == "ASSIGN" && !current.arg1.empty() && current.arg2.empty()) {
+      if (!isStringLiteral(current.arg1) && !isNumeric(current.arg1)) {
+        copyTable[current.result] = copyTable.count(current.arg1) ? copyTable[current.arg1] : current.arg1;
+        optimized.push_back(current);
+        continue;
+      }
+    }
+
+    if (copyTable.count(current.arg1)) {
+      current.arg1 = copyTable[current.arg1];
+    }
+
+    if (copyTable.count(current.arg2)) {
+      current.arg2 = copyTable[current.arg2];
+    }
+
+    optimized.push_back(current);
+  }
+
+  return optimized;
+}
+
+void printIRStats(const std::vector<IRInstruction)

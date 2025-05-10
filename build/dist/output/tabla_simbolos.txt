@@ -1,6 +1,2 @@
 id,type,value,line,column,category,scope
-activo,bool,verdadero,6,6,Variable,global
-mensaje,texto,Resultado:,7,5,Variable,global
-x,entero,,3,31,Variable,global
-y,entero,5,8,2,Variable,global
-z,entero,,1,8,Variable,global
+a,entero,0,8,1,Variable,global

@@ -8,6 +8,8 @@ class IROptimizer {
   public:
     void execute(const std::vector<IRInstruction>& instructions);
 
+    std::vector<IRInstruction> optimize(const std::vector<IRInstruction>& original);
+
     bool isNumeric(const std::string& s);
     bool isStringLiteral(const std::string& s);
 
@@ -17,4 +19,6 @@ class IROptimizer {
 
     std::string getValue(const std::string& operand);
     bool isTruthy(const std::string& val);
+    std::vector<IRInstruction> eliminateDeadCode(const std::vector<IRInstruction>& input);
+    std::vector<IRInstruction> copyPropagation(const std::vector<IRInstruction>& input);
 };

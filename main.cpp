@@ -65,7 +65,12 @@ int main(int argc, char* argv[])
 
   std::cout << "=== Optimizacion Código Intermedio (TAC) ===\n";
   IROptimizer optimizer;
-  optimizer.execute(ir_code);
+  // optimizer.execute(ir_code);
+  std::vector<IRInstruction> ir_code_optimized = optimizer.optimize(ir_code);
+  for (const auto& instr : ir_code_optimized) {
+    std::cout << instr.op << " " << instr.arg1 << ", " << instr.arg2 << " -> " << instr.result << std::endl;
+    bufferIR = bufferIR + instr.op + "," + instr.arg1 + "," + instr.arg2 + "," + instr.result + "\n";
+  }
 
   std::cout << "=== AST modo clásico ===\n";
   for (const auto& stmt : statements) {

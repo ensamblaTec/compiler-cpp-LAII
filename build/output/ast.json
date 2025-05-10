@@ -1,14 +1,6 @@
 [
     {
-        "name": "x",
-        "type": "Assignment",
-        "value": {
-            "type": "NumberExpr",
-            "value": "10"
-        }
-    },
-    {
-        "name": "y",
+        "name": "a",
         "type": "Assignment",
         "value": {
             "type": "NumberExpr",
@@ -16,230 +8,55 @@
         }
     },
     {
-        "name": "z",
+        "name": "b",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "10"
+        }
+    },
+    {
+        "name": "c",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "20"
+        }
+    },
+    {
+        "name": "x",
         "type": "Declaration",
         "varType": "entero"
     },
     {
-        "name": "mensaje",
-        "type": "Assignment",
-        "value": {
-            "text": "Resultado:",
-            "type": "StringExpr"
-        }
-    },
-    {
-        "name": "activo",
-        "type": "Assignment",
-        "value": {
-            "type": "BooleanExpr",
-            "value": true
-        }
-    },
-    {
-        "name": "z",
+        "name": "x",
         "type": "Assignment",
         "value": {
             "left": {
-                "name": "x",
+                "name": "a",
                 "type": "VariableExpr"
             },
             "op": "+",
             "right": {
-                "left": {
-                    "name": "y",
-                    "type": "VariableExpr"
-                },
-                "op": "*",
-                "right": {
-                    "type": "NumberExpr",
-                    "value": "2"
-                },
-                "type": "BinaryExpr"
+                "name": "b",
+                "type": "VariableExpr"
             },
             "type": "BinaryExpr"
         }
     },
     {
+        "name": "c",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "100"
+        }
+    },
+    {
         "expr": {
-            "name": "mensaje",
+            "name": "x",
             "type": "VariableExpr"
         },
         "type": "PrintStatement"
-    },
-    {
-        "expr": {
-            "name": "z",
-            "type": "VariableExpr"
-        },
-        "type": "PrintStatement"
-    },
-    {
-        "condition": {
-            "left": {
-                "name": "z",
-                "type": "VariableExpr"
-            },
-            "op": ">",
-            "right": {
-                "type": "NumberExpr",
-                "value": "20"
-            },
-            "type": "BinaryExpr"
-        },
-        "elseBranch": {
-            "statements": [
-                {
-                    "expr": {
-                        "text": "20 o menor",
-                        "type": "StringExpr"
-                    },
-                    "type": "PrintStatement"
-                }
-            ],
-            "type": "BlockStatement"
-        },
-        "thenBranch": {
-            "statements": [
-                {
-                    "expr": {
-                        "text": "Mayor que 20",
-                        "type": "StringExpr"
-                    },
-                    "type": "PrintStatement"
-                }
-            ],
-            "type": "BlockStatement"
-        },
-        "type": "IfStatement"
-    },
-    {
-        "name": "nombre",
-        "type": "Declaration",
-        "varType": "texto"
-    },
-    {
-        "type": "InputStatement",
-        "variable": "nombre"
-    },
-    {
-        "expr": {
-            "text": "Hola:",
-            "type": "StringExpr"
-        },
-        "type": "PrintStatement"
-    },
-    {
-        "expr": {
-            "name": "nombre",
-            "type": "VariableExpr"
-        },
-        "type": "PrintStatement"
-    },
-    {
-        "name": "i",
-        "type": "Declaration",
-        "varType": "entero"
-    },
-    {
-        "body": {
-            "statements": [
-                {
-                    "expr": {
-                        "text": "Iteración",
-                        "type": "StringExpr"
-                    },
-                    "type": "PrintStatement"
-                },
-                {
-                    "expr": {
-                        "name": "i",
-                        "type": "VariableExpr"
-                    },
-                    "type": "PrintStatement"
-                }
-            ],
-            "type": "BlockStatement"
-        },
-        "condition": {
-            "left": {
-                "name": "i",
-                "type": "VariableExpr"
-            },
-            "op": "<",
-            "right": {
-                "type": "NumberExpr",
-                "value": "3"
-            },
-            "type": "BinaryExpr"
-        },
-        "increment": {
-            "name": "i",
-            "type": "Assignment",
-            "value": {
-                "left": {
-                    "name": "i",
-                    "type": "VariableExpr"
-                },
-                "op": "+",
-                "right": {
-                    "type": "NumberExpr",
-                    "value": "1"
-                },
-                "type": "BinaryExpr"
-            }
-        },
-        "init": {
-            "name": "i",
-            "type": "Assignment",
-            "value": {
-                "type": "NumberExpr",
-                "value": "0"
-            }
-        },
-        "type": "ForStatement"
-    },
-    {
-        "body": {
-            "statements": [
-                {
-                    "expr": {
-                        "name": "x",
-                        "type": "VariableExpr"
-                    },
-                    "type": "PrintStatement"
-                },
-                {
-                    "name": "x",
-                    "type": "Assignment",
-                    "value": {
-                        "left": {
-                            "name": "x",
-                            "type": "VariableExpr"
-                        },
-                        "op": "-",
-                        "right": {
-                            "type": "NumberExpr",
-                            "value": "1"
-                        },
-                        "type": "BinaryExpr"
-                    }
-                }
-            ],
-            "type": "BlockStatement"
-        },
-        "condition": {
-            "left": {
-                "name": "x",
-                "type": "VariableExpr"
-            },
-            "op": ">",
-            "right": {
-                "type": "NumberExpr",
-                "value": "0"
-            },
-            "type": "BinaryExpr"
-        },
-        "type": "WhileStatement"
     }
 ]
