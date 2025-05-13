@@ -1,5 +1,2 @@
 id,type,value,line,column,category,scope
-a,entero,5,8,1,Variable,global
-b,entero,10,8,2,Variable,global
-c,entero,100,1,6,Variable,global
-x,entero,,1,5,Variable,global
+x,entero,,5,8,Variable,global

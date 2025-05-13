@@ -11,6 +11,7 @@
 #include "jsonexporter.hpp"
 #include "ir_generator.hpp"
 #include "ir_optimizer.hpp"
+#include "asm_generator.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -66,6 +67,7 @@ int main(int argc, char* argv[])
   std::cout << "=== Optimizacion Código Intermedio (TAC) ===\n";
   IROptimizer optimizer;
   // optimizer.execute(ir_code);
+
   std::vector<IRInstruction> ir_code_optimized = optimizer.optimize(ir_code);
   for (const auto& instr : ir_code_optimized) {
     std::cout << instr.op << " " << instr.arg1 << ", " << instr.arg2 << " -> " << instr.result << std::endl;
@@ -74,16 +76,20 @@ int main(int argc, char* argv[])
 
   std::cout << "=== AST modo clásico ===\n";
   for (const auto& stmt : statements) {
-      printStatementClassic(stmt);
+    printStatementClassic(stmt);
   }
 
   std::cout << "\n=== AST modo árbol ===\n";
   for (size_t i = 0; i < statements.size(); ++i) {
-      bool isLast = (i == statements.size() - 1);
-      printStatementTree(statements[i], "", isLast);
+    bool isLast = (i == statements.size() - 1);
+    printStatementTree(statements[i], "", isLast);
   }
 
-  LOG(LogLevel::INFO, "Finalizando el Parser");
+  std::cout << "\n=== SALIDA ===\n";
+  AsmGenerator asmGenerator;
+  std::string asmCode = asmGenerator.generate(ir_code_optimized);
+
+  std::cout << "\n=== SALIDA ASM RISC-V ===\n" << asmCode << std::endl; 
 
   return 0;
 }

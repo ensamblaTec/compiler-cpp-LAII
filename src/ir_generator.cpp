@@ -1,4 +1,5 @@
 #include "ir_generator.hpp"
+#include <iostream>
 
 std::vector<IRInstruction> IRGenerator::generateFromAST(const std::vector<std::shared_ptr<Statement>>& statements) {
     instructions.clear();
@@ -90,3 +91,19 @@ std::string IRGenerator::newTemp() {
     return "t" + std::to_string(++tempCounter);
 }
 
+void printIRStats(const std::vector<IRInstruction>& ir, const std::string& nombre) {
+    int asignaciones = 0, aritmeticas = 0, saltos = 0, impresiones = 0;
+    for (const auto& instr : ir) {
+        if (instr.op == "ASSIGN") asignaciones++;
+        else if (instr.op == "+" || instr.op == "-" || instr.op == "*" || instr.op == "/" || instr.op == "%") aritmeticas++;
+        else if (instr.op == "GOTO" || instr.op == "IF_FALSE_GOTO") saltos++;
+        else if (instr.op == "PRINT") impresiones++;
+    }
+
+    std::cout << "\nEstadísticas [" << nombre << "]\n";
+    std::cout << "Total instrucciones: " << ir.size() << "\n";
+    std::cout << "  - Asignaciones: " << asignaciones << "\n";
+    std::cout << "  - Operaciones aritméticas: " << aritmeticas << "\n";
+    std::cout << "  - Saltos: " << saltos << "\n";
+    std::cout << "  - Impresiones: " << impresiones << "\n";
+}

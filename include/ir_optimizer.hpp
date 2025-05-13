@@ -21,4 +21,10 @@ class IROptimizer {
     bool isTruthy(const std::string& val);
     std::vector<IRInstruction> eliminateDeadCode(const std::vector<IRInstruction>& input);
     std::vector<IRInstruction> copyPropagation(const std::vector<IRInstruction>& input);
+    std::vector<IRInstruction> constantFolding(const std::vector<IRInstruction>& instructions);
+    std::vector<IRInstruction> commonSubexpressionElimination(const std::vector<IRInstruction>& ir);
+    std::vector<IRInstruction> loopInvariantCodeMotion(const std::vector<IRInstruction>& ir);
+    std::vector<IRInstruction> constantPropagation(const std::vector<IRInstruction>& instructions);
+    std::vector<IRInstruction> peepholeOptimize(const std::vector<IRInstruction>& input);
+    std::vector<IRInstruction> staticSingleAssignment(const std::vector<IRInstruction>& ir);
 };

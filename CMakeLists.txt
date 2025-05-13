@@ -17,6 +17,7 @@ set(SOURCES
     src/symbol.cpp
     src/ir_generator.cpp
     src/ir_optimizer.cpp
+    src/asm_generator.cpp
 )
 
 # Incluir headers

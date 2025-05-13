@@ -1,0 +1,10 @@
+entero x;
+entrada(x);
+
+mientras (x < 5) {
+    si (x == 3) {
+        mostrar(x);
+    }
+    x = x + 1;
+}
+
