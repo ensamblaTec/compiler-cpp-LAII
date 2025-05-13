@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.automatas2_rgg.models.SymbolTableModel;
@@ -25,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
 public class HelloController {
+    public Label consolePrompt;
     @FXML private MenuItem nuevo;
     @FXML private MenuItem cargar;
     @FXML private MenuItem guardar;
@@ -69,6 +72,8 @@ public class HelloController {
 
     @FXML
     public void initialize() {
+
+        consolePrompt.visibleProperty().bind(consoleOutput.textProperty().isEmpty());
         if (stage != null && fileUtils != null) {
             fileUtils = new FileUtils(stage, codigoFuente);
         }
@@ -84,8 +89,15 @@ public class HelloController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
         try {
             AnchorPane root = loader.load();
+            VBox.setVgrow(root, Priority.ALWAYS);
+
             arbolDerivacionController = loader.getController();
             arbolDerivacionWrapper.getChildren().setAll(root);
+
+            AnchorPane.setTopAnchor(root, 0.0);
+            AnchorPane.setBottomAnchor(root, 0.0);
+            AnchorPane.setLeftAnchor(root, 0.0);
+            AnchorPane.setRightAnchor(root, 0.0);
         } catch (IOException e) {
             e.printStackTrace();
         }
