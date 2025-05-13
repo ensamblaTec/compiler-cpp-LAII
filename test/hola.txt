@@ -1,2 +1,1 @@
-entero a;
-a = 1;
+entero a = 2;

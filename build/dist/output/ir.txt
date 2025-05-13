@@ -1,13 +1,1 @@
-LABEL,t1,,
-<,x,5,t3
-IF_FALSE_GOTO,t3,,t2
-==,x,3,t4
-IF_FALSE_GOTO,t4,,t5
-PRINT,x,,
-GOTO,,,t6
-LABEL,t5,,
-LABEL,t6,,
-+,x,1,t7
-ASSIGN,t7,,x
-GOTO,,,t1
-LABEL,t2,,
+ASSIGN,2,,a

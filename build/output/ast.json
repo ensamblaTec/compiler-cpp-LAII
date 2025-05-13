@@ -1,82 +1,15 @@
 [
     {
-        "name": "x",
-        "type": "Assignment",
-        "value": {
-            "type": "NumberExpr",
-            "value": "9"
-        }
+        "name": "a",
+        "type": "Declaration",
+        "varType": "entero"
     },
     {
         "name": "a",
         "type": "Assignment",
         "value": {
-            "type": "BooleanExpr",
-            "value": false
+            "type": "NumberExpr",
+            "value": "3"
         }
-    },
-    {
-        "body": {
-            "statements": [
-                {
-                    "condition": {
-                        "left": {
-                            "name": "x",
-                            "type": "VariableExpr"
-                        },
-                        "op": "==",
-                        "right": {
-                            "type": "NumberExpr",
-                            "value": "3"
-                        },
-                        "type": "BinaryExpr"
-                    },
-                    "elseBranch": null,
-                    "thenBranch": {
-                        "statements": [
-                            {
-                                "expr": {
-                                    "name": "x",
-                                    "type": "VariableExpr"
-                                },
-                                "type": "PrintStatement"
-                            }
-                        ],
-                        "type": "BlockStatement"
-                    },
-                    "type": "IfStatement"
-                },
-                {
-                    "name": "x",
-                    "type": "Assignment",
-                    "value": {
-                        "left": {
-                            "name": "x",
-                            "type": "VariableExpr"
-                        },
-                        "op": "+",
-                        "right": {
-                            "type": "NumberExpr",
-                            "value": "1"
-                        },
-                        "type": "BinaryExpr"
-                    }
-                }
-            ],
-            "type": "BlockStatement"
-        },
-        "condition": {
-            "left": {
-                "name": "x",
-                "type": "VariableExpr"
-            },
-            "op": "<",
-            "right": {
-                "type": "NumberExpr",
-                "value": "5"
-            },
-            "type": "BinaryExpr"
-        },
-        "type": "WhileStatement"
     }
 ]
