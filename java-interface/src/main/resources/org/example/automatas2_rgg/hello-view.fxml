@@ -72,7 +72,10 @@
                             <graphic>
                                 <FontAwesomeIconView glyphName="SITEMAP"/>
                             </graphic>
-                            <fx:include fx:id="arbolDerivacionWrapper" source="ArbolDerivacion.fxml"/>
+                            <VBox fx:id="arbolDerivacionWrapperVBox">
+                                <fx:include fx:id="arbolDerivacionWrapper" source="ArbolDerivacion.fxml"
+                                            VBox.vgrow="ALWAYS"/>
+                            </VBox>
                         </Tab>
                         <Tab closable="false" text="Código Intermedio">
                             <graphic>
@@ -91,11 +94,24 @@
 
                 <!-- Consola de salida -->
                 <VBox spacing="5.0" styleClass="mi-vbox">
-                    <TextArea fx:id="consoleOutput"
-                              editable="false"
-                              wrapText="true"
-                              VBox.vgrow="ALWAYS"
-                              promptText="Salida de compilación"/>
+                    <StackPane VBox.vgrow="ALWAYS">
+                        <TextArea fx:id="consoleOutput"
+                                  editable="false"
+                                  wrapText="true"
+                                  VBox.vgrow="ALWAYS"/>
+                        <Label fx:id="consolePrompt"
+                               text="Salida de compilación"
+                               style="-fx-text-fill: #888888; -fx-font-style: italic;"
+                               mouseTransparent="true"
+                               StackPane.alignment="TOP_LEFT">
+                            <padding>
+                                <Insets top="5" left="7"/>
+                            </padding>
+                        </Label>
+                    </StackPane>
+
+
+
                     <HBox alignment="CENTER_RIGHT" spacing="10.0">
                         <padding>
                             <Insets top="0.0" right="10.0" bottom="10.0" left="10.0"/>
@@ -110,15 +126,4 @@
         </SplitPane>
     </center>
 
-    <!-- Barra de estado -->
-    <bottom>
-        <HBox spacing="10" styleClass="status-bar">
-            <padding>
-                <Insets topRightBottomLeft="5"/>
-            </padding>
-            <Label text="Línea: 1, Columna: 1" fx:id="statusLabel"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label text="Guardado ✔" style="-fx-fill: #D4D4D4;"/>
-        </HBox>
-    </bottom>
 </BorderPane>

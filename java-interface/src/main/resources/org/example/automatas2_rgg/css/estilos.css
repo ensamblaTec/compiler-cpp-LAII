@@ -50,7 +50,7 @@
     -fx-text-fill: #dcdcdc;
 }
 
-.text-area .text {
+.text-area .text  {
     -fx-control-inner-background: #313335;
     -fx-font-family: Consolas;
     -fx-text-fill: #dcdcdc;
@@ -182,5 +182,61 @@
     -fx-spacing: 10px;
     -fx-padding: 5px;
 }
+.table-view {
+    -fx-background-color: #2f2f2f;
+    -fx-table-cell-border-color: #444;
+    -fx-border-color: #444;
+    -fx-text-background-color: #e0e0e0; /* Para evitar que herede color oscuro */
+    -fx-control-inner-background: #2f2f2f;
+}
 
+.table-view .column-header-background {
+    -fx-background-color: #3c3f41;
+}
+
+.table-view .column-header,
+.table-view .column-header .label {
+    -fx-text-fill: #042e5c;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: #2f2f2f;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected:hover {
+    -fx-background-color: #042e5c;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+}
+
+.status-bar Label {
+    -fx-text-fill: #D4D4D4;
+    -fx-font-size: 12px;
+}
+
+.run-button {
+    -fx-background-color: #4caf50; /* Verde tipo éxito */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.run-button:hover {
+    -fx-background-color: #43a047; /* Verde más oscuro al pasar mouse */
+}
+
+.text-area .prompt-text {
+    -fx-fill: #bbbbbb;       /* Gris claro */
+    -fx-font-style: italic;
+    -fx-opacity: 1.0;        /* Muy importante */
+}
 
