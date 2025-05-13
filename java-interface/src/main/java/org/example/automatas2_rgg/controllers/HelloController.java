@@ -295,7 +295,7 @@ public class HelloController {
     }
 
     private void cargarSalidasGeneradas() {
-        Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
+        Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/output").normalize();
 
         cargarTablaSimbolosDesdeCSV(base.resolve("tabla_simbolos.txt"));
 

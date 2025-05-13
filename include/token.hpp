@@ -106,7 +106,7 @@ struct Token
 
   std::string getPrint() const
   {
-      return "Token(" + typeToString()
+    return "Token(" + typeToString()
         + ", \"" + value + "\", "
         + std::to_string(row) + std::to_string(column) +  ")";
   }

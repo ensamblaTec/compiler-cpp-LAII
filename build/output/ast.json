@@ -1,8 +1,19 @@
 [
     {
         "name": "x",
-        "type": "Declaration",
-        "varType": "entero"
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "9"
+        }
+    },
+    {
+        "name": "a",
+        "type": "Assignment",
+        "value": {
+            "type": "BooleanExpr",
+            "value": false
+        }
     },
     {
         "body": {

@@ -1,5 +1,5 @@
-entero x;
-entrada(x);
+entero x = 9;
+bool a = falso;
 
 mientras (x < 5) {
     si (x == 3) {
@@ -7,4 +7,3 @@ mientras (x < 5) {
     }
     x = x + 1;
 }
-

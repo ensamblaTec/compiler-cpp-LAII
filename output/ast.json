@@ -1,0 +1,15 @@
+[
+    {
+        "name": "a",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "a",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "1"
+        }
+    }
+]

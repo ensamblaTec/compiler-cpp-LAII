@@ -12,7 +12,6 @@ static const std::unordered_set<std::string> keywords = {
     "salir", "continuar", "verdadero", "falso", "mostrar", "entrada"
 };
 
-
 static const std::unordered_map<std::string, TokenType> operatorMap = {
     {"+", TokenType::PLUS}, {"-", TokenType::MINUS}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"%", TokenType::MOD},
     {"=", TokenType::ASSIGN}, {"==", TokenType::EQ}, {"!=", TokenType::NEQ},
@@ -142,6 +141,7 @@ Token Lexer::nextToken()
         type = TokenType::KEYWORD_INPUT;
       }
 
+      // entero a = 12345a;
       return { type, buffer, row, startColumn };
     }
 

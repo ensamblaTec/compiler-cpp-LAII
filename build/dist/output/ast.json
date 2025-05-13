@@ -1,7 +1,71 @@
 [
     {
-        "name": "a",
+        "name": "x",
         "type": "Declaration",
         "varType": "entero"
+    },
+    {
+        "body": {
+            "statements": [
+                {
+                    "condition": {
+                        "left": {
+                            "name": "x",
+                            "type": "VariableExpr"
+                        },
+                        "op": "==",
+                        "right": {
+                            "type": "NumberExpr",
+                            "value": "3"
+                        },
+                        "type": "BinaryExpr"
+                    },
+                    "elseBranch": null,
+                    "thenBranch": {
+                        "statements": [
+                            {
+                                "expr": {
+                                    "name": "x",
+                                    "type": "VariableExpr"
+                                },
+                                "type": "PrintStatement"
+                            }
+                        ],
+                        "type": "BlockStatement"
+                    },
+                    "type": "IfStatement"
+                },
+                {
+                    "name": "x",
+                    "type": "Assignment",
+                    "value": {
+                        "left": {
+                            "name": "x",
+                            "type": "VariableExpr"
+                        },
+                        "op": "+",
+                        "right": {
+                            "type": "NumberExpr",
+                            "value": "1"
+                        },
+                        "type": "BinaryExpr"
+                    }
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "condition": {
+            "left": {
+                "name": "x",
+                "type": "VariableExpr"
+            },
+            "op": "<",
+            "right": {
+                "type": "NumberExpr",
+                "value": "5"
+            },
+            "type": "BinaryExpr"
+        },
+        "type": "WhileStatement"
     }
 ]

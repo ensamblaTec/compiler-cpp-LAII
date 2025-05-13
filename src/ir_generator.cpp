@@ -88,7 +88,7 @@ std::string IRGenerator::generateFromExpression(const std::shared_ptr<Expression
 }
 
 std::string IRGenerator::newTemp() {
-    return "t" + std::to_string(++tempCounter);
+    return "l" + std::to_string(++tempCounter);
 }
 
 void printIRStats(const std::vector<IRInstruction>& ir, const std::string& nombre) {

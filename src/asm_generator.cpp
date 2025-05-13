@@ -52,7 +52,6 @@ std::string AsmGenerator::generateInstruction(const IRInstruction& instruction) 
             return "# ⚠ etiqueta ignorada: " + label;
     }
 
-
     if (op == "GOTO") {
         return "j " + res;
     }

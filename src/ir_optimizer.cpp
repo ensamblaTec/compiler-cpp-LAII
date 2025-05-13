@@ -149,7 +149,7 @@ std::vector<IRInstruction> IROptimizer::optimize(const std::vector<IRInstruction
   result = loopInvariantCodeMotion(result);
   result = constantPropagation(result);
   result = peepholeOptimize(result);
-  result = staticSingleAssignment(result);
+  // result = staticSingleAssignment(result);
 
   return result;
 }
