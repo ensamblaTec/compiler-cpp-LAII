@@ -1,0 +1,5 @@
+id,type,value,line,column,category,scope
+activo,bool,,1,12,Variable,global
+i,entero,,21,37,Variable,global
+nombre,texto,Luis,1,8,Variable,global
+x,entero,,3,44,Variable,global

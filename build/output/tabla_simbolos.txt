@@ -1,0 +1,6 @@
+id,type,value,line,column,category,scope
+a,bool,,1,5,Variable,global
+b,bool,,1,8,Variable,global
+comp,bool,,1,14,Variable,global
+msg1,texto,a,1,11,Variable,global
+x,entero,,1,2,Variable,global

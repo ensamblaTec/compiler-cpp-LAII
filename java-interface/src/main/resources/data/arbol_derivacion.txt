@@ -1,0 +1,5 @@
+Programa
+ └── Función main
+      ├── Llamada a función printf
+      │    └── Cadena "Hola mundo"
+      └── return 0
