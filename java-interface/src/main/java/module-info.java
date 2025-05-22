@@ -7,6 +7,7 @@ module org.example.automatas2_rgg {
     requires org.kordamp.bootstrapfx.core;
     requires org.fxmisc.richtext;
     requires com.fasterxml.jackson.databind;
+    requires java.desktop;
 
     opens org.example.automatas2_rgg to javafx.fxml;
     exports org.example.automatas2_rgg;

@@ -1,18 +1,20 @@
 package org.example.automatas2_rgg.controllers;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.automatas2_rgg.HelloApplication;
 import org.example.automatas2_rgg.models.SymbolTableModel;
 import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
@@ -24,7 +26,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 public class HelloController {
     public Label consolePrompt;
@@ -86,7 +87,7 @@ public class HelloController {
         });
 
         inicializarColumnasTabla();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/informacion-view.fxml"));
         try {
             AnchorPane root = loader.load();
             VBox.setVgrow(root, Priority.ALWAYS);
@@ -205,6 +206,13 @@ public class HelloController {
     }
 
     @FXML
+    void onSalir(ActionEvent event) {
+        Platform.exit();
+        System.exit(0); // Opcional, para asegurarse de cerrar completamente la aplicación
+    }
+
+
+    @FXML
     private void onLimpiar() {
         fileUtils.limpiarCodeArea();
     }
@@ -310,6 +318,9 @@ public class HelloController {
         Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
 
         cargarTablaSimbolosDesdeCSV(base.resolve("tabla_simbolos.txt"));
+        cargarArchivoEnCodeArea(codigoIntermedio,"ir.txt");
+        cargarArchivoEnCodeArea(codigoEnsamblador,"program.txt");
+
 
         Path rutaAstJson = base.resolve("ast.json");
 
@@ -326,6 +337,58 @@ public class HelloController {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    private void cargarArchivoEnCodeArea(TextArea codeArea, String nombreArchivo) {
+
+        Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
+
+        try (InputStream is = getClass().getResourceAsStream("../build/dist/output" + nombreArchivo);
+             BufferedReader reader = Files.newBufferedReader(base.resolve(nombreArchivo))) {
+
+            StringBuilder contenido = new StringBuilder();
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                contenido.append(linea).append("\n");
+            }
+            codeArea.setText(contenido.toString());
+        } catch (IOException e) {
+            codeArea.setText("Error cargando archivo: " + nombreArchivo);
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void abrirPDF(ActionEvent event) {
+        new PDFController().abrirPDF(event);
+    }
+
+    @FXML
+    private void abrirPDFLexico(ActionEvent event) {
+        new PDFController().abrirPDFLexico(event);
+    }
+
+    @FXML
+    private void abrirPDFSemantico(ActionEvent event) {
+        new PDFController().abrirPDFSemantico(event);
+    }
+
+    @FXML
+    void mostrarInformacion(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("informacion-view.fxml"));
+
+            Parent root = loader.load();
+
+            // Obtener el escenario actual
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
