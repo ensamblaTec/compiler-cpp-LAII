@@ -20,12 +20,19 @@
                             <MenuItem text="Nuevo" fx:id="nuevo" onAction="#onLimpiar"/>
                             <MenuItem text="Cargar" fx:id="cargar" onAction="#onAbrir"/>
                             <MenuItem text="Guardar" fx:id="guardar" onAction="#onGuardar"/>
+                            <MenuItem text="Salir" fx:id="salir" onAction="#onSalir"/>
                         </items>
                     </Menu>
                     <Menu text="Ayuda">
                         <items>
-                            <MenuItem text="Información"/>
-                            <MenuItem text="Documentación"/>
+                            <MenuItem text="Información" onAction="#mostrarInformacion"/>
+                            <Menu text="Documentación">
+                            <items>
+                                <MenuItem text="Léxico" onAction="#abrirPDFLexico"/>
+                                <MenuItem text="Sintáctico" onAction="#abrirPDF"/>
+                                <MenuItem text="Semántico" onAction="#abrirPDFSemantico"/>
+                            </items>
+                            </Menu>
                         </items>
                     </Menu>
                 </menus>

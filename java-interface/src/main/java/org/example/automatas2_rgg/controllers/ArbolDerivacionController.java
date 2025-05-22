@@ -3,6 +3,7 @@ package org.example.automatas2_rgg.controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.animation.FadeTransition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -32,7 +33,7 @@ public class ArbolDerivacionController {
 
         // Intentamos cargar automáticamente el JSON si existe al iniciar
         Path rutaAst = Paths.get(System.getProperty("user.dir"))
-                .resolve("../output/ast.json")
+                .resolve("../build/dist/output/ast.json")
                 .normalize();
 
         cargarArbolDesdeJson(rutaAst);
@@ -142,5 +143,4 @@ public class ArbolDerivacionController {
             expandirRecursivamente(hijo);
         }
     }
-
 }

@@ -87,7 +87,7 @@ public class HelloController {
         });
 
         inicializarColumnasTabla();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/informacion-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
         try {
             AnchorPane root = loader.load();
             VBox.setVgrow(root, Priority.ALWAYS);
