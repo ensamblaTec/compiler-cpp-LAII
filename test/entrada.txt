@@ -1,0 +1,33 @@
+entero x = 10;
+entero y = 5;
+entero z;
+
+texto mensaje = "Resultado:";
+bool activo = verdadero;
+
+z = x + y * 2;
+
+mostrar(mensaje);
+mostrar(z);
+
+si (z > 20) {
+  mostrar("Mayor que 20");
+} sino {
+  mostrar("20 o menor");
+}
+
+texto nombre;
+entrada nombre;
+mostrar("Hola:");
+mostrar(nombre);
+
+entero i;
+para (i = 0; i < 3; i = i + 1) {
+  mostrar("Iteración");
+  mostrar(i);
+}
+
+mientras (x > 0) {
+  mostrar(x);
+  x = x - 1;
+}

@@ -1,3 +1,0 @@
-/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles/app.dir
-/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles/edit_cache.dir
-/home/work/develop/cpp/compiler-cpp-LAII/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,9 @@
+entero x = 1;
+bool a = falso;
+
+mientras (x < 5) {
+    si (x == 3) {
+        mostrar(x);
+    }
+    x = x + 1;
+}

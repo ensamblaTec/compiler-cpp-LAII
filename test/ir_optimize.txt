@@ -1,0 +1,7 @@
+entero a = 5;
+entero b = 10;
+entero c = 20;
+entero x;
+x = a + b;
+c = 100;        // ← Nunca se usa
+mostrar(x);

@@ -1,0 +1,242 @@
+.root {
+    -fx-background-color: #ffffff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 13px;
+}
+
+/* ===== MENÚ ===== */
+.menu-bar {
+    -fx-background-color: #3c3f41;
+}
+.menu , .menu-item {
+    -fx-background-color: #3c3f41;
+}
+
+.mi-vbox {
+    -fx-background-color: #3c3f41; /* Fondo estilo IntelliJ */
+    -fx-padding: 10;
+}
+
+
+.menu .label, .menu-item .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu-item:hover {
+    -fx-background-color: #007aff;
+}
+.menu-item:focused .label {
+
+    -fx-text-fill: white;
+}
+
+/* ===== BOTONES ===== */
+.button {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* ===== TEXTAREA GENERAL ===== */
+.text-area {
+    -fx-control-inner-background: #313335;
+    -fx-font-family: Consolas;
+    -fx-text-fill: #dcdcdc;
+}
+
+.text-area .text  {
+    -fx-control-inner-background: #313335;
+    -fx-font-family: Consolas;
+    -fx-text-fill: #dcdcdc;
+}
+
+/* ===== CONSOLE OUTPUT ===== */
+#consoleOutput {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #00ff00;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-highlight-fill: #555;
+    -fx-highlight-text-fill: #D4D4D4;;
+    -fx-border-color: #444;
+}
+
+/* ===== TABS ===== */
+
+.status-bar {
+    -fx-control-inner-background: #1e1e1e;
+    -fx-text-fill: #00ff00;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-highlight-fill: #555;
+    -fx-highlight-text-fill: #D4D4D4;;
+    -fx-border-color: #444;
+}
+.tab-pane {
+    -fx-background-color: #2b2b2b;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #3c3f41;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #3c3f41;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #007aff;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: white;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #cccccc;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: #2980b9;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: white;
+}
+
+/* ===== TABLEVIEW ===== */
+.table-view {
+    -fx-background-color: #2f2f2f;
+    -fx-table-cell-border-color: #444;
+    -fx-border-color: #444;
+}
+
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #007aff;
+    -fx-text-fill: white;
+}
+
+.table-column {
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ===== CODE AREA ===== */
+
+/* Estilo general del CodeArea */
+.code-area {
+    -fx-background-color: #2b2b2b;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 14px;
+    -fx-fill: #f8f8f2;
+}
+
+/* Estilo de cada párrafo */
+.code-area .paragraph {
+    -fx-line-spacing: 1.5;
+    -fx-padding: 4px 0;
+}
+
+/* Estilo para el texto */
+.code-area .text {
+    -fx-fill: #D4D4D4;
+}
+
+/* Ejemplo de pseudoclase para el caret */
+.code-area:focused .caret {
+    -fx-stroke: #ff0000;
+}
+
+/* Estilo para la selección de texto */
+.code-area .selection {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+}
+.lineno {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #888888; /* Gris tenue, como en IntelliJ */
+    -fx-font-family: "JetBrains Mono", "Consolas", "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-padding: 0 10 0 5;
+}
+
+
+
+
+.virtualized-scroll-pane {
+    -fx-background-color: #2b2b2b;
+}
+
+/* ===== TOOLBAR (opcional si agregas) ===== */
+.tool-bar {
+    -fx-background-color: #3c3f41;
+    -fx-spacing: 10px;
+    -fx-padding: 5px;
+}
+.table-view {
+    -fx-background-color: #2f2f2f;
+    -fx-table-cell-border-color: #444;
+    -fx-border-color: #444;
+    -fx-text-background-color: #e0e0e0; /* Para evitar que herede color oscuro */
+    -fx-control-inner-background: #2f2f2f;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #3c3f41;
+}
+
+.table-view .column-header,
+.table-view .column-header .label {
+    -fx-text-fill: #042e5c;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: #2f2f2f;
+    -fx-text-fill: #e0e0e0;
+}
+
+.table-row-cell:filled:selected,
+.table-row-cell:filled:selected:hover {
+    -fx-background-color: #042e5c;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #3c3f41;
+    -fx-text-fill: white;
+}
+
+.status-bar Label {
+    -fx-text-fill: #D4D4D4;
+    -fx-font-size: 12px;
+}
+
+.run-button {
+    -fx-background-color: #4caf50; /* Verde tipo éxito */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.run-button:hover {
+    -fx-background-color: #43a047; /* Verde más oscuro al pasar mouse */
+}
+
+.text-area .prompt-text {
+    -fx-fill: #bbbbbb;       /* Gris claro */
+    -fx-font-style: italic;
+    -fx-opacity: 1.0;        /* Muy importante */
+}
+

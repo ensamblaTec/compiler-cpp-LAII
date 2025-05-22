@@ -7,11 +7,10 @@
 #include <unordered_map>
 
 static const std::unordered_set<std::string> keywords = {
-    "entero", "decimal", "booleano", "texto", "caracter", "metodo",
-    "si", "no", "mientras", "para", "retornar",
-    "romper", "continuar", "verdadero", "falso"
+    "entero", "decimal", "bool", "texto", "caracter", "metodo",
+    "si", "sino", "mientras", "para", "retornar",
+    "salir", "continuar", "verdadero", "falso", "mostrar", "entrada"
 };
-
 
 static const std::unordered_map<std::string, TokenType> operatorMap = {
     {"+", TokenType::PLUS}, {"-", TokenType::MINUS}, {"*", TokenType::MUL}, {"/", TokenType::DIV}, {"%", TokenType::MOD},
@@ -36,8 +35,6 @@ Lexer::Lexer(std::istream& input_stream) : input(input_stream)
   LOG(LogLevel::INFO, "Preparando el fichero de entrada para su procesamiento");
 
   readNextLine();
-
-  LOG(LogLevel::INFO, "Linea cargada exitosamente...");
 }
 
 void Lexer::readNextLine()
@@ -48,8 +45,9 @@ void Lexer::readNextLine()
     pos = 0;
     row++;
     column = 1;
-    std::string msgCurrentLine = "Linea: " + std::to_string(row) + " leido: \"" + currentLine + "\"";
-    LOG(LogLevel::INFO, msgCurrentLine);  
+    std::string msgCurrentLine = "Linea: " + std::to_string(row) + " , se ha leido: \"" + currentLine + "\"";
+    LOG(LogLevel::INFO, "Linea actual: " + currentLine);  
+    LOG(LogLevel::INFO, "Linea cargada exitosamente...");
   } else
   {
     currentLine = "";
@@ -99,10 +97,13 @@ Token Lexer::nextToken()
         column++;
       }
 
-      pos++;
-      column++;
+      if (pos < currentLine.size() && currentLine[pos] == '\"') {
+        pos++;
+        column++;
+        return { TokenType::STRING_LITERAL, buffer, row, startColumn };
+      }
 
-      return { TokenType::STRING_LITERAL, buffer, row, startColumn };
+      return { TokenType::INVALID, buffer, row, startColumn };
     }
 
     if (std::isalpha(currentCharacter) || currentCharacter == '_')
@@ -114,7 +115,33 @@ Token Lexer::nextToken()
         column++;
       }
 
-      TokenType type = keywords.count(buffer) ? TokenType::KEYWORD : TokenType::IDENTIFIER;
+      TokenType type;
+      if (!keywords.count(buffer))
+      {
+        type = TokenType::IDENTIFIER;
+      } else if (buffer == "entero") {
+        type = TokenType::KEYWORD_INT;
+      } else if (buffer == "texto") {
+        type = TokenType::KEYWORD_STR;
+      } else if (buffer == "bool") {
+        type = TokenType::KEYWORD_BOOL;
+      } else if (buffer == "verdadero" || buffer == "falso") {
+        type = TokenType::BOOLEAN_LITERAL;
+      } else if (buffer == "mientras") {
+        type = TokenType::KEYWORD_WHILE;
+      } else if (buffer == "para") {
+        type = TokenType::KEYWORD_FOR;
+      } else if (buffer == "si") {
+        type = TokenType::KEYWORD_IF;
+      } else if (buffer == "sino") {
+        type = TokenType::KEYWORD_ELSE;
+      } else if (buffer == "mostrar") {
+        type = TokenType::KEYWORD_PRINT;
+      } else if (buffer == "entrada") {
+        type = TokenType::KEYWORD_INPUT;
+      }
+
+      // entero a = 12345a;
       return { type, buffer, row, startColumn };
     }
 
