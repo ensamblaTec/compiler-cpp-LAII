@@ -66,7 +66,6 @@ int main(int argc, char* argv[])
 
   std::cout << "=== Optimizacion Código Intermedio (TAC) ===\n";
   IROptimizer optimizer;
-  // optimizer.execute(ir_code);
 
   std::vector<IRInstruction> ir_code_optimized = optimizer.optimize(ir_code);
   for (const auto& instr : ir_code_optimized) {
@@ -85,11 +84,11 @@ int main(int argc, char* argv[])
     printStatementTree(statements[i], "", isLast);
   }
 
-  std::cout << "\n=== SALIDA ===\n";
+  std::cout << "\n=== SALIDA ASM RIC-V ===\n";
   AsmGenerator asmGenerator;
-  std::string asmCode = asmGenerator.generate(ir_code_optimized);
-
-  std::cout << "\n=== SALIDA ASM RISC-V ===\n" << asmCode << std::endl; 
+  std::string asmCode = asmGenerator.compile(ir_code_optimized);
+  std::cout << asmCode << std::endl;
+  saveFile("program", asmCode);
 
   return 0;
 }

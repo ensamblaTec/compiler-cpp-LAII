@@ -1,4 +1,4 @@
-entero x = 9;
+entero x = 1;
 bool a = falso;
 
 mientras (x < 5) {

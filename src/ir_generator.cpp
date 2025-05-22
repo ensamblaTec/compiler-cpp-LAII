@@ -26,20 +26,24 @@ void IRGenerator::generateFromStatement(const std::shared_ptr<Statement>& stmt) 
     }
     else if (auto ifStmt = std::dynamic_pointer_cast<IfStatement>(stmt)) {
         std::string cond = generateFromExpression(ifStmt->condition);
-        std::string labelElse = newTemp();
-        std::string labelEnd = newTemp();
+        std::string labelElse = newLabel();
+        std::string labelEnd = newLabel();
+
         instructions.emplace_back("IF_FALSE_GOTO", cond, "", labelElse);
         generateFromStatement(ifStmt->thenBranch);
         instructions.emplace_back("GOTO", "", "", labelEnd);
         instructions.emplace_back("LABEL", labelElse, "", "");
+
         if (ifStmt->elseBranch) {
             generateFromStatement(ifStmt->elseBranch);
         }
+
         instructions.emplace_back("LABEL", labelEnd, "", "");
     }
     else if (auto whileStmt = std::dynamic_pointer_cast<WhileStatement>(stmt)) {
-        std::string labelStart = newTemp();
-        std::string labelEnd = newTemp();
+        std::string labelStart = newLabel();
+        std::string labelEnd = newLabel();
+
         instructions.emplace_back("LABEL", labelStart, "", "");
         std::string cond = generateFromExpression(whileStmt->condition);
         instructions.emplace_back("IF_FALSE_GOTO", cond, "", labelEnd);
@@ -49,8 +53,9 @@ void IRGenerator::generateFromStatement(const std::shared_ptr<Statement>& stmt) 
     }
     else if (auto forStmt = std::dynamic_pointer_cast<ForStatement>(stmt)) {
         generateFromStatement(forStmt->init);
-        std::string labelCond = newTemp();
-        std::string labelEnd = newTemp();
+        std::string labelCond = newLabel();
+        std::string labelEnd = newLabel();
+
         instructions.emplace_back("LABEL", labelCond, "", "");
         std::string cond = generateFromExpression(forStmt->condition);
         instructions.emplace_back("IF_FALSE_GOTO", cond, "", labelEnd);
@@ -60,7 +65,7 @@ void IRGenerator::generateFromStatement(const std::shared_ptr<Statement>& stmt) 
         instructions.emplace_back("LABEL", labelEnd, "", "");
     }
     else if (auto input = std::dynamic_pointer_cast<InputStatement>(stmt)) {
-        instructions.push_back(IRInstruction{"INPUT", input->variable, "", ""});
+        instructions.emplace_back("INPUT", input->variable, "", "");
     }
 }
 
@@ -88,7 +93,11 @@ std::string IRGenerator::generateFromExpression(const std::shared_ptr<Expression
 }
 
 std::string IRGenerator::newTemp() {
-    return "l" + std::to_string(++tempCounter);
+    return "t" + std::to_string(++tempCounter);  // 't' para temporales (valores)
+}
+
+std::string IRGenerator::newLabel() {
+    return "l" + std::to_string(++labelCounter); // 'l' exclusivamente para etiquetas
 }
 
 void printIRStats(const std::vector<IRInstruction>& ir, const std::string& nombre) {

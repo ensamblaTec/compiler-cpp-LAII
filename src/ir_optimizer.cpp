@@ -6,13 +6,13 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <unordered_set>
 
 bool IROptimizer::isNumeric(const std::string& s) {
     if (s.empty()) return false;
     if (s == "true" || s == "false") return false;
     return std::all_of(s.begin(), s.end(), ::isdigit);
 }
-
 
 bool IROptimizer::isStringLiteral(const std::string& s) {
     return s.size() >= 2 && s.front() == '"' && s.back() == '"';
@@ -140,51 +140,57 @@ std::vector<IRInstruction> IROptimizer::eliminateDeadCode(const std::vector<IRIn
 
 std::vector<IRInstruction> IROptimizer::optimize(const std::vector<IRInstruction>& original) {
   std::vector<IRInstruction> result = original;
-
+  
   result = eliminateDeadCode(result);
   result = copyPropagation(result);
-  result = constantFolding(result);
-  result = eliminateDeadCode(result);
+  result = constantPropagation(result);
   result = commonSubexpressionElimination(result);
   result = loopInvariantCodeMotion(result);
-  result = constantPropagation(result);
   result = peepholeOptimize(result);
-  // result = staticSingleAssignment(result);
+  result = eliminateDeadCode(result);
 
   return result;
 }
 
 std::vector<IRInstruction> IROptimizer::copyPropagation(const std::vector<IRInstruction>& input) {
-  std::unordered_map<std::string, std::string> copyTable;
-  std::vector<IRInstruction> optimized;
+    std::unordered_map<std::string, std::string> copyTable;
+    std::vector<IRInstruction> optimized;
 
-  for (const auto& instr: input) {
-    IRInstruction current = instr;
+    for (const auto& instr: input) {
+        IRInstruction current = instr;
 
-    if (current.op == "ASSIGN" && !current.arg1.empty() && current.arg2.empty()) {
-      if (!isStringLiteral(current.arg1) && !isNumeric(current.arg1)) {
-        copyTable[current.result] = copyTable.count(current.arg1) ? copyTable[current.arg1] : current.arg1;
+        if (current.op == "ASSIGN" && !current.arg1.empty() && current.arg2.empty()) {
+            if (!isStringLiteral(current.arg1) && !isNumeric(current.arg1)) {
+                copyTable[current.result] = copyTable.count(current.arg1) ? copyTable[current.arg1] : current.arg1;
+                optimized.push_back(current);
+                continue;
+            }
+        }
+
+        if (copyTable.count(current.arg1) && current.op != "IF_FALSE_GOTO") {
+            current.arg1 = copyTable[current.arg1];
+        }
+
+        if (copyTable.count(current.arg2)) {
+            current.arg2 = copyTable[current.arg2];
+        }
+
         optimized.push_back(current);
-        continue;
-      }
     }
 
-    if (copyTable.count(current.arg1)) {
-      current.arg1 = copyTable[current.arg1];
-    }
-
-    if (copyTable.count(current.arg2)) {
-      current.arg2 = copyTable[current.arg2];
-    }
-
-    optimized.push_back(current);
-  }
-
-  return optimized;
+    return optimized;
 }
 
 std::vector<IRInstruction> IROptimizer::constantFolding(const std::vector<IRInstruction>& instructions) {
     std::vector<IRInstruction> result;
+    std::unordered_set<std::string> modifiedVars;
+
+    for (const auto& instr : instructions) {
+        if (!instr.result.empty() &&
+            (instr.op == "ASSIGN" || instr.op == "+" || instr.op == "-" || instr.op == "*" || instr.op == "/" || instr.op == "%")) {
+            modifiedVars.insert(instr.result);
+        }
+    }
 
     for (const auto& instr : instructions) {
         const std::string& op = instr.op;
@@ -220,6 +226,14 @@ std::vector<IRInstruction> IROptimizer::constantFolding(const std::vector<IRInst
             else if (op == "!=") cond = left != right;
 
             result.push_back({"ASSIGN", cond ? "1" : "0", "", instr.result});
+        }
+
+        else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "%") {
+            if (!modifiedVars.count(instr.arg1) && !modifiedVars.count(instr.arg2)) {
+                result.push_back(instr);
+            } else {
+                result.push_back(instr);
+            }
         }
 
         else {
@@ -308,21 +322,40 @@ std::vector<IRInstruction> IROptimizer::loopInvariantCodeMotion(const std::vecto
 
 std::vector<IRInstruction> IROptimizer::constantPropagation(const std::vector<IRInstruction>& instructions) {
     std::unordered_map<std::string, std::string> constants;
+    std::unordered_set<std::string> reassigned;
     std::vector<IRInstruction> result;
+
+    for (const auto& instr : instructions) {
+        if (!instr.result.empty()) {
+            reassigned.insert(instr.result);
+        }
+    }
 
     for (const auto& instr : instructions) {
         IRInstruction newInstr = instr;
 
         if (instr.op == "ASSIGN" && isNumeric(instr.arg1)) {
             constants[instr.result] = instr.arg1;
-        } else if (instr.op == "ASSIGN" && constants.count(instr.arg1)) {
+        }
+        else if (instr.op == "ASSIGN" && constants.count(instr.arg1) && !reassigned.count(instr.arg1)) {
             newInstr.arg1 = constants[instr.arg1];
             constants[instr.result] = newInstr.arg1;
-        } else if (instr.op == "+" || instr.op == "-" || instr.op == "*" || instr.op == "/" || instr.op == "%") {
-            if (constants.count(instr.arg1)) newInstr.arg1 = constants[instr.arg1];
-            if (constants.count(instr.arg2)) newInstr.arg2 = constants[instr.arg2];
+        }
+        else if (instr.op == "+" || instr.op == "-" || instr.op == "*" || instr.op == "/" || instr.op == "%") {
+            if (constants.count(instr.arg1) && !reassigned.count(instr.arg1)) {
+                newInstr.arg1 = constants[instr.arg1];
+            }
+            if (constants.count(instr.arg2) && !reassigned.count(instr.arg2)) {
+                newInstr.arg2 = constants[instr.arg2];
+            }
             constants.erase(instr.result);
-        } else {
+        }
+        else if (instr.op == "IF_FALSE_GOTO") {
+            if (constants.count(instr.arg1) && !reassigned.count(instr.arg1)) {
+                newInstr.arg1 = constants[instr.arg1];
+            }
+        }
+        else {
             constants.erase(instr.result);
         }
 

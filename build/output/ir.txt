@@ -1,1 +1,15 @@
-ASSIGN,3,,a
+ASSIGN,1,,x
+ASSIGN,0,,a
+LABEL,l1,,
+<,x,5,t1
+IF_FALSE_GOTO,t1,,l2
+==,x,3,t2
+IF_FALSE_GOTO,t2,,l3
+PRINT,x,,
+GOTO,,,l4
+LABEL,l3,,
+LABEL,l4,,
++,x,1,t3
+ASSIGN,t3,,x
+GOTO,,,l1
+LABEL,l2,,

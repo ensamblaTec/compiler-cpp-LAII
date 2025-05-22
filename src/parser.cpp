@@ -557,7 +557,7 @@ std::shared_ptr<Statement> Parser::parseInput() {
   if (!match(TokenType::IDENTIFIER)) {
     LOG(LogLevel::ERROR, "[parseInput] Se esperaba un identificador después de 'entrada'");
     ErrorReporter::getInstance().report("Se esperaba un nombre de variable después de 'entrada'", peek().row, peek().column);
-  semanticErrorOcurred = true;
+    semanticErrorOcurred = true;
     return nullptr;
   }
 

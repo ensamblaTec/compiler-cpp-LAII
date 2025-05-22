@@ -1,1 +1,3 @@
-ASSIGN,2,,a
+ASSIGN,8,,a
+INPUT,a,,
+PRINT,a,,

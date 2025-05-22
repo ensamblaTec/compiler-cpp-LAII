@@ -25,5 +25,8 @@ class IRGenerator {
     void printIRStats(const std::vector<IRInstruction>& ir, const std::string& nombre);
   private:
     int tempCounter = 0;
+    int labelCounter = 0;
+
     std::string newTemp();
+    std::string newLabel();
 };

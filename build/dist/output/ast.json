@@ -1,10 +1,26 @@
 [
     {
         "name": "a",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "a",
         "type": "Assignment",
         "value": {
             "type": "NumberExpr",
-            "value": "2"
+            "value": "8"
         }
+    },
+    {
+        "type": "InputStatement",
+        "variable": "a"
+    },
+    {
+        "expr": {
+            "name": "a",
+            "type": "VariableExpr"
+        },
+        "type": "PrintStatement"
     }
 ]
