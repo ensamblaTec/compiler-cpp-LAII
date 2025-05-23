@@ -24,7 +24,44 @@
     <!-- Contenido central con fotos y nombres -->
     <center>
         <VBox spacing="10" alignment="CENTER" >
-            <Label text="Miembros del equipo 6:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <VBox spacing="10" alignment="CENTER">
+                <!-- Sección de logos y texto institucional -->
+            <HBox spacing="20" alignment="CENTER">
+                    <ImageView fitHeight="50" fitWidth="50">
+                        <image>
+                            <Image url="@images/tecnmlogo.png"/>
+                        </image>
+                    </ImageView>
+                    <Pane prefWidth="200"/>
+                    <VBox spacing="5" alignment="CENTER">
+                        <Text text="TECNOLÓGICO NACIONAL DE MÉXICO" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <Text text="Instituto Tecnológico de Celaya" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+                        <Region prefHeight="20"/>
+
+                        <!-- Nueva sección con asignatura y docente -->
+                        <VBox spacing="3" alignment="CENTER">
+                            <Text text="Lenguajes y Autómatas II" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                            <Region prefHeight="20"/>
+                            <Text text="Compilador Java:" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                            <Text text="JALSSE" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-fill: red;"/>
+                            <Region prefHeight="20"/>
+                            <Text text="ISC. Ricardo Gonzalez Gonzalez" style="-fx-font-size: 14px;"/>
+                            <Text text="Ingeniería en Sistemas Computacionales" style="-fx-font-size: 14px;"/>
+                        </VBox>
+
+                        <Region prefHeight="20"/>
+
+                    </VBox>
+                    <Pane prefWidth="200"/>
+                    <ImageView fitHeight="50" fitWidth="50">
+                        <image>
+                            <Image url="@images/tecnologo.jpg"/>
+                        </image>
+                    </ImageView>
+                </HBox>
+        </VBox>
+            <Label text="Integrantes del Equipo 6:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
             <HBox spacing="20" alignment="CENTER">
                 <VBox alignment="CENTER">
                     <ImageView fitHeight="100" fitWidth="100">

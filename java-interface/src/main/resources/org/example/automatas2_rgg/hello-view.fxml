@@ -25,14 +25,15 @@
                     </Menu>
                     <Menu text="Ayuda">
                         <items>
-                            <MenuItem text="Información" onAction="#mostrarInformacion"/>
+                            <MenuItem text="Información"/>
                             <Menu text="Documentación">
-                            <items>
-                                <MenuItem text="Léxico" onAction="#abrirPDFLexico"/>
-                                <MenuItem text="Sintáctico" onAction="#abrirPDF"/>
-                                <MenuItem text="Semántico" onAction="#abrirPDFSemantico"/>
-                            </items>
+                                <items>
+                                    <MenuItem text="Léxico" onAction="#abrirPDFLexico"/>
+                                    <MenuItem text="Sintáctico" onAction="#abrirPDF"/>
+                                    <MenuItem text="Semántico" onAction="#abrirPDFSemantico"/>
+                                </items>
                             </Menu>
+                            <MenuItem text="About Us" onAction="#mostrarInformacion"/>
                         </items>
                     </Menu>
                 </menus>
