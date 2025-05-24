@@ -25,7 +25,9 @@
                     </Menu>
                     <Menu text="Ayuda">
                         <items>
-                            <MenuItem text="Información" onAction="#mostrarGramatica"/>                            <Menu text="Documentación">
+                            <Menu text="Información" onAction="#mostrarGramatica"/>
+
+                            <Menu text="Documentación">
                                 <items>
                                     <MenuItem text="Léxico" onAction="#abrirPDFLexico"/>
                                     <MenuItem text="Sintáctico" onAction="#abrirPDF"/>
@@ -58,6 +60,19 @@
                                     <CodeArea fx:id="codigoFuente"/>
                                 </content>
                             </VirtualizedScrollPane>
+                        </Tab>
+                        <Tab closable="false" text="Tokens">
+                            <graphic>
+                                <FontAwesomeIconView glyphName="DATABASE"/>
+                            </graphic>
+                            <TableView fx:id="tablaTokens">
+                                <columns>
+                                    <TableColumn fx:id="colTipoToken" text="Tipo"/>
+                                    <TableColumn fx:id="colValorToken" text="Valor"/>
+                                    <TableColumn fx:id="colColumnaToken" text="Columna"/>
+                                    <TableColumn fx:id="colLineaToken" text="Línea"/>
+                                </columns>
+                            </TableView>
                         </Tab>
                         <Tab closable="false" text="Tabla de símbolos">
                             <graphic>
