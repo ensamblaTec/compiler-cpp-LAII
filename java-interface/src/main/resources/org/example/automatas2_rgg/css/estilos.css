@@ -240,3 +240,36 @@
     -fx-opacity: 1.0;        /* Muy importante */
 }
 
+/* gramática específica */
+.gramatica-root {
+    -fx-background-color: #f9f9f9;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Etiquetas principales */
+.gramatica-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.gramatica-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+}
+
+/* TextArea de gramática */
+.gramatica-area {
+    -fx-control-inner-background: #f0f0f0;
+    -fx-text-fill: #333;
+    -fx-font-family: Consolas, "Courier New", monospace;
+    -fx-font-size: 13px;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5;
+}
+
+
+
+

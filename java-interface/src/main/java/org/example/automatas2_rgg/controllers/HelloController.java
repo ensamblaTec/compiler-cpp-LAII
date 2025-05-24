@@ -391,5 +391,23 @@ public class HelloController {
         }
     }
 
+    @FXML
+    void mostrarGramatica(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("gramatica-view.fxml"));
+
+            Parent root = loader.load();
+
+            // Obtener el escenario actual
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
 
