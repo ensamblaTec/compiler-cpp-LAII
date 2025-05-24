@@ -321,6 +321,7 @@ public class HelloController {
     public void cargarTablaSimbolosDesdeCSV(Path path) {
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             tablaSimbolos.getItems().clear();
+            tablaTokens.getItems().clear();
             reader.readLine(); // Saltar encabezado
             String linea;
             while ((linea = reader.readLine()) != null) {
@@ -328,6 +329,11 @@ public class HelloController {
                 if (datos.length == 7) {
                     tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4],datos[5],datos[6]));
                 }
+                // Cargar en tablaTokens si tiene 4 columnas
+                if (datos.length == 4) {
+                    tablaTokens.getItems().add(new TokenModel(datos[0], datos[1], datos[2], datos[3]));
+                }
+
             }
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo leer el archivo CSV: " + e.getMessage(), Alert.AlertType.ERROR);
