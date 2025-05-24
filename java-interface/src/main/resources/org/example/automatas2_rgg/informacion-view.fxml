@@ -3,11 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.text.Text?>
-<BorderPane stylesheets="@css/estilos.css" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+
+<BorderPane stylesheets="@css/infostyle.css" prefHeight="600.0" prefWidth="800.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.automatas2_rgg.controllers.InformacionController">
+
     <!-- Barra superior con el menú -->
     <top>
         <MenuBar>
@@ -21,52 +24,95 @@
         </MenuBar>
     </top>
 
-    <!-- Contenido central con fotos y nombres -->
+    <!-- Contenido central con fotos y nombres dentro de ScrollPane -->
     <center>
-        <VBox spacing="10" alignment="CENTER" >
-            <Label text="Miembros del equipo 6:" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
-            <HBox spacing="20" alignment="CENTER">
-                <VBox alignment="CENTER">
-                    <ImageView fitHeight="100" fitWidth="100">
-                        <image>
-                            <Image url="@images/misael.png"/>
-                        </image>
-                    </ImageView>
-                    <TextFlow textAlignment="CENTER">
-                        <Text text="Garcia Gonzalez Misael" />
-                    </TextFlow>
+        <ScrollPane fitToWidth="true" fitToHeight="true">
+            <content>
+                <VBox spacing="10" alignment="CENTER" fillWidth="true">
+                    <!-- Sección de logos y texto institucional -->
+                    <VBox spacing="10" alignment="CENTER">
+                        <HBox spacing="20" alignment="CENTER">
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/tecnmlogo.png"/>
+                                </image>
+                            </ImageView>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <VBox spacing="5" alignment="CENTER">
+                                <Text text="TECNOLÓGICO NACIONAL DE MÉXICO" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                <Text text="Instituto Tecnológico de Celaya" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                <Region prefHeight="20"/>
+                                <VBox spacing="3" alignment="CENTER">
+                                    <Text text="Lenguajes y Autómatas II" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                                    <Region prefHeight="20"/>
+                                    <Text text="Compilador Java:" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                                    <Text text="JALSSE" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-fill: red;"/>
+                                    <Region prefHeight="20"/>
+                                    <Text text="ISC. Ricardo Gonzalez Gonzalez" style="-fx-font-size: 14px;"/>
+                                    <Text text="Ingeniería en Sistemas Computacionales" style="-fx-font-size: 14px;"/>
+                                </VBox>
+                                <Region prefHeight="20"/>
+                            </VBox>
+
+                            <Region HBox.hgrow="ALWAYS"/>
+
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/tecnologo.jpg"/>
+                                </image>
+                            </ImageView>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Integrantes del equipo -->
+                    <Label text="Integrantes del Equipo 6:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <HBox spacing="20" alignment="CENTER">
+                        <VBox alignment="CENTER">
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/misael.png"/>
+                                </image>
+                            </ImageView>
+                            <TextFlow textAlignment="CENTER">
+                                <Text text="Garcia Gonzalez Misael" />
+                            </TextFlow>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/daniela.jpg"/>
+                                </image>
+                            </ImageView>
+                            <TextFlow textAlignment="CENTER">
+                                <Text text="Gutierrez Encinas Martina Daniela" />
+                            </TextFlow>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/marco.jpg"/>
+                                </image>
+                            </ImageView>
+                            <TextFlow textAlignment="CENTER">
+                                <Text text="Gomez Paez Marcos" />
+                            </TextFlow>
+                        </VBox>
+                        <VBox alignment="CENTER">
+                            <ImageView fitHeight="100" fitWidth="100">
+                                <image>
+                                    <Image url="@images/richart.jpg"/>
+                                </image>
+                            </ImageView>
+                            <TextFlow textAlignment="CENTER">
+                                <Text text="Vazquez De La Torre Richart" />
+                            </TextFlow>
+                        </VBox>
+                    </HBox>
+
                 </VBox>
-                <VBox alignment="CENTER">
-                    <ImageView fitHeight="100" fitWidth="100">
-                        <image>
-                            <Image url="@images/daniela.jpg"/>
-                        </image>
-                    </ImageView>
-                    <TextFlow textAlignment="CENTER">
-                        <Text text="Gutierrez Encinas Martina Daniela" />
-                    </TextFlow>
-                </VBox>
-                <VBox alignment="CENTER">
-                    <ImageView fitHeight="100" fitWidth="100">
-                        <image>
-                            <Image url="@images/marco.jpg"/>
-                        </image>
-                    </ImageView>
-                    <TextFlow textAlignment="CENTER">
-                        <Text text="Gomez Paez Marcos" />
-                    </TextFlow>
-                </VBox>
-                <VBox alignment="CENTER">
-                    <ImageView fitHeight="100" fitWidth="100">
-                        <image>
-                            <Image url="@images/richart.jpg"/>
-                        </image>
-                    </ImageView>
-                    <TextFlow textAlignment="CENTER">
-                        <Text text="Vazquez De La Torre Richart" />
-                    </TextFlow>
-                </VBox>
-            </HBox>
-        </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

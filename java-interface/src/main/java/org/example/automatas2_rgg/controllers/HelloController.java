@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.automatas2_rgg.HelloApplication;
 import org.example.automatas2_rgg.models.SymbolTableModel;
+import org.example.automatas2_rgg.models.TokenModel;
 import org.example.automatas2_rgg.services.CompilerService;
 import org.example.automatas2_rgg.utils.FileUtils;
 import org.fxmisc.richtext.CodeArea;
@@ -26,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class HelloController {
     public Label consolePrompt;
@@ -41,6 +43,13 @@ public class HelloController {
     @FXML private TableColumn<SymbolTableModel, String> colLinea;
     @FXML private TableColumn<SymbolTableModel, String> colCategoria;
     @FXML private TableColumn<SymbolTableModel, String> colScope;
+
+    @FXML private TableView<TokenModel> tablaTokens;
+    @FXML private TableColumn<TokenModel, String> colTipoToken;
+    @FXML private TableColumn<TokenModel, String> colValorToken;
+    @FXML private TableColumn<TokenModel, String> colColumnaToken;
+    @FXML private TableColumn<TokenModel, String> colLineaToken;
+
 
     @FXML private Label welcomeText;
     @FXML private CodeArea codigoFuente;
@@ -87,6 +96,7 @@ public class HelloController {
         });
 
         inicializarColumnasTabla();
+        inicializarColumnasTablaTokens();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/automatas2_rgg/ArbolDerivacion.fxml"));
         try {
             AnchorPane root = loader.load();
@@ -115,12 +125,21 @@ public class HelloController {
                 new SimpleStringProperty(cellData.getValue().getColumna()));
         colLinea.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getLinea()));
-
         colCategoria.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getCategoria()));
         colScope.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getScope()));
+    }
 
+    public void inicializarColumnasTablaTokens() {
+        colTipoToken.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getTipo()));
+        colValorToken.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getValor()));
+        colColumnaToken.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getColumna()));
+        colLineaToken.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getLinea()));
     }
 
 
@@ -300,24 +319,32 @@ public class HelloController {
 
     public void cargarTablaSimbolosDesdeCSV(Path path) {
         try (BufferedReader reader = Files.newBufferedReader(path)) {
-            tablaSimbolos.getItems().clear();
-            reader.readLine(); // Saltar encabezado
+            reader.readLine();
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] datos = linea.split(",");
                 if (datos.length == 7) {
                     tablaSimbolos.getItems().add(new SymbolTableModel(datos[0], datos[1], datos[2], datos[3], datos[4],datos[5],datos[6]));
                 }
+                // Cargar en tablaTokens si tiene 4 columnas
+                if (datos.length == 4) {
+                    tablaTokens.getItems().add(new TokenModel(datos[0], datos[1], datos[2], datos[3]));
+                }
+
             }
         } catch (IOException e) {
             mostrarAlerta("Error", "No se pudo leer el archivo CSV: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
+
     private void cargarSalidasGeneradas() {
         Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
 
+        tablaSimbolos.getItems().clear();
+        tablaTokens.getItems().clear();
         cargarTablaSimbolosDesdeCSV(base.resolve("tabla_simbolos.txt"));
+        cargarTablaSimbolosDesdeCSV(base.resolve("tabla_tokens.txt"));
         cargarArchivoEnCodeArea(codigoIntermedio,"ir.txt");
         cargarArchivoEnCodeArea(codigoEnsamblador,"program.txt");
 
@@ -373,10 +400,30 @@ public class HelloController {
         new PDFController().abrirPDFSemantico(event);
     }
 
+
+
     @FXML
     void mostrarInformacion(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("informacion-view.fxml"));
+
+            Parent root = loader.load();
+
+            // Obtener el escenario actual
+            Stage stage = (Stage) ((MenuItem) event.getSource()).getParentPopup().getOwnerWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void mostrarGramatica(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("gramatica-view.fxml"));
 
             Parent root = loader.load();
 

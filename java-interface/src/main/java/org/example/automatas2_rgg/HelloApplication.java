@@ -18,7 +18,7 @@ public class HelloApplication extends Application {
         HelloController controller = fxmlLoader.getController();
         controller.setStage(stage);
 
-        Scene scene = new Scene(root, 800, 600);
+       Scene scene = new Scene(root, 800, 600);
 
        //scene.getStylesheets().add(HelloApplication.class.getResource("src/main/resources/CSS/estilos.css").toExternalForm());
 

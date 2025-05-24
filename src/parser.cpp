@@ -290,11 +290,8 @@ std::shared_ptr<Statement> Parser::parseDeclaration()
       }
 
       std::string value = "";
-      if (auto num = std::dynamic_pointer_cast<NumberExpr>(expr)) value = num->value;
-      else if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) value = str->text;
-      else if (auto boolean = std::dynamic_pointer_cast<BooleanExpr>(expr)) value = boolean->value ? "verdadero" : "falso";
+      value = exprToString(expr);
       symbols.updateValue(name, value, line, column);
-      LOG(LogLevel::WARNING, "[updateValue] " + msg);
 
       return std::make_shared<Assignment>(name, expr);
     }
@@ -694,10 +691,8 @@ std::shared_ptr<Statement> Parser::parseAssignment(bool consumeSemicolon)
   }
 
   std::string value = "";
-  if (auto num = std::dynamic_pointer_cast<NumberExpr>(expr)) value = num->value;
-  else if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) value = str->text;
-  else if (auto boolean = std::dynamic_pointer_cast<BooleanExpr>(expr)) value = boolean->value ? "verdadero" : "falso";
 
+  value = exprToString(expr);
   symbols.updateValue(name, value, line, column);
 
   if (consumeSemicolon) {
@@ -1106,4 +1101,21 @@ void Parser::validateVarDeclared(const std::shared_ptr<Expression>& expr) {
     else if (auto un = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
         validateVarDeclared(un->right);
     }
+}
+
+std::string Parser::exprToString(const std::shared_ptr<Expression>& expr) {
+  if (auto num = std::dynamic_pointer_cast<NumberExpr>(expr)) {
+    return num->value;
+  } else if (auto str = std::dynamic_pointer_cast<StringExpr>(expr)) {
+    return "\"" + str->text + "\"";
+  } else if (auto boolean = std::dynamic_pointer_cast<BooleanExpr>(expr)) {
+    return boolean->value ? "verdadero" : "falso";
+  } else if (auto var = std::dynamic_pointer_cast<VariableExpr>(expr)) {
+    return var->name;
+  } else if (auto bin = std::dynamic_pointer_cast<BinaryExpr>(expr)) {
+    return "(" + exprToString(bin->left) + " " + bin->op+ " " + exprToString(bin->right) + ")";
+  } else if (auto unary = std::dynamic_pointer_cast<UnaryExpr>(expr)) {
+    return unary->op + exprToString(unary->right);
+  }
+  return "[expr]";
 }

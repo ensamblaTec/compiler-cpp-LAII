@@ -118,7 +118,7 @@ public class ArbolDerivacionController {
             }
             case "PrintStatement" -> {
                 raiz.getChildren().add(new TreeItem<>("Valor:"));
-                raiz.getChildren().add(procesarNodoJson(nodo.path("value")));
+                raiz.getChildren().add(procesarNodoJson(nodo.path("name")));
             }
             case "InputStatement" -> {
                 raiz.getChildren().add(new TreeItem<>("Variable: " + nodo.path("varName").asText()));

@@ -1,1 +1,2 @@
 entero a;
+entero b;

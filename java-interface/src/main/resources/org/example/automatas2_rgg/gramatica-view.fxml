@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
+<BorderPane stylesheets="@css/estilos.css"
+            xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.automatas2_rgg.controllers.GramaticaController"
+            prefHeight="600.0" prefWidth="800.0">
+
+    <!-- Barra superior -->
+    <top>
+        <MenuBar>
+            <menus>
+                <Menu text="Regresar">
+                    <items>
+                        <MenuItem text="Volver" onAction="#onRegresar"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </top>
+
+    <!-- Contenido central con VBox -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 15;">
+            <!-- Título y descripción -->
+            <VBox spacing="5" alignment="CENTER" style="-fx-padding: 10;">
+                <Label text="Gramática formal (EBNF)"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+                <TextFlow textAlignment="CENTER" prefWidth="750">
+                    <Text text="Se ha utilizado EBNF (Extended Backus-Naur Form) para describir la gramática de forma compacta, flexible y estructurada."
+                          style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                </TextFlow>
+            </VBox>
+
+            <!-- Área de texto con scroll -->
+            <ScrollPane fitToWidth="true" fitToHeight="true">
+                <TextArea fx:id="gramaticatexto"
+                          editable="false"
+                          wrapText="true"
+                          prefRowCount="30"/>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>
