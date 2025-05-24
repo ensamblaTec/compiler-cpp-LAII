@@ -27,6 +27,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class HelloController {
     public Label consolePrompt;
@@ -124,12 +125,10 @@ public class HelloController {
                 new SimpleStringProperty(cellData.getValue().getColumna()));
         colLinea.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getLinea()));
-
         colCategoria.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getCategoria()));
         colScope.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getScope()));
-
     }
 
     public void inicializarColumnasTablaTokens() {
@@ -320,9 +319,7 @@ public class HelloController {
 
     public void cargarTablaSimbolosDesdeCSV(Path path) {
         try (BufferedReader reader = Files.newBufferedReader(path)) {
-            tablaSimbolos.getItems().clear();
-            tablaTokens.getItems().clear();
-            reader.readLine(); // Saltar encabezado
+            reader.readLine();
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] datos = linea.split(",");
@@ -344,6 +341,8 @@ public class HelloController {
     private void cargarSalidasGeneradas() {
         Path base = Paths.get(System.getProperty("user.dir")).resolve("../build/dist/output").normalize();
 
+        tablaSimbolos.getItems().clear();
+        tablaTokens.getItems().clear();
         cargarTablaSimbolosDesdeCSV(base.resolve("tabla_simbolos.txt"));
         cargarTablaSimbolosDesdeCSV(base.resolve("tabla_tokens.txt"));
         cargarArchivoEnCodeArea(codigoIntermedio,"ir.txt");

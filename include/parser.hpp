@@ -15,6 +15,7 @@ class Parser
     SymbolTable symbols;
 
   private:
+    std::string exprToString(const std::shared_ptr<Expression>& expr);
 
     bool semanticErrorOcurred = false;
 
