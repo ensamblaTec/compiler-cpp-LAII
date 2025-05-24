@@ -6,7 +6,7 @@
 <?import javafx.scene.text.TextFlow?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane stylesheets="@css/estilos.css" prefHeight="600.0" prefWidth="800.0"
+<BorderPane stylesheets="@css/infostyle.css" prefHeight="600.0" prefWidth="800.0"
             xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.automatas2_rgg.controllers.InformacionController">
@@ -32,13 +32,13 @@
                     <!-- Sección de logos y texto institucional -->
                     <VBox spacing="10" alignment="CENTER">
                         <HBox spacing="20" alignment="CENTER">
-                            <ImageView fitHeight="50" fitWidth="50">
+                            <ImageView fitHeight="100" fitWidth="100">
                                 <image>
                                     <Image url="@images/tecnmlogo.png"/>
                                 </image>
                             </ImageView>
 
-                            <Pane prefWidth="200"/>
+                            <Region HBox.hgrow="ALWAYS"/>
 
                             <VBox spacing="5" alignment="CENTER">
                                 <Text text="TECNOLÓGICO NACIONAL DE MÉXICO" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
@@ -56,9 +56,9 @@
                                 <Region prefHeight="20"/>
                             </VBox>
 
-                            <Pane prefWidth="200"/>
+                            <Region HBox.hgrow="ALWAYS"/>
 
-                            <ImageView fitHeight="50" fitWidth="50">
+                            <ImageView fitHeight="100" fitWidth="100">
                                 <image>
                                     <Image url="@images/tecnologo.jpg"/>
                                 </image>
