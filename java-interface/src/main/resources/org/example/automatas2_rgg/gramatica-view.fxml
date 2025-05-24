@@ -3,6 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.text.Text?>
 <BorderPane stylesheets="@css/estilos.css"
             xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -29,10 +31,11 @@
             <VBox spacing="5" alignment="CENTER" style="-fx-padding: 10;">
                 <Label text="Gramática formal (EBNF)"
                        style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <Label text="Se ha utilizado EBNF (Extended Backus-Naur Form) para describir la gramática de forma compacta, flexible y estructurada."
-                       wrapText="true"
-                       style="-fx-font-size: 14px; -fx-text-fill: #555555;"
-                       maxWidth="750"/>
+
+                <TextFlow textAlignment="CENTER" prefWidth="750">
+                    <Text text="Se ha utilizado EBNF (Extended Backus-Naur Form) para describir la gramática de forma compacta, flexible y estructurada."
+                          style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                </TextFlow>
             </VBox>
 
             <!-- Área de texto con scroll -->
