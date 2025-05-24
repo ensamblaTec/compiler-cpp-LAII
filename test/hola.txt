@@ -1,4 +1,0 @@
-entero a;
-a = 8;
-entrada a;
-mostrar(a);

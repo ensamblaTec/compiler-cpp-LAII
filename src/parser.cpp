@@ -61,7 +61,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
     {
       if (!semanticErrorOcurred) {
         LOG(LogLevel::ERROR, "[parse] Statement no válido: " + tokens[current].getPrint());
-        ErrorReporter::getInstance().report("Statement no válido 11111", peek().row, peek().column);
+        ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
       }
       synchronize();
     }
@@ -213,7 +213,7 @@ std::shared_ptr<Statement> Parser::parseStatement()
     LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
                         " (línea: " + std::to_string(peek().row + 1) +
                         ", columna: " + std::to_string(peek().column) + ")");
-    ErrorReporter::getInstance().report("Statement no válido 2222", peek().row, peek().column);
+    ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
   }
 
   return nullptr;
