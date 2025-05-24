@@ -1,23 +1,43 @@
 [
     {
-        "name": "x",
+        "name": "a",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "b",
+        "type": "Declaration",
+        "varType": "entero"
+    },
+    {
+        "name": "a",
+        "type": "Assignment",
+        "value": {
+            "type": "NumberExpr",
+            "value": "3"
+        }
+    },
+    {
+        "name": "b",
         "type": "Assignment",
         "value": {
             "left": {
-                "type": "NumberExpr",
-                "value": "5"
+                "name": "a",
+                "type": "VariableExpr"
             },
             "op": "+",
             "right": {
                 "type": "NumberExpr",
-                "value": "2"
+                "value": "5"
             },
             "type": "BinaryExpr"
         }
     },
     {
-        "name": "y",
-        "type": "Declaration",
-        "varType": "entero"
+        "expr": {
+            "name": "b",
+            "type": "VariableExpr"
+        },
+        "type": "PrintStatement"
     }
 ]

@@ -1,2 +1,4 @@
-+,5,2,t1
-ASSIGN,t1,,x
+ASSIGN,3,,a
++,a,5,t1
+ASSIGN,t1,,b
+PRINT,b,,

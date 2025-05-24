@@ -1,0 +1,2 @@
+tipo, valor, columna, linea
+KEYWORD_INT, int, 1, 1
