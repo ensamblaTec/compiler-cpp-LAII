@@ -105,6 +105,21 @@ public class ArbolDerivacionController {
                     raiz.getChildren().add(procesarNodoJson(stmt));
                 }
             }
+            case "ForStatement" -> {
+                raiz.getChildren().add(new TreeItem<>("Inicializacion:"));
+                raiz.getChildren().add(procesarNodoJson(nodo.path("init")));
+
+                raiz.getChildren().add(new TreeItem<>("Condición:"));
+                raiz.getChildren().add(procesarNodoJson(nodo.path("condition")));
+
+                raiz.getChildren().add(new TreeItem<>("Incremento:"));
+                raiz.getChildren().add(procesarNodoJson(nodo.path("increment")));
+
+                raiz.getChildren().add(new TreeItem<>("Bloque:"));
+                for (JsonNode stmt : nodo.path("body").path("statements")) {
+                    raiz.getChildren().add(procesarNodoJson(stmt));
+                }
+            }
             case "Assignment" -> {
                 raiz.getChildren().add(new TreeItem<>("Variable: " + nodo.path("name").asText()));
                 raiz.getChildren().add(new TreeItem<>("Valor:"));
@@ -117,8 +132,7 @@ public class ArbolDerivacionController {
                 raiz.getChildren().add(opNode);
             }
             case "PrintStatement" -> {
-                raiz.getChildren().add(new TreeItem<>("Valor:"));
-                raiz.getChildren().add(procesarNodoJson(nodo.path("name")));
+                raiz.getChildren().add(procesarNodoJson(nodo.path("expr")));
             }
             case "InputStatement" -> {
                 raiz.getChildren().add(new TreeItem<>("Variable: " + nodo.path("varName").asText()));

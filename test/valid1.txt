@@ -1,0 +1,5 @@
+entero a;
+entero b;
+a = 3;
+b = a + 5;
+mostrar(b);

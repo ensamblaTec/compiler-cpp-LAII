@@ -1,4 +1,8 @@
-ASSIGN,3,,a
-+,a,5,t1
-ASSIGN,t1,,b
-PRINT,b,,
+INPUT,edad,,
+>=,edad,18,t1
+IF_FALSE_GOTO,t1,,l1
+PRINT,1,,
+GOTO,,,l2
+LABEL,l1,,
+PRINT,0,,
+LABEL,l2,,

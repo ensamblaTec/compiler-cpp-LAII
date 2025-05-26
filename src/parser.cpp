@@ -213,7 +213,7 @@ std::shared_ptr<Statement> Parser::parseStatement()
     LOG(LogLevel::ERROR, "[parseStatement] Token inesperado: " + peek().getPrint() +
                         " (línea: " + std::to_string(peek().row + 1) +
                         ", columna: " + std::to_string(peek().column) + ")");
-    ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
+    ErrorReporter::getInstance().report("Statement no válido 2222", peek().row, peek().column);
   }
 
   return nullptr;

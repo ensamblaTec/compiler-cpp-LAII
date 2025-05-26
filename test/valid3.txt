@@ -1,0 +1,3 @@
+entero edad;
+entrada edad;
+mostrar(edad);

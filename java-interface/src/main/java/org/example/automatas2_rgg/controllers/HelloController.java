@@ -117,6 +117,7 @@ public class HelloController {
     public void inicializarColumnasTabla() {
         colIdentificador.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getIdentificador()));
+        colIdentificador.setPrefWidth(200);
         colTipo.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getTipo()));
         colValor.setCellValueFactory(cellData ->
@@ -134,6 +135,7 @@ public class HelloController {
     public void inicializarColumnasTablaTokens() {
         colTipoToken.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getTipo()));
+        colTipoToken.setPrefWidth(200);
         colValorToken.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getValor()));
         colColumnaToken.setCellValueFactory(cellData ->
@@ -187,13 +189,22 @@ public class HelloController {
 
     @FXML
     private void onGuardar() {
-        if (archivoActual == null) {
+        // 1. Verificar si archivo actual no existe o es temporal
+        if (archivoActual == null || archivoActual.getName().startsWith("nuevo_")) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Guardar archivo");
-            archivoActual = fileChooser.showSaveDialog(runButton.getScene().getWindow());
-            if (archivoActual == null) return;
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Archivos de texto", "*.txt"),
+                    new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+            );
+
+            File seleccionado = fileChooser.showSaveDialog(runButton.getScene().getWindow());
+            if (seleccionado == null) return;
+
+            archivoActual = seleccionado;
         }
 
+        // 2. Verificar conflictos por modificación externa
         if (archivoActual.exists()) {
             long actualMod = archivoActual.lastModified();
             if (actualMod > ultimaModificacionArchivo) {
@@ -203,12 +214,11 @@ public class HelloController {
                 alerta.setContentText("¿Deseas sobrescribirlo de todas formas?");
                 ButtonType resultado = alerta.showAndWait().orElse(ButtonType.CANCEL);
 
-                if (resultado != ButtonType.OK) {
-                    return;
-                }
+                if (resultado != ButtonType.OK) return;
             }
         }
 
+        // 3. Guardar contenido en archivo
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivoActual))) {
             String contenido = codigoFuente.getText();
             writer.write(contenido);
@@ -224,6 +234,7 @@ public class HelloController {
         }
     }
 
+
     @FXML
     void onSalir(ActionEvent event) {
         Platform.exit();
@@ -233,13 +244,33 @@ public class HelloController {
 
     @FXML
     private void onLimpiar() {
-        fileUtils.limpiarCodeArea();
+        fileUtils.limpiarCodeArea();  // ← ya lo haces
+
+        archivoActual = null;
+        modificado = false;
+
+        try {
+            File nuevoArchivo = File.createTempFile("nuevo_", ".txt");
+            nuevoArchivo.deleteOnExit();  // se borra al cerrar el programa (opcional)
+
+            archivoActual = nuevoArchivo;
+
+            Files.writeString(nuevoArchivo.toPath(), "");
+
+            System.out.println("Nuevo archivo temporal creado: " + nuevoArchivo.getAbsolutePath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("No se pudo crear un nuevo archivo temporal.", e.getMessage(), Alert.AlertType.ERROR);
+        }
+
+        // actualizarTituloVentana("Sin título");
+        actualizarTituloVentana();
     }
+
 
     @FXML
     protected void onHelloButtonClick() {
-
-        welcomeText.setText("Welcome to JavaFX Application!");
+        welcomeText.setText("Welcome to Jess Compilator!");
     }
 
     @FXML
@@ -255,7 +286,7 @@ public class HelloController {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Guardar archivo antes de compilar");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Código fuente (*.txt, *.cpp)", "*.txt", "*.cpp"),
+                    new FileChooser.ExtensionFilter("Código fuente (*.jes)", "*.jes"),
                     new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
             );
             archivoActual = fileChooser.showSaveDialog(runButton.getScene().getWindow());

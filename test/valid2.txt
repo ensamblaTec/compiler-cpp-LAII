@@ -1,0 +1,7 @@
+entero x;
+x = 4;
+si (x < 10) {
+  mostrar(1);
+} sino {
+  mostrar(0);
+}

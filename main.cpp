@@ -39,14 +39,11 @@ int main(int argc, char* argv[])
   std::vector<Token> tokens = getAllTokens(lexer);
   LOG(LogLevel::INFO, "FINALIZANDO LEXER...");
 
-  // LOG(LogLevel::INFO, "se han generado: " + std::to_string(tokens.size()) + " tokens");
-  // for (const auto token: tokens) token.print();
+  tokensToCSV(tokens);
   
   LOG(LogLevel::INFO, "INICIANDO PARSER...");
   Parser parser(tokens);
-  // LOG(LogLevel::INFO, "MOSTRANDO LOS TOKEN GENERADOS");
-  // for (const auto tok: tokens)
-  //   LOG(LogLevel::DEBUG, "TokenGenerado: " + tok.getPrint());
+
   auto statements = parser.parse();
   LOG(LogLevel::INFO, "FINALIZANDO EL PARSER...");
 

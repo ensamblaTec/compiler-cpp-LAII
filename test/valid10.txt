@@ -1,0 +1,7 @@
+entero edad;
+entrada edad;
+si (edad >= 18) {
+  mostrar(1);
+} sino {
+  mostrar(0);
+}
