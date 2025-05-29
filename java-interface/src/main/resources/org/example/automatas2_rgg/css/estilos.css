@@ -230,6 +230,19 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
 }
 
+.debug-button{
+    -fx-background-color: #3f4faf; /* Verde tipo éxito */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+.debug-button:hover{
+    -fx-background-color: #1a246e; /* Verde tipo éxito */
+}
+
 .run-button:hover {
     -fx-background-color: #43a047; /* Verde más oscuro al pasar mouse */
 }

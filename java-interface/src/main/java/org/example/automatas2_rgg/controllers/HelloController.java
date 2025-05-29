@@ -58,6 +58,9 @@ public class HelloController {
     @FXML private TextArea codigoEnsamblador;
 
     @FXML private Button runButton;
+    @FXML private Button debugButton;
+    private boolean isdebug = true;
+    private String codigo_completo;
 
     @FXML private AnchorPane arbolDerivacionWrapper; // este es el fx:id del fx:include
 
@@ -112,6 +115,25 @@ public class HelloController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        debugButton.setOnAction(event -> {
+
+            if (isdebug) {
+                isdebug = false;
+                debugButton.setStyle("-fx-background-color: red;");
+                debugButton.setText("No Debug");
+                consoleOutput.setText(codigo_completo);
+                consoleOutput.setStyle("-fx-text-fill: #00ff00;");
+
+
+            }else{
+                isdebug = true;
+                debugButton.setStyle("-fx-background-color: #3f4faf");
+                debugButton.setText("Debug");
+                consoleOutput.setText(runDebug(codigo_completo));
+                consoleOutput.setStyle("-fx-text-fill: #dc1616");
+            }
+        });
     }
 
     public void inicializarColumnasTabla() {
@@ -323,11 +345,38 @@ public class HelloController {
         new Thread(tareaCompilacion).start();
     }
 
+    @FXML
+    private void onCompilarDebug(){
+
+
+
+    }
+
+    private String runDebug(String texto){
+        String[] lineas = texto.split("\n");
+
+        StringBuilder resultado = new StringBuilder();
+        for (String linea : lineas) {
+            if (linea.contains("[ERROR]")) {
+                resultado.append(linea).append("\n");
+            }
+        }
+        return resultado.toString();
+    }
+
     private Task<String> getStringTask(String codigo) {
         Task<String> tareaCompilacion = new Task<>() {
             @Override
             protected String call() throws Exception {
-                return compilerService.compilarCodigo(codigo, archivoActual);
+                String codigo1 = compilerService.compilarCodigo(codigo, archivoActual);
+                codigo_completo = codigo1;
+                if (isdebug) {
+                    consoleOutput.setStyle("-fx-text-fill: #dc1616");
+                    return runDebug(codigo1);
+
+                }
+                return codigo1;
+
             }
         };
 

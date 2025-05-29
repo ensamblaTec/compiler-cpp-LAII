@@ -138,6 +138,10 @@
                         <padding>
                             <Insets top="0.0" right="10.0" bottom="10.0" left="10.0"/>
                         </padding>
+                        <Button fx:id="debugButton"
+                                text="Debug"
+                                onAction="#onCompilarDebug"
+                                styleClass="debug-button"/>
                         <Button fx:id="runButton"
                                 text="Compilar"
                                 onAction="#onCompilar"
