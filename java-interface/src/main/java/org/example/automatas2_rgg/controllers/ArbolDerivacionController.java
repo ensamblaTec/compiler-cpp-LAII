@@ -143,6 +143,12 @@ public class ArbolDerivacionController {
             case "NumberExpr" -> {
                 raiz.setValue("Número(" + nodo.path("value").asText() + ")");
             }
+            case "StringExpr" -> {
+                raiz.setValue("Número(" + nodo.path("text").asText() + ")");
+            }
+            case "UnaryExpr" -> {
+                raiz.setValue("Tipo(" + nodo.path("type").asText() + ")");
+            }
             default -> {
                 raiz.setValue("Tipo desconocido o no manejado: " + tipo);
             }

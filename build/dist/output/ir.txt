@@ -1,8 +1,97 @@
-INPUT,edad,,
->=,edad,18,t1
-IF_FALSE_GOTO,t1,,l1
-PRINT,1,,
+INPUT,a,,
+INPUT,b,,
+*,b,2,t1
++,a,t1,t2
+ASSIGN,t2,,c
++,a,b,t3
+-,a,b,t4
+*,t3,t4,t5
+ASSIGN,t5,,resultado
+ASSIGN,"El resultado es:",,cadena
+PRINT,"Valores iniciales:",,
+PRINT,a,,
+PRINT,b,,
+PRINT,"Resultado calculado:",,
+PRINT,resultado,,
+<,a,b,t6
+IF_FALSE_GOTO,t6,,l1
+PRINT,"a es menor que b",,
 GOTO,,,l2
 LABEL,l1,,
-PRINT,0,,
 LABEL,l2,,
+>,a,b,t7
+IF_FALSE_GOTO,t7,,l3
+PRINT,"a es mayor que b",,
+GOTO,,,l4
+LABEL,l3,,
+PRINT,"a no es mayor que b",,
+LABEL,l4,,
+<=,a,b,t8
+!=,b,0,t9
+&&,t8,t9,t10
+>,a,2,t11
+||,t10,t11,t12
+ASSIGN,t12,,cond
+IF_FALSE_GOTO,cond,,l5
+PRINT,"condición lógica verdadera",,
+GOTO,,,l6
+LABEL,l5,,
+LABEL,l6,,
+ASSIGN,0,,i
+LABEL,l7,,
+<,i,3,t13
+IF_FALSE_GOTO,t13,,l8
+PRINT,"iteración del para:",,
+PRINT,i,,
++,i,1,t14
+ASSIGN,t14,,i
+GOTO,,,l7
+LABEL,l8,,
+ASSIGN,1,,x
+LABEL,l9,,
+<,x,5,t15
+IF_FALSE_GOTO,t15,,l10
+==,x,3,t16
+IF_FALSE_GOTO,t16,,l11
+PRINT,"x es 3 dentro del mientras",,
+GOTO,,,l12
+LABEL,l11,,
+LABEL,l12,,
++,x,1,t17
+ASSIGN,t17,,x
+GOTO,,,l9
+LABEL,l10,,
+ASSIGN,1,,flag
+IF_FALSE_GOTO,flag,,l13
+PRINT,"la bandera es verdadera",,
+GOTO,,,l14
+LABEL,l13,,
+LABEL,l14,,
+INPUT,a1,,
+INPUT,b1,,
++,a1,b1,t18
+ASSIGN,t18,,expr1
+-,expr1,2,t19
+ASSIGN,t19,,expr2
+*,expr2,a1,t20
+ASSIGN,t20,,expr3
+<,a1,b1,t21
+ASSIGN,t21,,expr6
+>,a1,b1,t22
+ASSIGN,t22,,expr7
+==,a1,b1,t23
+ASSIGN,t23,,expr8
+!=,a1,b1,t24
+ASSIGN,t24,,expr9
+<=,a1,b1,t25
+ASSIGN,t25,,expr10
+>=,a1,b1,t26
+ASSIGN,t26,,expr11
+<,a1,10,t27
+&&,expr6,t27,t28
+ASSIGN,t28,,expr12
+>,b1,5,t29
+||,expr7,t29,t30
+ASSIGN,t30,,expr13
+ASSIGN,error,,expr14
+PRINT,"Fin del programa",,
