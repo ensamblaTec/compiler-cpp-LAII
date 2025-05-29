@@ -1,43 +1,50 @@
 [
     {
-        "name": "a",
+        "name": "edad",
         "type": "Declaration",
         "varType": "entero"
     },
     {
-        "name": "b",
-        "type": "Declaration",
-        "varType": "entero"
+        "type": "InputStatement",
+        "variable": "edad"
     },
     {
-        "name": "a",
-        "type": "Assignment",
-        "value": {
-            "type": "NumberExpr",
-            "value": "3"
-        }
-    },
-    {
-        "name": "b",
-        "type": "Assignment",
-        "value": {
+        "condition": {
             "left": {
-                "name": "a",
+                "name": "edad",
                 "type": "VariableExpr"
             },
-            "op": "+",
+            "op": ">=",
             "right": {
                 "type": "NumberExpr",
-                "value": "5"
+                "value": "18"
             },
             "type": "BinaryExpr"
-        }
-    },
-    {
-        "expr": {
-            "name": "b",
-            "type": "VariableExpr"
         },
-        "type": "PrintStatement"
+        "elseBranch": {
+            "statements": [
+                {
+                    "expr": {
+                        "type": "NumberExpr",
+                        "value": "0"
+                    },
+                    "type": "PrintStatement"
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "thenBranch": {
+            "statements": [
+                {
+                    "expr": {
+                        "type": "NumberExpr",
+                        "value": "1"
+                    },
+                    "type": "PrintStatement"
+                }
+            ],
+            "type": "BlockStatement"
+        },
+        "type": "IfStatement"
     }
 ]

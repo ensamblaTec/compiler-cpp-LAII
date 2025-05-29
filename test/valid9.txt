@@ -1,0 +1,5 @@
+entero a;
+a = 7;
+mostrar(a);
+mostrar(a + 1);
+mostrar(3 * a);

@@ -61,7 +61,7 @@ std::vector<std::shared_ptr<Statement>> Parser::parse()
     {
       if (!semanticErrorOcurred) {
         LOG(LogLevel::ERROR, "[parse] Statement no válido: " + tokens[current].getPrint());
-        ErrorReporter::getInstance().report("Statement no válido 11111", peek().row, peek().column);
+        ErrorReporter::getInstance().report("Statement no válido", peek().row, peek().column);
       }
       synchronize();
     }

@@ -1,2 +1,0 @@
-entero a;
-entero b;

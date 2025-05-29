@@ -9,7 +9,7 @@
 #include "ast.hpp"
 
 std::vector<Token> getAllTokens(Lexer& lexer);
-std::string symbolTableToString(std::vector<Token> tokens);
+void tokensToCSV(std::vector<Token> tokens);
 bool saveFile(std::string fileName, std::string content);
 void createFolder(const char* folderName);
 

@@ -1,0 +1,6 @@
+entero i;
+i = 0;
+mientras (i < 3) {
+  mostrar(i);
+  i = i + 1;
+}

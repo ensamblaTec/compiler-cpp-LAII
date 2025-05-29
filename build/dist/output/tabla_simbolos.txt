@@ -1,3 +1,2 @@
 id,type,value,line,column,category,scope
-a,entero,3,1,3,Variable,global
-b,entero,(a + 5),1,4,Variable,global
+edad,entero,0,8,1,Variable,global

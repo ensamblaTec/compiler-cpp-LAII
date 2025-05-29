@@ -1,0 +1,8 @@
+entero x;
+x = 0;
+mientras (x < 4) {
+  si (x * 2 == 0) {
+    mostrar(x);
+  }
+  x = x + 1;
+}

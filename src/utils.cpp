@@ -34,17 +34,17 @@ std::vector<Token> getAllTokens(Lexer& lexer)
   return tokens;
 }
 
-std::string symbolTableToString(std::vector<Token> tokens) {
+void tokensToCSV(std::vector<Token> tokens) {
   if (tokens.size() == 0) {
-    return "";
+    return;
   }
 
-  std::string buffer = "identificador,tipo,valor,columna,linea,categoria,ambito\n";
+  std::string buffer = "";
 
   for (auto token: tokens)
-    buffer += token.getPrintToSymbolTable() + ",\n";
+    buffer += token.getPrintToken() + ",\n";
 
-  return buffer;
+  saveFile("tabla_tokens", buffer);
 }
 
 bool saveFile(std::string fileName, std::string content) {
