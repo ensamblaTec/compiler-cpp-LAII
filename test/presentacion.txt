@@ -1,0 +1,106 @@
+// Declaración de variables
+entero a;
+entero b;
+entero c;
+entero resultado;
+bool cond;
+texto cadena;
+
+// Entrada de valores
+entrada a;
+entrada b;
+
+// Asignaciones y operaciones
+c = a + b * 2;
+resultado = (a + b) * (a - b);
+cadena = "El resultado es:";
+
+// Mostrar valores individuales y combinados
+mostrar("Valores iniciales:");
+mostrar(a);
+mostrar(b);
+mostrar("Resultado calculado:");
+mostrar(resultado);
+
+// Condicional simple
+si (a < b) {
+  mostrar("a es menor que b");
+}
+
+// Condicional con sino
+si (a > b) {
+  mostrar("a es mayor que b");
+} sino {
+  mostrar("a no es mayor que b");
+}
+
+// Uso de operadores relacionales y lógicos
+cond = (a <= b) && (b != 0) || a > 2;
+si (cond) {
+  mostrar("condición lógica verdadera");
+}
+
+entero i;
+// Uso de para
+para (i = 0; i < 3;i = i + 1) {
+  mostrar("iteración del para:");
+  mostrar(i);
+}
+
+// Uso de mientras con operación interna
+entero x;
+x = 1;
+mientras (x < 5) {
+  si (x == 3) {
+    mostrar("x es 3 dentro del mientras");
+  }
+  x = x + 1;
+}
+
+// Uso de cadena y booleano
+bool flag;
+flag = verdadero;
+si (flag) {
+  mostrar("la bandera es verdadera");
+}
+
+// operadores logicos y aritmeticos
+
+entero a1;
+entero b1;
+entero expr1;
+entero expr2;
+entero expr3;
+entero expr4;
+entero expr5;
+bool expr6;
+bool expr7;
+bool expr8;
+bool expr9;
+bool expr10;
+bool expr11;
+bool expr12;
+bool expr13;
+bool expr14;
+texto s;
+
+entrada a1;
+entrada b1;
+
+// Operaciones aritméticas
+expr1 = a1 + b1;
+expr2 = expr1 - 2;
+expr3 = expr2 * a1;
+
+// Operaciones relacionales y lógicas
+expr6 = a1 < b1;
+expr7 = a1 > b1;
+expr8 = a1 == b1;
+expr9 = a1 != b1;
+expr10 = a1 <= b1;
+expr11 = a1 >= b1;
+expr12 = expr6 && (a1 < 10);
+expr13 = expr7 || (b1 > 5);
+expr14 = !expr13;
+
+mostrar("Fin del programa");
